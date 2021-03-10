@@ -5,10 +5,16 @@ var topDir = '..';
 
 Future<void> main() async {
   for (var dir in [
-    // 'fs_node', temp
+    'fs_node',
     'http_node',
-    'platform_node',
     'http_redirect_node',
+  ]) {
+    var path = join(topDir, dir);
+    await nodePackageRunCi(path, NodePackageRunCiOptions(noNodeTest: true));
+  }
+
+  for (var dir in [
+    'platform_node',
   ]) {
     var path = join(topDir, dir);
     await nodePackageRunCi(path);
