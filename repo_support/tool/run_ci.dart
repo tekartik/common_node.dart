@@ -15,6 +15,7 @@ Future<void> main() async {
 
   for (var dir in [
     'platform_node',
+    'platform_node_test',
   ]) {
     var path = join(topDir, dir);
     await nodePackageRunCi(path);

@@ -37,7 +37,7 @@ dev_dependencies:
     version: '>=0.6.5+1'
   tekartik_platform_node:
     git:
-      url: git://github.com/tekartik/platform.dart
+      url: git://github.com/tekartik/common_node.dart
       path: platform_node
       ref: dart2
     version: '>=0.1.0'
@@ -54,3 +54,5 @@ dev_dependencies:
       ref: dart2
     version: '>=0.1.0'
 dependency_overrides:
+  tekartik_platform_node:
+    path: ../platform_node
