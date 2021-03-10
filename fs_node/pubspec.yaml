@@ -40,12 +40,17 @@ dev_dependencies:
       ref: dart2
     version: '>=0.2.0'
   process_run: '>=0.10.0+1'
-
+  tekartik_app_node_build:
+    git:
+      url: git://github.com/tekartik/app_node_utils.dart
+      path: app_build
+      ref: dart2
+    version: '>=0.2.3'
 dependency_overrides:
   # fs_shim:
   #  path: ../fs
-  # tekartik_fs_test:
-  #  path: ../fs_test
+  tekartik_fs_test:
+    path: ../../fs_shim.dart/fs_test
 
 # node_io:
 #   git:

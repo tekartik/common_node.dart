@@ -15,11 +15,15 @@ import 'package:tekartik_fs_node/src/file_system_entity_node.dart';
 import 'package:tekartik_fs_node/src/file_system_exception_node.dart';
 import 'package:tekartik_fs_node/src/fs_node.dart';
 import 'package:tekartik_fs_node/src/import_common_node.dart' as io;
+
 import 'package:tekartik_fs_test/fs_test.dart';
 
 import '../test_common_node.dart';
+import 'test_setup.dart';
 
 void main() {
+  nodeTestSetup();
+
   var fileSystemContext = fileSystemTestContextNode;
   FileSystem fs = fileSystemContext.fs;
 
