@@ -1,7 +1,10 @@
-import 'package:node_io/node_io.dart' as node;
+//import 'package:node_io/node_io.dart' as node;
 import 'package:tekartik_platform/context.dart';
+
 // ignore: implementation_imports
 import 'package:tekartik_platform/src/platform_mixin.dart';
+
+import 'interop/platform_interop.dart' as node;
 
 class NodeImpl with PlatformMixin implements Node {
   @override
@@ -13,8 +16,8 @@ class NodeImpl with PlatformMixin implements Node {
   @override
   bool get isWindows => node.Platform.isWindows;
 
-  String get _platformText {
-    String platform;
+  String? get _platformText {
+    String? platform;
     if (isLinux) {
       platform = 'linux';
     } else if (isMac) {
@@ -44,12 +47,12 @@ class NodeImpl with PlatformMixin implements Node {
 
 class PlatformContextNode implements PlatformContext {
   @override
-  Browser get browser => null;
+  Browser? get browser => null;
 
   @override
-  Io get io => null;
+  Io? get io => null;
 
-  NodeImpl _node;
+  NodeImpl? _node;
 
   @override
   NodeImpl get node => _node ??= NodeImpl();
@@ -67,7 +70,7 @@ class PlatformContextNode implements PlatformContext {
   Platform get platform => node;
 }
 
-PlatformContextNode _platformContextNode;
+PlatformContextNode? _platformContextNode;
 
 PlatformContextNode get platformContextNode =>
     _platformContextNode ??= PlatformContextNode();

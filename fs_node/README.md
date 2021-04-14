@@ -1,3 +1,15 @@
+## Setup
+
+```yaml
+  tekartik_fs_node:
+    git:
+      url: git://github.com/tekartik/common_node.dart
+      path: fs_node
+      ref: dart2
+    version: '>=0.4.0'
+
+```
+
 ## Test setup
 
     User dart2

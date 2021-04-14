@@ -1,14 +1,15 @@
 targets:
   $default:
     sources:
-      - "example/**"
+      - "$package$"
+      - "bin/**"
+      - "node_example/**"
       - "lib/**"
-      - "test/**"
     builders:
-      build_node_compilers|entrypoint:
+      build_web_compilers|entrypoint:
         generate_for:
-          - example/**
-          - test/**
+          - bin/**
+          - node_example/**
         options:
           compiler: dart2js
           # List any dart2js specific args here, or omit it.
