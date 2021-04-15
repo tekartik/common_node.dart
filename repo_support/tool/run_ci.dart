@@ -1,5 +1,5 @@
 import 'package:path/path.dart';
-import 'package:tekartik_app_node_build/package.dart';
+import 'package:tekartik_build_node/package.dart';
 
 var topDir = '..';
 

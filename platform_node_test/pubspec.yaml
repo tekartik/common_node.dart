@@ -50,5 +50,5 @@ dev_dependencies:
 dependency_overrides:
   tekartik_platform_node:
     path: ../platform_node
-  tekartik_build_node:
-    path: ../../../tekartik/build_node.dart/packages/build_node
+  # tekartik_build_node:
+  #  path: ../../../tekartik/build_node.dart/packages/build_node
