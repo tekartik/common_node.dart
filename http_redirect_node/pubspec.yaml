@@ -29,6 +29,11 @@ dependencies:
     git:
       url: git://github.com/tekartik/common_utils.dart
       ref: null_safety
+  tekartik_http_node:
+    git:
+      url: git://github.com/tekartik/common_node.dart
+      path: http_node
+      ref: null_safety
   args: any
 
 

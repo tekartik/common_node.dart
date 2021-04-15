@@ -1,11 +1,5 @@
-library fs_shim.src.io.io_directory;
-
-import 'dart:io' as vm_io;
-
-import 'package:tekartik_fs_node/src/file_system_entity_node.dart';
-import 'package:tekartik_fs_node/src/fs_node.dart';
-
 import 'file_node.dart';
+import 'file_system_entity_node.dart';
 import 'fs_node.dart';
 import 'import_common.dart';
 import 'import_common_node.dart' as node;
@@ -13,22 +7,21 @@ import 'import_common_node.dart' as node;
 DirectoryNode get currentDirectory => DirectoryNode.io(node.Directory.current);
 
 // Wrap/unwrap
-DirectoryNode wrapIoDirectory(vm_io.Directory ioDirectory) =>
+DirectoryNode wrapIoDirectory(node.Directory ioDirectory) =>
     DirectoryNode.io(ioDirectory);
 
-vm_io.Directory unwrapIoDirectory(Directory dir) =>
-    (dir as DirectoryNode).ioDir;
+node.Directory unwrapIoDirectory(Directory dir) => (dir as DirectoryNode).ioDir;
 
 class DirectoryNode extends FileSystemEntityNode implements Directory {
-  DirectoryNode.io(vm_io.Directory dir) : super(dir);
+  DirectoryNode.io(node.Directory dir) : super(dir);
 
   DirectoryNode(String path) : super(node.Directory(path));
 
-  vm_io.Directory get ioDir => nativeInstance as vm_io.Directory;
+  node.Directory get ioDir => nativeInstance as node.Directory;
 
   /*
   //DirectoryImpl _me(_) => this;
-  DirectoryNode _ioThen(vm_io.Directory resultIoDir) {
+  DirectoryNode _ioThen(node.Directory resultIoDir) {
     if (resultIoDir == null) {
       return null;
     }
@@ -81,11 +74,11 @@ class DirectoryNode extends FileSystemEntityNode implements Directory {
 
     var ioStream = ioDir.list(recursive: false, followLinks: followLinks);
     var futures = <Future>[];
-    ioStream.listen((vm_io.FileSystemEntity data) {
+    ioStream.listen((node.FileSystemEntity data) {
       // Duplicate the data.
-      if (data is vm_io.File) {
+      if (data is node.File) {
         controller.add(FileNode.io(data));
-      } else if (data is vm_io.Directory) {
+      } else if (data is node.Directory) {
         var subDir = DirectoryNode.io(data);
         controller.add(subDir);
         if (recursive) {
@@ -112,18 +105,18 @@ class DirectoryNode extends FileSystemEntityNode implements Directory {
 
     /*
     StreamSubscription<FileSystemEntityNode> _transformer(
-        Stream<vm_io.FileSystemEntity> input, bool cancelOnError) {
+        Stream<node.FileSystemEntity> input, bool cancelOnError) {
       StreamController<FileSystemEntityNode> controller;
       //StreamSubscription<io.FileSystemEntity> subscription;
       controller = new StreamController<FileSystemEntityNode>(
           onListen: () {
 
-            input.listen((vm_io.FileSystemEntity data) {
+            input.listen((node.FileSystemEntity data) {
               devPrint("onListen $data");
               // Duplicate the data.
-              if (data is vm_io.File) {
+              if (data is node.File) {
                 controller.add(new FileNode.io(data));
-              } else if (data is vm_io.Directory) {
+              } else if (data is node.Directory) {
                 controller.add(new DirectoryNode.io(data));
                 //} else if (data is io.Link) {
                 //  controller.add(new LinkImpl.io(data));
@@ -139,7 +132,7 @@ class DirectoryNode extends FileSystemEntityNode implements Directory {
           sync: true);
       return controller.stream.listen(null);
       return ioStream.transform(
-        new StreamTransformer<vm_io.FileSystemEntity, FileSystemEntityNode>(
+        new StreamTransformer<node.FileSystemEntity, FileSystemEntityNode>(
             _transformer));
       */
 

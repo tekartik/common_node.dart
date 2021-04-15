@@ -2,7 +2,6 @@
 // is governed by a BSD-style license that can be found in the LICENSE file.
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:js';
 import 'dart:typed_data';
 
@@ -171,7 +170,7 @@ class WritableStream<S> implements StreamSink<S> {
 
 /// Writable stream of bytes, also accepts `String` values which are encoded
 /// with specified [Encoding].
-class NodeIOSink extends WritableStream<List<int>> implements IOSink {
+class NodeIOSink extends WritableStream<List<int>> {
   static dynamic _nodeIoSinkConvert(List<int> data) {
     if (data is! Uint8List) {
       data = Uint8List.fromList(data);
@@ -182,29 +181,23 @@ class NodeIOSink extends WritableStream<List<int>> implements IOSink {
   NodeIOSink(Writable nativeStream, {this.encoding = utf8})
       : super(nativeStream, convert: _nodeIoSinkConvert);
 
-  @override
   Encoding encoding;
 
-  @override
   Future flush() => drain;
 
-  @override
   void write(Object? obj) {
     _write(encoding.encode(obj.toString()));
   }
 
-  @override
   void writeAll(Iterable objects, [String separator = '']) {
     var data = objects.map((obj) => obj.toString()).join(separator);
     _write(encoding.encode(data));
   }
 
-  @override
   void writeCharCode(int charCode) {
     _write(encoding.encode(String.fromCharCode(charCode)));
   }
 
-  @override
   void writeln([Object? obj = '']) {
     _write(encoding.encode('$obj\n'));
   }

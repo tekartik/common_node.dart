@@ -3,9 +3,9 @@
 ```yaml
   tekartik_platform_node:
     git:
-      url: git://github.com/tekartik/platform.dart
+      url: git://github.com/tekartik/common_node.dart
       path: platform_node
-      ref: dart2
+      ref: null_safety
     version: '>=0.2.1'
 
 ```

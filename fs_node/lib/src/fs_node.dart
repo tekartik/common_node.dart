@@ -8,7 +8,7 @@ import 'package:tekartik_fs_node/src/file_system_node.dart';
 import 'package:tekartik_fs_node/src/import_common.dart';
 
 import 'file_system_exception_node.dart';
-import 'import_common_node.dart' as io;
+import 'import_common_node.dart' as node;
 
 export 'dart:async';
 export 'dart:convert';
@@ -17,46 +17,46 @@ FileSystemNode? _fileSystemNode;
 
 FileSystemNode get fileSystemNode => _fileSystemNode ??= FileSystemNode();
 
-io.FileMode fileWriteMode(fs.FileMode fsFileMode) {
+node.FileMode fileWriteMode(fs.FileMode fsFileMode) {
   return unwrapIoFileModeImpl(fsFileMode);
 }
 
 // FileMode Wrap/unwrap
-FileMode wrapIoFileMode(io.FileMode ioFileMode) =>
+FileMode wrapIoFileMode(node.FileMode ioFileMode) =>
     wrapIofileModeImpl(ioFileMode);
 
-io.FileMode unwrapIoFileMode(FileMode fileMode) =>
+node.FileMode unwrapIoFileMode(FileMode fileMode) =>
     unwrapIoFileModeImpl(fileMode);
 
 // FileSystemEntityType Wrap/unwrap
 FileSystemEntityType wrapIoFileSystemEntityType(
-        io.FileSystemEntityType ioFileSystemEntityType) =>
+        node.FileSystemEntityType ioFileSystemEntityType) =>
     wrapIoFileSystemEntityTypeImpl(ioFileSystemEntityType);
 
-io.FileSystemEntityType unwrapIoFileSystemEntityType(
+node.FileSystemEntityType unwrapIoFileSystemEntityType(
         FileSystemEntityType fileSystemEntityType) =>
     unwrapIoFileSystemEntityTypeImpl(fileSystemEntityType);
 
-io.FileMode unwrapIoFileModeImpl(fs.FileMode fsFileMode) {
+node.FileMode unwrapIoFileModeImpl(fs.FileMode fsFileMode) {
   switch (fsFileMode) {
     case fs.FileMode.write:
-      return io.FileMode.write;
+      return node.FileMode.write;
     case fs.FileMode.read:
-      return io.FileMode.read;
+      return node.FileMode.read;
     case fs.FileMode.append:
-      return io.FileMode.append;
+      return node.FileMode.append;
     default:
       throw UnsupportedError('invalid file mode $fsFileMode');
   }
 }
 
-fs.FileMode wrapIofileModeImpl(io.FileMode ioFileMode) {
+fs.FileMode wrapIofileModeImpl(node.FileMode ioFileMode) {
   switch (ioFileMode) {
-    case io.FileMode.write:
+    case node.FileMode.write:
       return fs.FileMode.write;
-    case io.FileMode.read:
+    case node.FileMode.read:
       return fs.FileMode.read;
-    case io.FileMode.append:
+    case node.FileMode.append:
       return fs.FileMode.append;
     default:
       throw UnsupportedError('invalid file mode $ioFileMode');
@@ -65,8 +65,8 @@ fs.FileMode wrapIofileModeImpl(io.FileMode ioFileMode) {
 
 FileSystemExceptionNode ioWrapError(e) {
   // devPrint('error $e ${e.runtimeType}');
-  if (e is io.FileSystemException) {
-    return FileSystemExceptionNode.io(e);
+  if (e is node.FileSystemException) {
+    return wrapIoFileSystemException(e); //FileSystemExceptionNode.io(e);
   } else {
     // print(e.toString());
     return FileSystemExceptionNode.fromString(e.toString());
@@ -77,7 +77,7 @@ FileSystemExceptionNode ioWrapError(e) {
 Future<T> ioWrap<T>(Future<T> future) async {
   try {
     return await future;
-  } on io.FileSystemException catch (e) {
+  } on node.FileSystemException catch (e) {
     //io.stderr.writeln(st);
     throw ioWrapError(e);
   } catch (e) {
@@ -87,39 +87,39 @@ Future<T> ioWrap<T>(Future<T> future) async {
 }
 
 fs.FileSystemEntityType wrapIoFileSystemEntityTypeImpl(
-    io.FileSystemEntityType type) {
+    node.FileSystemEntityType type) {
   switch (type) {
-    case io.FileSystemEntityType.file:
+    case node.FileSystemEntityType.file:
       return fs.FileSystemEntityType.file;
-    case io.FileSystemEntityType.directory:
+    case node.FileSystemEntityType.directory:
       return fs.FileSystemEntityType.directory;
-    case io.FileSystemEntityType.link:
+    case node.FileSystemEntityType.link:
       return fs.FileSystemEntityType.link;
-    case io.FileSystemEntityType.notFound:
+    case node.FileSystemEntityType.notFound:
       return fs.FileSystemEntityType.notFound;
     default:
       throw type;
   }
 }
 
-io.FileSystemEntityType unwrapIoFileSystemEntityTypeImpl(
+node.FileSystemEntityType unwrapIoFileSystemEntityTypeImpl(
     fs.FileSystemEntityType type) {
   switch (type) {
     case fs.FileSystemEntityType.file:
-      return io.FileSystemEntityType.file;
+      return node.FileSystemEntityType.file;
     case fs.FileSystemEntityType.directory:
-      return io.FileSystemEntityType.directory;
+      return node.FileSystemEntityType.directory;
     case fs.FileSystemEntityType.link:
-      return io.FileSystemEntityType.link;
+      return node.FileSystemEntityType.link;
     case fs.FileSystemEntityType.notFound:
-      return io.FileSystemEntityType.notFound;
+      return node.FileSystemEntityType.notFound;
     default:
       throw type;
   }
 }
 
 class WriteFileSinkNode implements StreamSink<List<int>> {
-  io.IOSink ioSink;
+  node.NodeIOSink ioSink;
 
   WriteFileSinkNode(this.ioSink);
 

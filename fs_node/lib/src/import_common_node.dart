@@ -1,14 +1,14 @@
-export 'dart:io'
+export 'package:fs_shim/fs.dart'
     show
         FileMode,
         FileSystemException,
-        IOSink,
-        OSError,
+        //OSError,
         // Link,
         FileSystemEntityType;
 
 // export 'package:node_io/node_io.dart';
 export 'node/directory.dart';
+export 'node/error.dart';
 export 'node/file.dart';
 export 'node/file_system.dart';
 export 'node/file_system_entity.dart';

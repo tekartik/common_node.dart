@@ -5,7 +5,7 @@
     git:
       url: git://github.com/tekartik/common_node.dart
       path: fs_node
-      ref: dart2
+      ref: null_safety
     version: '>=0.4.0'
 
 ```

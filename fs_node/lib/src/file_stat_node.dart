@@ -1,22 +1,18 @@
-library fs_shim.src.io.io_file_stat;
-
-import 'dart:io' as vm_io show FileStat;
-
 import 'package:fs_shim/fs.dart';
 import 'package:tekartik_fs_node/src/fs_node.dart';
 import 'package:fs_shim/src/common/fs_mixin.dart'; // ignore: implementation_imports
 
-import 'import_common_node.dart' as io;
+import 'import_common_node.dart' as node;
 
 // FileStat Wrap/unwrap
-FileStatNode wrapIoFileStat(vm_io.FileStat ioFileStat) =>
+FileStatNode wrapIoFileStat(node.FileStat ioFileStat) =>
     FileStatNode.io(ioFileStat);
 
-vm_io.FileStat? unwrapIoFileStat(FileStat fileStat) =>
+node.FileStat? unwrapIoFileStat(FileStat fileStat) =>
     (fileStat as FileStatNode).ioFileStat;
 
 class FileStatNotFound extends FileStatNode {
-  FileStatNotFound() : super.io(null);
+  FileStatNotFound() : super.io(node.FileStat.notFound());
 
   @override
   int get size => -1;
@@ -34,17 +30,17 @@ class FileStatNotFound extends FileStatNode {
 class FileStatNode with FileStatModeMixin implements FileStat {
   FileStatNode.io(this.ioFileStat);
 
-  vm_io.FileStat? ioFileStat;
+  node.FileStat ioFileStat;
 
   @override
-  DateTime get modified => ioFileStat!.modified;
+  DateTime get modified => ioFileStat.modified;
 
   @override
-  int get size => ioFileStat!.size;
+  int get size => ioFileStat.size;
 
   @override
   FileSystemEntityType get type =>
-      wrapIoFileSystemEntityTypeImpl(ioFileStat!.type);
+      wrapIoFileSystemEntityTypeImpl(ioFileStat.type);
 
   @override
   String toString() => ioFileStat.toString();
@@ -53,7 +49,7 @@ class FileStatNode with FileStatModeMixin implements FileStat {
 Future<FileStatNode> pathFileStat(String path) async {
   try {
     // var stat = await ioWrap(nativeInstance.stat());
-    var stat = await ioWrap(io.FileStat.stat(path));
+    var stat = (await ioWrap(node.FileStat.stat(path)));
     return FileStatNode.io(stat);
   } catch (e) {
     return FileStatNotFound();

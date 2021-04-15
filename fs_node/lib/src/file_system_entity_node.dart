@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io' as io;
 
 import 'package:fs_shim/fs.dart';
 import 'package:path/path.dart';
@@ -10,9 +9,10 @@ import 'package:tekartik_fs_node/src/import_common.dart';
 
 import 'file_system_node.dart';
 import 'fs_node.dart';
+import 'import_common_node.dart' as node;
 
 abstract class FileSystemEntityNode implements FileSystemEntity {
-  final io.FileSystemEntity nativeInstance;
+  final node.FileSystemEntity nativeInstance;
 
   FileSystemEntityNode(this.nativeInstance);
 

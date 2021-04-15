@@ -1,14 +1,16 @@
 targets:
   $default:
     sources:
-      - $package$
       - lib/**
       - test/**
       - node/**
+      # Note that it is important to include these in the default target.
+      - pubspec.*
+      - $package$
     builders:
       build_web_compilers|entrypoint:
         generate_for:
-          - node/**
+          - "node/**"
         options:
           compiler: dart2js
 

@@ -2,32 +2,21 @@
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:io' as io;
 import 'dart:js' as js;
 
-import 'package:file/file.dart' as file;
+import 'package:fs_shim/fs.dart' as fs_shim;
 import 'package:node_interop/fs.dart';
 import 'package:node_interop/path.dart' as node_path;
-import 'package:path/path.dart' as p;
 
 import 'directory.dart';
-import 'file_system.dart';
 import 'platform.dart';
 
-abstract class FileSystemEntity implements file.FileSystemEntity {
+abstract class FileSystemEntity {
   static final RegExp _absoluteWindowsPathPattern =
       RegExp(r'^(\\\\|[a-zA-Z]:[/\\])');
 
-  @override
-  file.FileSystem get fileSystem => const NodeFileSystem();
+  String get path;
 
-  @override
-  String get basename => p.basename(path);
-
-  @override
-  String get dirname => p.dirname(path);
-
-  @override
   bool get isAbsolute => node_path.path.isAbsolute(path);
 
   @override
@@ -62,10 +51,8 @@ abstract class FileSystemEntity implements file.FileSystemEntity {
     }
   }
 
-  @override
-  file.Directory get parent => Directory(parentOf(path));
+  Directory get parent => Directory(parentOf(path));
 
-  @override
   Future<String> resolveSymbolicLinks() {
     var completer = Completer<String>();
     void callback(err, String resolvedPath) {
@@ -82,70 +69,46 @@ abstract class FileSystemEntity implements file.FileSystemEntity {
     return completer.future;
   }
 
-  @override
-  String resolveSymbolicLinksSync() => fs.realpathSync(path);
-
-  @override
   Future<FileStat> stat() => FileStat.stat(path);
 
-  @override
-  FileStat statSync() => FileStat.statSync(path);
-
-  @override
-  Uri get uri => Uri.file(path, windows: Platform.isWindows);
-
-  @override
-  Stream<io.FileSystemEvent> watch(
-      {int events = io.FileSystemEvent.all, bool recursive = false}) {
-    // TODO: implement watch
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<file.FileSystemEntity> delete({bool recursive = false});
+  Future<FileSystemEntity> delete({bool recursive = false});
 }
 
 /// A FileStat object represents the result of calling the POSIX stat() function
 /// on a file system object.  It is an immutable object, representing the
 /// snapshotted values returned by the stat() call.
-class FileStat implements io.FileStat {
-  @override
+class FileStat {
   final DateTime changed;
 
-  @override
   final DateTime modified;
 
-  @override
   final DateTime accessed;
 
-  @override
-  final io.FileSystemEntityType type;
+  final fs_shim.FileSystemEntityType type;
 
-  @override
   final int mode;
 
-  @override
   final int size;
 
   FileStat._internal(this.changed, this.modified, this.accessed, this.type,
       this.mode, this.size);
 
-  FileStat._internalNotFound()
+  FileStat.notFound()
       : changed = DateTime(0),
         modified = DateTime(0),
         accessed = DateTime(0),
-        type = io.FileSystemEntityType.notFound,
+        type = fs_shim.FileSystemEntityType.notFound,
         mode = 0,
         size = -1;
 
   factory FileStat._fromNodeStats(Stats stats) {
-    var type = io.FileSystemEntityType.notFound;
+    var type = fs_shim.FileSystemEntityType.notFound;
     if (stats.isDirectory()) {
-      type = io.FileSystemEntityType.directory;
+      type = fs_shim.FileSystemEntityType.directory;
     } else if (stats.isFile()) {
-      type = io.FileSystemEntityType.file;
+      type = fs_shim.FileSystemEntityType.file;
     } else if (stats.isSymbolicLink()) {
-      type = io.FileSystemEntityType.link;
+      type = fs_shim.FileSystemEntityType.link;
     }
     return FileStat._internal(
       DateTime.parse(stats.ctime.toISOString()),
@@ -171,7 +134,7 @@ class FileStat implements io.FileStat {
       if (err == null) {
         completer.complete(FileStat._fromNodeStats(stats as Stats));
       } else {
-        completer.complete(FileStat._internalNotFound());
+        completer.complete(FileStat.notFound());
       }
     }
 
@@ -189,11 +152,10 @@ class FileStat implements io.FileStat {
     try {
       return FileStat._fromNodeStats(fs.lstatSync(path));
     } catch (_) {
-      return FileStat._internalNotFound();
+      return FileStat.notFound();
     }
   }
 
-  @override
   String modeString() {
     var permissions = mode & 0xFFF;
     var codes = const ['---', '--x', '-w-', '-wx', 'r--', 'r-x', 'rw-', 'rwx'];

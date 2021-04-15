@@ -13,7 +13,17 @@ dependencies:
   fs_shim: '>=0.11.0+3'
   node_interop: '>=1.0.3'
   tekartik_fs_node:
-    path: ../fs_node
+    git:
+      url: git://github.com/tekartik/common_node.dart
+      path: fs_node
+      ref: null_safety
+    version: '>=0.2.0'
+  tekartik_platform_node:
+    git:
+      url: git://github.com/tekartik/common_node.dart
+      path: platform_node
+      ref: null_safety
+    version: '>=0.2.0'
   # node_io: '>=1.0.1+2'
   # node_io: any
 
@@ -32,23 +42,22 @@ dev_dependencies:
       url: git://github.com/tekartik/platform.dart
       path: platform
       ref: null_safety
-  tekartik_platform_node:
-    git:
-      url: git://github.com/tekartik/common_node.dart
-      path: platform_node
-      ref: null_safety
-    version: '>=0.2.0'
+
   process_run: '>=0.10.0+1'
   # needed node dependencies
   build_runner:
+  build_web_compilers:
   tekartik_build_node:
     git:
       url: git://github.com/tekartik/build_node.dart
       path: packages/build_node
       ref: null_safety
+
 dependency_overrides:
   tekartik_platform_node:
     path: ../platform_node
+  tekartik_fs_node:
+    path: ../fs_node
   # fs_shim:
   #  path: ../fs
   # tekartik_fs_test:

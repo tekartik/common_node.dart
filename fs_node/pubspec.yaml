@@ -1,6 +1,6 @@
 name: tekartik_fs_node
 description: fs_shim on node
-version: 0.4.0
+version: 0.4.1
 publish_to: none
 #homepage: https://www.example.com
 #author: alex <email@example.com>
@@ -12,6 +12,12 @@ dependencies:
   path: '>=1.6.1'
   fs_shim: '>=0.11.0+3'
   node_interop: '>=1.0.3'
+  tekartik_platform_node:
+    git:
+      url: git://github.com/tekartik/common_node.dart
+      path: platform_node
+      ref: null_safety
+    version: '>=0.2.0'
   # node_io: '>=1.0.1+2'
   # node_io: any
 
@@ -30,12 +36,6 @@ dev_dependencies:
       url: git://github.com/tekartik/platform.dart
       path: platform
       ref: null_safety
-  tekartik_platform_node:
-    git:
-      url: git://github.com/tekartik/common_node.dart
-      path: platform_node
-      ref: null_safety
-    version: '>=0.2.0'
   process_run: '>=0.10.0+1'
 dependency_overrides:
   tekartik_platform_node:

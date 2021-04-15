@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io' as vm_io;
 import 'dart:typed_data';
 
 import 'package:fs_shim/fs.dart';
@@ -8,23 +7,45 @@ import 'package:tekartik_fs_node/src/file_system_entity_node.dart';
 import 'package:tekartik_fs_node/src/fs_node.dart';
 import 'package:tekartik_fs_node/src/import_common.dart';
 
-import 'package:fs_shim/src/common/compat.dart'; // ignore: implementation_imports
+//import 'package:fs_shim/src/common/compat.dart'; // ignore: implementation_imports
 
-import 'import_common_node.dart' as io;
+import 'import_common_node.dart' as node;
+
+/// Concert a list to byte array
+Uint8List asUint8List(List<int> bytes) {
+  if (bytes is Uint8List) {
+    return bytes;
+  }
+  return Uint8List.fromList(bytes);
+}
+
+Stream<Uint8List> intListStreamToUint8ListStream(Stream stream) {
+  if (stream is Stream<Uint8List>) {
+    return stream;
+  } else if (stream is Stream<List<int>>) {
+    return stream.transform(
+        StreamTransformer<List<int>, Uint8List>.fromHandlers(
+            handleData: (list, sink) {
+      sink.add(Uint8List.fromList(list));
+    }));
+  } else {
+    throw ArgumentError('Invalid stream type: ${stream.runtimeType}');
+  }
+}
 
 Future<String> _wrapFutureString(Future<String> future) => ioWrap(future);
 
 // Wrap/unwrap
-FileNode wrapIoFile(vm_io.File ioFile) => FileNode.io(ioFile);
+FileNode wrapIoFile(node.File ioFile) => FileNode.io(ioFile);
 
-vm_io.File unwrapIoFile(File file) => (file as FileNode).ioFile;
+node.File unwrapIoFile(File file) => (file as FileNode).ioFile;
 
 class FileNode extends FileSystemEntityNode implements File {
-  FileNode.io(vm_io.File file) : super(file);
+  FileNode.io(node.File file) : super(file);
 
-  FileNode(String path) : super(io.File(path));
+  FileNode(String path) : super(node.File(path));
 
-  vm_io.File get ioFile => nativeInstance as io.File;
+  node.File get ioFile => nativeInstance as node.File;
 
   @override
   Future<FileNode> create({bool recursive = false}) async {
@@ -59,7 +80,7 @@ class FileNode extends FileSystemEntityNode implements File {
     }
     // Test that parent dir exists as we don't get any error...
     /*
-    var dir = vm_io.Directory(dirname(path));
+    var dir = node.Directory(dirname(path));
     if (!dir.existsSync()) {
       throw 'Parent directory does not exists';
     }

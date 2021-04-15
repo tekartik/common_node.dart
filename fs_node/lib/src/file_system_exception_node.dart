@@ -1,17 +1,16 @@
-library fs_shim.src.io.io_file_system_exception;
-
 import 'package:fs_shim/fs.dart' as fs;
 import 'package:fs_shim/fs.dart';
 import 'package:tekartik_fs_node/src/utils.dart';
-import 'import_common_node.dart' as io;
+import 'import_common_node.dart' as node;
 
 // OSError Wrap/unwrap
-OSErrorNode wrapIoOSError(io.OSError ioOSError) => OSErrorNode.io(ioOSError);
-io.OSError? unwrapIoOSError(OSError osError) =>
+OSErrorNode wrapIoOSError(node.NodeOSError ioOSError) =>
+    OSErrorNode.io(ioOSError);
+node.NodeOSError? unwrapIoOSError(OSError osError) =>
     (osError as OSErrorNode).ioOSError;
 
 class OSErrorNode implements fs.OSError {
-  io.OSError? ioOSError;
+  node.NodeOSError? ioOSError;
   OSErrorNode.io(this.ioOSError);
   @override
   int get errorCode => ioOSError!.errorCode;
@@ -23,20 +22,20 @@ class OSErrorNode implements fs.OSError {
 }
 
 // FileSystemException Wrap/unwrap
-FileSystemException wrapIoFileSystemException(
-        io.FileSystemException ioFileSystemException) =>
+FileSystemExceptionNode wrapIoFileSystemException(
+        node.FileSystemException ioFileSystemException) =>
     FileSystemExceptionNode.io(ioFileSystemException);
-io.FileSystemException? unwrapIoFileSystemException(
+node.FileSystemException? unwrapIoFileSystemException(
         FileSystemException fileSystemException) =>
     (fileSystemException as FileSystemExceptionNode).ioFileSystemException;
 
-int? _statusFromException(io.FileSystemException ioFse) {
+int? _statusFromException(node.FileSystemException ioFse) {
   // linux error code is 2
   int? status;
   if (ioFse.osError != null) {
     final errorCode = ioFse.osError!.errorCode;
 
-    if (io.Platform.isWindows) {
+    if (node.Platform.isWindows) {
       // https://msdn.microsoft.com/en-us/library/windows/desktop/ms681387(v=vs.85).aspx
       switch (errorCode) {
         case 2: // ERROR_FILE_NOT_FOUND
@@ -58,7 +57,7 @@ int? _statusFromException(io.FileSystemException ioFse) {
           break;
       }
     }
-    if (io.Platform.isMacOS) {
+    if (node.Platform.isMacOS) {
       // http://www.ioplex.com/~miallen/errcmp.html
       switch (errorCode) {
         case 2: // No such file or directory
@@ -111,7 +110,7 @@ int? _statusFromException(io.FileSystemException ioFse) {
 }
 
 class FileSystemExceptionNode implements fs.FileSystemException {
-  io.FileSystemException? ioFileSystemException;
+  node.FileSystemException? ioFileSystemException;
 
   FileSystemExceptionNode({this.status, String? message})
       : _message = message,
@@ -125,7 +124,8 @@ class FileSystemExceptionNode implements fs.FileSystemException {
         osError = osErrorFromMessage(e);
 
   FileSystemExceptionNode.io(this.ioFileSystemException)
-      : osError = OSErrorNode.io(ioFileSystemException!.osError),
+      : osError =
+            wrapIoOSError(ioFileSystemException!.osError as node.NodeOSError),
         status = _statusFromException(ioFileSystemException),
         _message = ioFileSystemException.message;
 
@@ -148,5 +148,5 @@ class FileSystemExceptionNode implements fs.FileSystemException {
 }
 
 OSErrorNode osErrorFromMessage(String message) {
-  return wrapIoOSError(io.OSError(message));
+  return wrapIoOSError(node.NodeOSError(message: message));
 }

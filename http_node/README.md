@@ -1,5 +1,12 @@
 ## Test setup
 
+```yaml
+ tekartik_http_node:
+    git:
+      url: git://github.com/tekartik/common_node.dart
+      path: http_node
+      ref: null_safety
+```
     Need dart > 2
         
 ## Test
