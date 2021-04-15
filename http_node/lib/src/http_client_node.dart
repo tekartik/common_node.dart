@@ -1,6 +1,7 @@
-import 'package:node_http/node_http.dart' as http;
 import 'package:http/http.dart' as http;
 import 'package:tekartik_http/http_client.dart';
+
+import 'node/import_node.dart' as http;
 
 class HttpClientFactoryNode implements HttpClientFactory {
   @override
