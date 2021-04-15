@@ -32,7 +32,7 @@ void run(HttpFactory factory) {
       var redirectPort = httpRedirectServer.port;
       //devPrint('redirectPort: $redirectPort');
       expect(port, isNot(redirectPort));
-      expect(await client.read('http://$localhost:$port'),
+      expect(await client.read(Uri.parse('http://$localhost:$port')),
           'tekartik_http_redirect');
       client.close();
 

@@ -125,9 +125,9 @@ class _HttpServer extends Stream<io.HttpRequest> implements HttpServer {
   @override
   final int port;
 
-  _http.HttpServer _server;
-  Completer<io.HttpServer> _listenCompleter;
-  StreamController<io.HttpRequest> _controller;
+  late _http.HttpServer _server;
+  Completer<io.HttpServer>? _listenCompleter;
+  late StreamController<io.HttpRequest> _controller;
 
   _HttpServer._(this.address, this.port) {
     _controller = StreamController<io.HttpRequest>(
@@ -152,10 +152,10 @@ class _HttpServer extends Stream<io.HttpRequest> implements HttpServer {
 
   void _jsErrorHandler(error) {
     if (_listenCompleter != null) {
-      _listenCompleter.completeError(error);
+      _listenCompleter!.completeError(error as Object);
       _listenCompleter = null;
     }
-    _controller.addError(error);
+    _controller.addError(error as Object);
   }
 
   void _jsRequestHandler(
@@ -175,12 +175,12 @@ class _HttpServer extends Stream<io.HttpRequest> implements HttpServer {
 
     _listenCompleter = Completer<io.HttpServer>();
     void listeningHandler() {
-      _listenCompleter.complete(this);
+      _listenCompleter!.complete(this);
       _listenCompleter = null;
     }
 
     _server.listen(port, address.address, null, allowInterop(listeningHandler));
-    return _listenCompleter.future;
+    return _listenCompleter!.future;
   }
 
   static Future<io.HttpServer> bind(address, int port,
@@ -189,7 +189,7 @@ class _HttpServer extends Stream<io.HttpRequest> implements HttpServer {
 
     if (address is String) {
       var list = (await InternetAddress.lookup(address.toString()))
-          ?.cast<InternetAddress>();
+          .cast<InternetAddress>();
       address = list.first;
     }
     var server = _HttpServer._(address as InternetAddress, port);
@@ -197,13 +197,13 @@ class _HttpServer extends Stream<io.HttpRequest> implements HttpServer {
   }
 
   @override
-  bool autoCompress; // TODO: Implement autoCompress
+  late bool autoCompress; // TODO: Implement autoCompress
 
   @override
-  Duration idleTimeout; // TODO: Implement idleTimeout
+  Duration? idleTimeout; // TODO: Implement idleTimeout
 
   @override
-  String serverHeader; // TODO: Implement serverHeader
+  String? serverHeader; // TODO: Implement serverHeader
 
   @override
   Future close({bool force = false}) {
@@ -230,10 +230,10 @@ class _HttpServer extends Stream<io.HttpRequest> implements HttpServer {
 
   @override
   StreamSubscription<io.HttpRequest> listen(
-    void Function(io.HttpRequest event) onData, {
-    Function onError,
-    void Function() onDone,
-    bool cancelOnError,
+    void Function(io.HttpRequest event)? onData, {
+    Function? onError,
+    void Function()? onDone,
+    bool? cancelOnError,
   }) {
     return _controller.stream.listen(onData,
         onError: onError, onDone: onDone, cancelOnError: cancelOnError);
@@ -274,22 +274,22 @@ class NodeHttpRequest implements io.HttpRequest, HasReadable {
 
   @override
   List<io.Cookie> get cookies {
-    if (_cookies != null) return _cookies;
+    if (_cookies != null) return _cookies!;
     _cookies = <io.Cookie>[];
     final values = headers[io.HttpHeaders.setCookieHeader];
     if (values != null) {
       values.forEach((value) {
-        _cookies.add(io.Cookie.fromSetCookieValue(value));
+        _cookies!.add(io.Cookie.fromSetCookieValue(value));
       });
     }
-    return _cookies;
+    return _cookies!;
   }
 
-  List<io.Cookie> _cookies;
+  List<io.Cookie>? _cookies;
 
   @override
   io.HttpHeaders get headers => _headers ??= RequestHttpHeaders(nativeInstance);
-  io.HttpHeaders _headers;
+  io.HttpHeaders? _headers;
 
   @override
   String get method => nativeInstance.method;
@@ -310,7 +310,7 @@ class NodeHttpRequest implements io.HttpRequest, HasReadable {
       if (proto != null) {
         scheme = proto.first;
       } else {
-        var isSecure = (getProperty(socket, 'encrypted') as bool) ?? false;
+        var isSecure = (getProperty(socket, 'encrypted') as bool?) ?? false;
         scheme = isSecure ? 'https' : 'http';
       }
       var hostList = headers['x-forwarded-host'];
@@ -327,15 +327,15 @@ class NodeHttpRequest implements io.HttpRequest, HasReadable {
       }
       _requestedUri = Uri.parse('$scheme://$host$uri');
     }
-    return _requestedUri;
+    return _requestedUri!;
   }
 
-  Uri _requestedUri;
+  Uri? _requestedUri;
 
   @override
   io.HttpResponse get response =>
       _response ??= NodeHttpResponse(_nativeResponse);
-  io.HttpResponse _response; // ignore: close_sinks
+  io.HttpResponse? _response; // ignore: close_sinks
 
   @override
   io.HttpSession get session =>
@@ -346,10 +346,10 @@ class NodeHttpRequest implements io.HttpRequest, HasReadable {
 
   @override
   StreamSubscription<Uint8List> listen(
-    void Function(Uint8List event) onData, {
-    Function onError,
-    void Function() onDone,
-    bool cancelOnError,
+    void Function(Uint8List event)? onData, {
+    Function? onError,
+    void Function()? onDone,
+    bool? cancelOnError,
   }) {
     return const Stream<Uint8List>.empty().listen(
       onData,
@@ -366,14 +366,14 @@ class NodeHttpRequest implements io.HttpRequest, HasReadable {
 
   @override
   Stream<Uint8List> asBroadcastStream({
-    void Function(StreamSubscription<Uint8List> subscription) onListen,
-    void Function(StreamSubscription<Uint8List> subscription) onCancel,
+    void Function(StreamSubscription<Uint8List> subscription)? onListen,
+    void Function(StreamSubscription<Uint8List> subscription)? onCancel,
   }) {
     return _delegate.asBroadcastStream(onListen: onListen, onCancel: onCancel);
   }
 
   @override
-  Stream<E> asyncExpand<E>(Stream<E> Function(Uint8List event) convert) {
+  Stream<E> asyncExpand<E>(Stream<E>? Function(Uint8List event) convert) {
     return _delegate.asyncExpand<E>(convert);
   }
 
@@ -388,18 +388,18 @@ class NodeHttpRequest implements io.HttpRequest, HasReadable {
   }
 
   @override
-  Future<bool> contains(Object needle) {
+  Future<bool> contains(Object? needle) {
     return _delegate.contains(needle);
   }
 
   @override
   Stream<Uint8List> distinct(
-      [bool Function(Uint8List previous, Uint8List next) equals]) {
+      [bool Function(Uint8List previous, Uint8List next)? equals]) {
     return _delegate.distinct(equals);
   }
 
   @override
-  Future<E> drain<E>([E futureValue]) {
+  Future<E> drain<E>([E? futureValue]) {
     return _delegate.drain<E>(futureValue);
   }
 
@@ -424,10 +424,10 @@ class NodeHttpRequest implements io.HttpRequest, HasReadable {
   @override
   Future<Uint8List> firstWhere(
     bool Function(Uint8List element) test, {
-    List<int> Function() orElse,
+    List<int> Function()? orElse,
   }) {
     return _delegate.firstWhere(test, orElse: () {
-      return Uint8List.fromList(orElse());
+      return Uint8List.fromList(orElse!());
     });
   }
 
@@ -445,7 +445,7 @@ class NodeHttpRequest implements io.HttpRequest, HasReadable {
   @override
   Stream<Uint8List> handleError(
     Function onError, {
-    bool Function(dynamic error) test,
+    bool Function(dynamic error)? test,
   }) {
     return _delegate.handleError(onError, test: test);
   }
@@ -467,10 +467,10 @@ class NodeHttpRequest implements io.HttpRequest, HasReadable {
   @override
   Future<Uint8List> lastWhere(
     bool Function(Uint8List element) test, {
-    List<int> Function() orElse,
+    List<int> Function()? orElse,
   }) {
     return _delegate.lastWhere(test, orElse: () {
-      return Uint8List.fromList(orElse());
+      return Uint8List.fromList(orElse!());
     });
   }
 
@@ -498,9 +498,9 @@ class NodeHttpRequest implements io.HttpRequest, HasReadable {
 
   @override
   Future<Uint8List> singleWhere(bool Function(Uint8List element) test,
-      {List<int> Function() orElse}) {
+      {List<int> Function()? orElse}) {
     return _delegate.singleWhere(test, orElse: () {
-      return Uint8List.fromList(orElse());
+      return Uint8List.fromList(orElse!());
     });
   }
 
@@ -527,7 +527,7 @@ class NodeHttpRequest implements io.HttpRequest, HasReadable {
   @override
   Stream<Uint8List> timeout(
     Duration timeLimit, {
-    void Function(EventSink<Uint8List> sink) onTimeout,
+    void Function(EventSink<Uint8List> sink)? onTimeout,
   }) {
     return _delegate.timeout(timeLimit, onTimeout: onTimeout);
   }
@@ -582,7 +582,7 @@ class NodeHttpResponse extends NodeIOSink implements io.HttpResponse {
   Duration get deadline => throw UnimplementedError();
 
   @override
-  set deadline(Duration value) {
+  set deadline(Duration? value) {
     throw UnimplementedError();
   }
 
@@ -632,18 +632,18 @@ class NodeHttpResponse extends NodeIOSink implements io.HttpResponse {
 
   @override
   List<io.Cookie> get cookies {
-    if (_cookies != null) return _cookies;
+    if (_cookies != null) return _cookies!;
     _cookies = <io.Cookie>[];
     final values = headers[io.HttpHeaders.setCookieHeader];
     if (values != null) {
       values.forEach((value) {
-        _cookies.add(io.Cookie.fromSetCookieValue(value));
+        _cookies!.add(io.Cookie.fromSetCookieValue(value));
       });
     }
-    return _cookies;
+    return _cookies!;
   }
 
-  List<io.Cookie> _cookies;
+  List<io.Cookie>? _cookies;
 
   @override
   Future<io.Socket> detachSocket({bool writeHeaders = true}) {
@@ -653,7 +653,7 @@ class NodeHttpResponse extends NodeIOSink implements io.HttpResponse {
   @override
   io.HttpHeaders get headers =>
       _headers ??= ResponseHttpHeaders(nativeInstance);
-  ResponseHttpHeaders _headers;
+  ResponseHttpHeaders? _headers;
 
   @override
   Future redirect(Uri location, {int status = io.HttpStatus.movedTemporarily}) {

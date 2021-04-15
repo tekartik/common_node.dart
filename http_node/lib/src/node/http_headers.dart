@@ -77,7 +77,7 @@ class RequestHttpHeaders extends HttpHeaders {
 
   @override
   dynamic _getHeader(String name) =>
-      js_util.getProperty(_request.headers, name);
+      js_util.getProperty(_request.headers as Object, name);
 
   @override
   void _setHeader(String name, dynamic value) =>
@@ -127,25 +127,25 @@ abstract class HttpHeaders implements io.HttpHeaders {
   }
 
   @override
-  io.ContentType get contentType {
+  io.ContentType? get contentType {
     if (_contentType != null) return _contentType;
-    var value = _getHeader(io.HttpHeaders.contentTypeHeader).toString();
+    var value = _getHeader(io.HttpHeaders.contentTypeHeader)?.toString();
     if (value == null || value.isEmpty) return null;
     var types = value.split(',');
     _contentType = io.ContentType.parse(types.first);
     return _contentType;
   }
 
-  io.ContentType _contentType;
+  io.ContentType? _contentType;
 
   @override
-  set contentType(io.ContentType type) {
+  set contentType(io.ContentType? type) {
     _setHeader(io.HttpHeaders.contentTypeHeader, type.toString());
   }
 
   @override
-  DateTime get date {
-    var value = _getHeader(io.HttpHeaders.dateHeader).toString();
+  DateTime? get date {
+    var value = _getHeader(io.HttpHeaders.dateHeader)?.toString();
     if (value == null || value.isEmpty) return null;
     try {
       return io.HttpDate.parse(value);
@@ -155,13 +155,13 @@ abstract class HttpHeaders implements io.HttpHeaders {
   }
 
   @override
-  set date(DateTime date) {
-    _setHeader(io.HttpHeaders.dateHeader, io.HttpDate.format(date));
+  set date(DateTime? date) {
+    _setHeader(io.HttpHeaders.dateHeader, io.HttpDate.format(date!));
   }
 
   @override
-  DateTime get expires {
-    var value = _getHeader(io.HttpHeaders.expiresHeader).toString();
+  DateTime? get expires {
+    var value = _getHeader(io.HttpHeaders.expiresHeader)?.toString();
     if (value == null || value.isEmpty) return null;
     try {
       return io.HttpDate.parse(value);
@@ -171,13 +171,13 @@ abstract class HttpHeaders implements io.HttpHeaders {
   }
 
   @override
-  set expires(DateTime expires) {
-    _setHeader(io.HttpHeaders.expiresHeader, io.HttpDate.format(expires));
+  set expires(DateTime? expires) {
+    _setHeader(io.HttpHeaders.expiresHeader, io.HttpDate.format(expires!));
   }
 
   @override
-  String get host {
-    var value = _getHeader(io.HttpHeaders.hostHeader).toString();
+  String? get host {
+    var value = _getHeader(io.HttpHeaders.hostHeader)?.toString();
     if (value != null) {
       return value.split(':').first;
     }
@@ -185,7 +185,7 @@ abstract class HttpHeaders implements io.HttpHeaders {
   }
 
   @override
-  set host(String host) {
+  set host(String? host) {
     var hostAndPort = host;
     var _port = port;
     if (_port != null) {
@@ -195,8 +195,8 @@ abstract class HttpHeaders implements io.HttpHeaders {
   }
 
   @override
-  int get port {
-    var value = _getHeader(io.HttpHeaders.hostHeader).toString();
+  int? get port {
+    var value = _getHeader(io.HttpHeaders.hostHeader)?.toString();
     if (value != null) {
       var parts = value.split(':');
       if (parts.length == 2) return int.parse(parts.last);
@@ -205,7 +205,7 @@ abstract class HttpHeaders implements io.HttpHeaders {
   }
 
   @override
-  set port(int value) {
+  set port(int? value) {
     var hostAndPort = host;
     if (value != null) {
       hostAndPort = '$host:$value';
@@ -214,8 +214,8 @@ abstract class HttpHeaders implements io.HttpHeaders {
   }
 
   @override
-  DateTime get ifModifiedSince {
-    var value = _getHeader(io.HttpHeaders.ifModifiedSinceHeader).toString();
+  DateTime? get ifModifiedSince {
+    var value = _getHeader(io.HttpHeaders.ifModifiedSinceHeader)?.toString();
     if (value == null || value.isEmpty) return null;
     try {
       return io.HttpDate.parse(value);
@@ -225,9 +225,9 @@ abstract class HttpHeaders implements io.HttpHeaders {
   }
 
   @override
-  set ifModifiedSince(DateTime ifModifiedSince) {
+  set ifModifiedSince(DateTime? ifModifiedSince) {
     _setHeader(io.HttpHeaders.ifModifiedSinceHeader,
-        io.HttpDate.format(ifModifiedSince));
+        io.HttpDate.format(ifModifiedSince!));
   }
 
   @override
@@ -245,7 +245,7 @@ abstract class HttpHeaders implements io.HttpHeaders {
   bool _isMultiValue(String name) => !_singleValueHttpHeaders.contains(name);
 
   @override
-  List<String> operator [](String name) {
+  List<String>? operator [](String name) {
     name = name.toLowerCase();
     var value = _getHeader(name);
     if (value != null) {
@@ -261,7 +261,7 @@ abstract class HttpHeaders implements io.HttpHeaders {
   }
 
   @override
-  String value(String name) {
+  String? value(String name) {
     final values = this[name];
     if (values == null) return null;
     if (values.length > 1) {
@@ -272,7 +272,7 @@ abstract class HttpHeaders implements io.HttpHeaders {
 
   @override
   void add(String name, Object value, {bool preserveHeaderCase = false}) {
-    if (preserveHeaderCase ?? false) {
+    if (preserveHeaderCase) {
       // new since 2.8
       // not supported on node
       throw UnsupportedError('HttpHeaders.add(preserveHeaderCase: true)');
@@ -296,7 +296,7 @@ abstract class HttpHeaders implements io.HttpHeaders {
   void forEach(void Function(String name, List<String> values) f) {
     var names = _getHeaderNames();
     names.forEach((String name) {
-      f(name, this[name]);
+      f(name, this[name]!);
     });
   }
 
@@ -319,7 +319,7 @@ abstract class HttpHeaders implements io.HttpHeaders {
 
   @override
   void set(String name, Object value, {bool preserveHeaderCase = false}) {
-    if (preserveHeaderCase ?? false) {
+    if (preserveHeaderCase) {
       // new since 2.8
       // not supported on node
       throw UnsupportedError('HttpHeaders.set(preserveHeaderCase: true)');

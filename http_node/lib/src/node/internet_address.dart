@@ -19,9 +19,9 @@ export 'dart:io' show InternetAddressType;
 /// endpoint to which a socket can connect or a listening socket can
 /// bind.
 class InternetAddress implements io.InternetAddress {
-  static const int _IPV6_ADDR_LENGTH = 16;
+  static const int _ipv6AddrLength = 16;
 
-  final String _host;
+  final String? _host;
   final Uint8List _inAddr;
 
   @override
@@ -62,7 +62,7 @@ class InternetAddress implements io.InternetAddress {
 
     void handleLookup(error, result) {
       if (error != null) {
-        completer.completeError(error);
+        completer.completeError(error as Object);
       } else {
         final addresses = List<DNSAddress>.from(result as List);
         var list = addresses
@@ -97,10 +97,10 @@ class InternetAddress implements io.InternetAddress {
       case io.InternetAddressType.IPv4:
         return _inAddr[0] == 127;
       case io.InternetAddressType.IPv6:
-        for (var i = 0; i < _IPV6_ADDR_LENGTH - 1; i++) {
+        for (var i = 0; i < _ipv6AddrLength - 1; i++) {
           if (_inAddr[i] != 0) return false;
         }
-        return _inAddr[_IPV6_ADDR_LENGTH - 1] == 1;
+        return _inAddr[_ipv6AddrLength - 1] == 1;
     }
     throw StateError('Unreachable');
   }
@@ -127,7 +127,7 @@ class InternetAddress implements io.InternetAddress {
     final completer = Completer<io.InternetAddress>();
     void reverseResult(error, result) {
       if (error != null) {
-        completer.completeError(error);
+        completer.completeError(error as Object);
       } else {
         final hostnames = List<String>.from(result as List);
         completer.complete(InternetAddress._(address, hostnames.first));
@@ -148,6 +148,7 @@ const int _kColon = 58;
 ///
 /// This implementation assumes that [ip] address has been validated for
 /// correctness.
+// ignore: non_constant_identifier_names
 Uint8List _inet_pton(String ip) {
   if (ip.contains(':')) {
     // ipv6

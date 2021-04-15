@@ -50,8 +50,8 @@ class NodeClient extends BaseClient {
   NodeClient({
     bool keepAlive = true,
     int keepAliveMsecs = 1000,
-    HttpAgentOptions httpOptions,
-    HttpsAgentOptions httpsOptions,
+    HttpAgentOptions? httpOptions,
+    HttpsAgentOptions? httpsOptions,
   })  : _httpOptions = httpOptions ??
             HttpAgentOptions(
                 keepAlive: keepAlive, keepAliveMsecs: keepAliveMsecs),
@@ -65,12 +65,12 @@ class NodeClient extends BaseClient {
   /// Native JavaScript connection agent used by this client for insecure
   /// requests.
   HttpAgent get httpAgent => _httpAgent ??= createHttpAgent(_httpOptions);
-  HttpAgent _httpAgent;
+  HttpAgent? _httpAgent;
 
   /// Native JavaScript connection agent used by this client for secure
   /// requests.
   HttpAgent get httpsAgent => _httpsAgent ??= createHttpsAgent(_httpsOptions);
-  HttpAgent _httpsAgent;
+  HttpAgent? _httpsAgent;
 
   @override
   Future<StreamedResponse> send(BaseRequest request) {
@@ -93,8 +93,8 @@ class _RequestHandler {
 
   final List<_RedirectInfo> _redirects = [];
 
-  List<List<int>> _body;
-  var _headers;
+  late List<List<int>> _body;
+  Object? _headers;
 
   Future<StreamedResponse> send() async {
     _body = await request.finalize().toList();
@@ -102,7 +102,7 @@ class _RequestHandler {
 
     var response = await _send();
     if (request.followRedirects && response.isRedirect) {
-      var method = request.method;
+      String? method = request.method;
       while (response.isRedirect) {
         if (_redirects.length < request.maxRedirects) {
           response = await redirect(response, method);
@@ -115,7 +115,7 @@ class _RequestHandler {
     return response;
   }
 
-  Future<StreamedResponse> _send({Uri url, String method}) {
+  Future<StreamedResponse> _send({Uri? url, String? method}) {
     url ??= request.url;
     method ??= request.method;
 
@@ -137,11 +137,13 @@ class _RequestHandler {
     var completer = Completer<StreamedResponse>();
 
     void handleResponse(IncomingMessage response) {
-      final rawHeaders = dartify(response.headers) as Map<String, dynamic>;
+      final rawHeaders = dartify(response.headers) as Map;
       final headers = <String, String>{};
+
       for (var key in rawHeaders.keys) {
         final value = rawHeaders[key];
-        headers[key] = (value is List) ? value.join(',') : value as String;
+        headers[key.toString()] =
+            (value is List) ? value.join(',') : value as String;
       }
       final controller = StreamController<List<int>>();
       completer.complete(StreamedResponse(
@@ -164,7 +166,7 @@ class _RequestHandler {
 
     var nodeRequest = sendRequest(options, allowInterop(handleResponse));
     nodeRequest.on('error', allowInterop((e) {
-      completer.completeError(e);
+      completer.completeError(e as Object);
     }));
 
     // TODO: Support StreamedRequest by consuming body asynchronously.
@@ -177,7 +179,7 @@ class _RequestHandler {
     return completer.future;
   }
 
-  bool isRedirect(IncomingMessage message, String method) {
+  bool isRedirect(IncomingMessage message, String? method) {
     final statusCode = message.statusCode;
     if (method == 'GET' || method == 'HEAD') {
       return statusCode == _HttpStatus.movedPermanently ||
@@ -191,7 +193,7 @@ class _RequestHandler {
   }
 
   Future<StreamedResponse> redirect(StreamedResponse response,
-      [String method, bool followLoops]) {
+      [String? method, bool? followLoops]) {
     // Set method as defined by RFC 2616 section 10.3.4.
     if (response.statusCode == _HttpStatus.seeOther && method == 'POST') {
       method = 'GET';
@@ -220,7 +222,7 @@ class _RequestHandler {
 
 class _RedirectInfo {
   final int statusCode;
-  final String method;
+  final String? method;
   final Uri location;
   const _RedirectInfo(this.statusCode, this.method, this.location);
 }

@@ -16,7 +16,7 @@ void main() {
     var client = httpFactoryNode.client.newClient();
     var content = await client.read(Uri.parse('https://api.github.com'),
         headers: {'User-Agent': 'tekartik_http_node'});
-    var map = jsonDecode(content);
+    var map = jsonDecode(content) as Map;
     expect(map['current_user_url'], 'https://api.github.com/user');
   }, skip: runningOnTravis);
 }

@@ -43,7 +43,7 @@ class HttpServerFactoryNode implements HttpServerFactory {
   }
 }
 
-HttpServerFactoryNode _httpServerFactoryNode;
+HttpServerFactoryNode? _httpServerFactoryNode;
 
 HttpServerFactoryNode get httpServerFactoryNode =>
     _httpServerFactoryNode ??= HttpServerFactoryNode();

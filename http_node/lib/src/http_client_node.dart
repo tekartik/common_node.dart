@@ -10,7 +10,7 @@ class HttpClientFactoryNode implements HttpClientFactory {
   }
 }
 
-HttpClientFactoryNode _httpClientFactoryNode;
+HttpClientFactoryNode? _httpClientFactoryNode;
 
 HttpClientFactoryNode get httpClientFactoryNode =>
     _httpClientFactoryNode ??= HttpClientFactoryNode();

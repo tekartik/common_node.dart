@@ -10,6 +10,6 @@ class HttpFactoryNode implements HttpFactory {
   HttpServerFactory get server => httpServerFactoryNode;
 }
 
-HttpFactoryNode _httpFactoryNode;
+HttpFactoryNode? _httpFactoryNode;
 
 HttpFactory get httpFactoryNode => _httpFactoryNode ??= HttpFactoryNode();
