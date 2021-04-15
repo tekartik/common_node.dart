@@ -10,19 +10,19 @@ import 'import_common_node.dart' as io;
 
 // FileStat Wrap/unwrap
 FileStatNode wrapIoFileStat(vm_io.FileStat ioFileStat) =>
-    ioFileStat != null ? FileStatNode.io(ioFileStat) : null;
+    FileStatNode.io(ioFileStat);
 
-vm_io.FileStat unwrapIoFileStat(FileStat fileStat) =>
-    fileStat != null ? (fileStat as FileStatNode).ioFileStat : null;
+vm_io.FileStat? unwrapIoFileStat(FileStat fileStat) =>
+    (fileStat as FileStatNode).ioFileStat;
 
 class FileStatNotFound extends FileStatNode {
   FileStatNotFound() : super.io(null);
 
   @override
-  int get size => null;
+  int get size => -1;
 
   @override
-  DateTime get modified => null;
+  DateTime get modified => DateTime(0);
 
   @override
   FileSystemEntityType get type => FileSystemEntityType.notFound;
@@ -34,17 +34,17 @@ class FileStatNotFound extends FileStatNode {
 class FileStatNode with FileStatModeMixin implements FileStat {
   FileStatNode.io(this.ioFileStat);
 
-  vm_io.FileStat ioFileStat;
+  vm_io.FileStat? ioFileStat;
 
   @override
-  DateTime get modified => ioFileStat.modified;
+  DateTime get modified => ioFileStat!.modified;
 
   @override
-  int get size => ioFileStat.size;
+  int get size => ioFileStat!.size;
 
   @override
   FileSystemEntityType get type =>
-      wrapIoFileSystemEntityTypeImpl(ioFileStat.type);
+      wrapIoFileSystemEntityTypeImpl(ioFileStat!.type);
 
   @override
   String toString() => ioFileStat.toString();

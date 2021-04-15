@@ -6,18 +6,17 @@ import 'package:tekartik_fs_node/src/utils.dart';
 import 'import_common_node.dart' as io;
 
 // OSError Wrap/unwrap
-OSErrorNode wrapIoOSError(io.OSError ioOSError) =>
-    ioOSError != null ? OSErrorNode.io(ioOSError) : null;
-io.OSError unwrapIoOSError(OSError osError) =>
-    osError != null ? (osError as OSErrorNode)?.ioOSError : null;
+OSErrorNode wrapIoOSError(io.OSError ioOSError) => OSErrorNode.io(ioOSError);
+io.OSError? unwrapIoOSError(OSError osError) =>
+    (osError as OSErrorNode).ioOSError;
 
 class OSErrorNode implements fs.OSError {
-  io.OSError ioOSError;
+  io.OSError? ioOSError;
   OSErrorNode.io(this.ioOSError);
   @override
-  int get errorCode => ioOSError.errorCode;
+  int get errorCode => ioOSError!.errorCode;
   @override
-  String get message => ioOSError.message;
+  String get message => ioOSError!.message;
 
   @override
   String toString() => ioOSError?.toString() ?? 'OSErrorNode';
@@ -26,18 +25,16 @@ class OSErrorNode implements fs.OSError {
 // FileSystemException Wrap/unwrap
 FileSystemException wrapIoFileSystemException(
         io.FileSystemException ioFileSystemException) =>
-    ioFileSystemException == null
-        ? null
-        : FileSystemExceptionNode.io(ioFileSystemException);
-io.FileSystemException unwrapIoFileSystemException(
+    FileSystemExceptionNode.io(ioFileSystemException);
+io.FileSystemException? unwrapIoFileSystemException(
         FileSystemException fileSystemException) =>
-    (fileSystemException as FileSystemExceptionNode)?.ioFileSystemException;
+    (fileSystemException as FileSystemExceptionNode).ioFileSystemException;
 
-int _statusFromException(io.FileSystemException ioFse) {
+int? _statusFromException(io.FileSystemException ioFse) {
   // linux error code is 2
-  int status;
-  if (ioFse != null && ioFse.osError != null) {
-    final errorCode = ioFse.osError.errorCode;
+  int? status;
+  if (ioFse.osError != null) {
+    final errorCode = ioFse.osError!.errorCode;
 
     if (io.Platform.isWindows) {
       // https://msdn.microsoft.com/en-us/library/windows/desktop/ms681387(v=vs.85).aspx
@@ -114,9 +111,9 @@ int _statusFromException(io.FileSystemException ioFse) {
 }
 
 class FileSystemExceptionNode implements fs.FileSystemException {
-  io.FileSystemException ioFileSystemException;
+  io.FileSystemException? ioFileSystemException;
 
-  FileSystemExceptionNode({this.status, String message})
+  FileSystemExceptionNode({this.status, String? message})
       : _message = message,
         ioFileSystemException = null,
         osError = null;
@@ -128,23 +125,23 @@ class FileSystemExceptionNode implements fs.FileSystemException {
         osError = osErrorFromMessage(e);
 
   FileSystemExceptionNode.io(this.ioFileSystemException)
-      : osError = OSErrorNode.io(ioFileSystemException.osError),
+      : osError = OSErrorNode.io(ioFileSystemException!.osError),
         status = _statusFromException(ioFileSystemException),
         _message = ioFileSystemException.message;
 
   @override
-  final int status;
+  final int? status;
 
   @override
-  final OSErrorNode osError;
+  final OSErrorNode? osError;
 
-  final String _message;
-
-  @override
-  String get message => _message;
+  final String? _message;
 
   @override
-  String get path => ioFileSystemException.path;
+  String get message => _message!;
+
+  @override
+  String? get path => ioFileSystemException!.path;
 
   @override
   String toString() => "${status == null ? '' : '[$status] '}$message";

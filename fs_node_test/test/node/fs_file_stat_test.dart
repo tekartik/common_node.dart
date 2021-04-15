@@ -11,7 +11,7 @@ import 'test_setup.dart';
 
 void main() {
   nodeTestSetup();
-  var fileSystemContext = fileSystemTestContextNode;
+  var fileSystemContext = FileSystemTestContextNode('fs_file_stat');
   // All tests
   defineTests(fileSystemContext);
 }

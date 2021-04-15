@@ -15,11 +15,9 @@ import 'import_common_node.dart' as io;
 Future<String> _wrapFutureString(Future<String> future) => ioWrap(future);
 
 // Wrap/unwrap
-FileNode wrapIoFile(vm_io.File ioFile) =>
-    ioFile != null ? FileNode.io(ioFile) : null;
+FileNode wrapIoFile(vm_io.File ioFile) => FileNode.io(ioFile);
 
-vm_io.File unwrapIoFile(File file) =>
-    file != null ? (file as FileNode).ioFile : null;
+vm_io.File unwrapIoFile(File file) => (file as FileNode).ioFile;
 
 class FileNode extends FileSystemEntityNode implements File {
   FileNode.io(vm_io.File file) : super(file);
@@ -30,7 +28,6 @@ class FileNode extends FileSystemEntityNode implements File {
 
   @override
   Future<FileNode> create({bool recursive = false}) async {
-    recursive ??= false;
     if (await exists()) {
       await delete();
     }
@@ -78,7 +75,7 @@ class FileNode extends FileSystemEntityNode implements File {
   FileNode _me(_) => this;
 
   @override
-  Stream<Uint8List> openRead([int start, int end]) {
+  Stream<Uint8List> openRead([int? start, int? end]) {
     // Node is end inclusive!
     return ReadFileStreamCtrlNode(intListStreamToUint8ListStream(
             ioFile.openRead(start, end != null ? end - 1 : null)))

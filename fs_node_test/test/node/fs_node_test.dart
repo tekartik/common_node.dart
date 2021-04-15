@@ -24,7 +24,7 @@ import 'test_setup.dart';
 void main() {
   nodeTestSetup();
 
-  var fileSystemContext = fileSystemTestContextNode;
+  var fileSystemContext = FileSystemTestContextNode('fs');
   FileSystem fs = fileSystemContext.fs;
 
   group('fs_node', () {
@@ -41,10 +41,8 @@ void main() {
       expect(await fs.type('.'), FileSystemEntityType.directory);
     });
     test('test_path', () async {
-      expect(fileSystemContext.outTopPath,
-          endsWith(join('.dart_tool', 'fs_shim_node', 'test_out')));
-      expect(fileSystemContext.outPath,
-          join(fileSystemContext.outTopPath, joinAll(testDescriptions)));
+      expect(fileSystemContext.basePath,
+          endsWith(join('.dart_tool', 'tekartik_fs_node', 'test', 'fs')));
     });
 
     group('conversion', () {

@@ -4,14 +4,14 @@
 
 library fs_shim.fs_file_node_test;
 
-import 'package:tekartik_fs_test/fs_shim_file_test.dart';
+import 'package:tekartik_fs_test/fs_shim_file_system_test.dart';
 
 import '../test_common_node.dart';
 import 'test_setup.dart';
 
 void main() {
   nodeTestSetup();
-  var fileSystemContext = fileSystemTestContextNode;
+  var fileSystemContext = FileSystemTestContextNode('fs_file_system');
   // All tests
   defineTests(fileSystemContext);
 }

@@ -9,24 +9,13 @@ import 'package:tekartik_platform/context.dart';
 import 'package:tekartik_platform_node/context_node.dart';
 export 'package:dev_test/test.dart';
 
-final FileSystemTestContextNode fileSystemTestContextNode =
-    FileSystemTestContextNode();
-
 class FileSystemTestContextNode extends FileSystemTestContext {
   @override
   final PlatformContext platform = platformContextNode;
   @override
   final FileSystemNode fs = fileSystemNode;
-  String outTopPath;
 
-  FileSystemTestContextNode() {
-    outTopPath = testOutTopPath;
+  FileSystemTestContextNode(String path) {
+    basePath = join('.dart_tool', 'tekartik_fs_node', 'test', path);
   }
-
-  @override
-  String get outPath => join(outTopPath, super.outPath);
 }
-
-String get testOutTopPath => join('.dart_tool', 'fs_shim_node', 'test_out');
-
-String get testOutPath => join(testOutTopPath, joinAll(testDescriptions));

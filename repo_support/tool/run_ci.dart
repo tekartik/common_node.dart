@@ -15,10 +15,18 @@ Future<void> main() async {
   }
   */
   for (var dir in [
+    'fs_node',
     'platform_node',
     'platform_node_test',
   ]) {
     var path = join(topDir, dir);
     await nodePackageRunCi(path);
+  }
+
+  for (var dir in [
+    'fs_node_test',
+  ]) {
+    var path = join(topDir, dir);
+    await nodePackageRunCi(path, NodePackageRunCiOptions(noNodeTest: true));
   }
 }

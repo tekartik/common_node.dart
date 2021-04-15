@@ -12,7 +12,7 @@ import 'import_common_node.dart' as io;
 
 class FileSystemNode extends Object with FileSystemMixin implements FileSystem {
   @override
-  Future<FileSystemEntityType> type(String path,
+  Future<FileSystemEntityType> type(String? path,
       {bool followLinks = true}) async {
     var fileStat = await io.FileStat.stat(path);
     return wrapIoFileSystemEntityTypeImpl(fileStat.type);

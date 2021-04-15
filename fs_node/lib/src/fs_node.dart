@@ -13,12 +13,11 @@ import 'import_common_node.dart' as io;
 export 'dart:async';
 export 'dart:convert';
 
-FileSystemNode _fileSystemNode;
+FileSystemNode? _fileSystemNode;
 
 FileSystemNode get fileSystemNode => _fileSystemNode ??= FileSystemNode();
 
 io.FileMode fileWriteMode(fs.FileMode fsFileMode) {
-  fsFileMode ??= fs.FileMode.write;
   return unwrapIoFileModeImpl(fsFileMode);
 }
 
@@ -47,7 +46,7 @@ io.FileMode unwrapIoFileModeImpl(fs.FileMode fsFileMode) {
     case fs.FileMode.append:
       return io.FileMode.append;
     default:
-      throw null;
+      throw UnsupportedError('invalid file mode $fsFileMode');
   }
 }
 
@@ -60,7 +59,7 @@ fs.FileMode wrapIofileModeImpl(io.FileMode ioFileMode) {
     case io.FileMode.append:
       return fs.FileMode.append;
     default:
-      throw null;
+      throw UnsupportedError('invalid file mode $ioFileMode');
   }
 }
 
@@ -137,7 +136,7 @@ class WriteFileSinkNode implements StreamSink<List<int>> {
   }
 
   @override
-  void addError(errorEvent, [StackTrace stackTrace]) {
+  void addError(errorEvent, [StackTrace? stackTrace]) {
     ioSink.addError(errorEvent, stackTrace);
   }
 
@@ -166,7 +165,7 @@ class ReadFileStreamCtrlNode {
   }
 
   final Stream<Uint8List> _nodeStream;
-  StreamController<Uint8List> _ctlr;
+  late StreamController<Uint8List> _ctlr;
 
   Stream<Uint8List> get stream => _ctlr.stream;
 }

@@ -14,11 +14,7 @@ import 'fs_node.dart';
 abstract class FileSystemEntityNode implements FileSystemEntity {
   final io.FileSystemEntity nativeInstance;
 
-  FileSystemEntityNode(this.nativeInstance) {
-    if (path == null) {
-      throw ArgumentError.notNull('path');
-    }
-  }
+  FileSystemEntityNode(this.nativeInstance);
 
   FileSystemEntity _me(_) => this;
 

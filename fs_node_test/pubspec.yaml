@@ -1,17 +1,19 @@
-name: tekartik_fs_node
-description: fs_shim on node
+name: tekartik_fs_node_node
+description: fs_shim on node test
 version: 0.4.0
 publish_to: none
 #homepage: https://www.example.com
 #author: alex <email@example.com>
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.5.0 <3.0.0'
 
 dependencies:
   path: '>=1.6.1'
   fs_shim: '>=0.11.0+3'
   node_interop: '>=1.0.3'
+  tekartik_fs_node:
+    path: ../fs_node
   # node_io: '>=1.0.1+2'
   # node_io: any
 
@@ -37,6 +39,13 @@ dev_dependencies:
       ref: null_safety
     version: '>=0.2.0'
   process_run: '>=0.10.0+1'
+  # needed node dependencies
+  build_runner:
+  tekartik_build_node:
+    git:
+      url: git://github.com/tekartik/build_node.dart
+      path: packages/build_node
+      ref: null_safety
 dependency_overrides:
   tekartik_platform_node:
     path: ../platform_node

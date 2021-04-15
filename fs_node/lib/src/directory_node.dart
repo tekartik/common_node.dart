@@ -14,10 +14,10 @@ DirectoryNode get currentDirectory => DirectoryNode.io(node.Directory.current);
 
 // Wrap/unwrap
 DirectoryNode wrapIoDirectory(vm_io.Directory ioDirectory) =>
-    ioDirectory != null ? DirectoryNode.io(ioDirectory) : null;
+    DirectoryNode.io(ioDirectory);
 
 vm_io.Directory unwrapIoDirectory(Directory dir) =>
-    dir != null ? (dir as DirectoryNode).ioDir : null;
+    (dir as DirectoryNode).ioDir;
 
 class DirectoryNode extends FileSystemEntityNode implements Directory {
   DirectoryNode.io(vm_io.Directory dir) : super(dir);
@@ -41,7 +41,6 @@ class DirectoryNode extends FileSystemEntityNode implements Directory {
 
   @override
   Future<DirectoryNode> delete({bool recursive = false}) async {
-    recursive ??= false;
     if (recursive) {
       await fsNode.deleteAny(path);
       return this;
@@ -52,7 +51,6 @@ class DirectoryNode extends FileSystemEntityNode implements Directory {
 
   @override
   Future<DirectoryNode> create({bool recursive = false}) async {
-    recursive ??= false;
     var type = await fs.type(path);
     if (type == FileSystemEntityType.directory) {
       // ok
