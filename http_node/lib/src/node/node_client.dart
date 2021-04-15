@@ -9,22 +9,9 @@ import 'package:node_interop/http.dart';
 import 'package:node_interop/https.dart';
 import 'package:node_interop/node.dart';
 import 'package:node_interop/util.dart';
-
+import 'http_common.dart' as common;
 export 'package:node_interop/http.dart' show HttpAgentOptions;
 export 'package:node_interop/https.dart' show HttpsAgentOptions;
-
-/// Imported from dart:io
-class _HttpStatus {
-  static const int movedPermanently = 301;
-  static const int found = 302;
-  static const int seeOther = 303;
-  static const int temporaryRedirect = 307;
-}
-
-/// Imported from dart:io
-class _HttpHeaders {
-  static const locationHeader = 'location';
-}
 
 /// HTTP client which uses Node.js I/O system.
 ///
@@ -182,12 +169,12 @@ class _RequestHandler {
   bool isRedirect(IncomingMessage message, String? method) {
     final statusCode = message.statusCode;
     if (method == 'GET' || method == 'HEAD') {
-      return statusCode == _HttpStatus.movedPermanently ||
-          statusCode == _HttpStatus.found ||
-          statusCode == _HttpStatus.seeOther ||
-          statusCode == _HttpStatus.temporaryRedirect;
+      return statusCode == common.NodeHttpStatus.movedPermanently ||
+          statusCode == common.NodeHttpStatus.found ||
+          statusCode == common.NodeHttpStatus.seeOther ||
+          statusCode == common.NodeHttpStatus.temporaryRedirect;
     } else if (method == 'POST') {
-      return statusCode == _HttpStatus.seeOther;
+      return statusCode == common.NodeHttpStatus.seeOther;
     }
     return false;
   }
@@ -195,11 +182,12 @@ class _RequestHandler {
   Future<StreamedResponse> redirect(StreamedResponse response,
       [String? method, bool? followLoops]) {
     // Set method as defined by RFC 2616 section 10.3.4.
-    if (response.statusCode == _HttpStatus.seeOther && method == 'POST') {
+    if (response.statusCode == common.NodeHttpStatus.seeOther &&
+        method == 'POST') {
       method = 'GET';
     }
 
-    final location = response.headers[_HttpHeaders.locationHeader];
+    final location = response.headers[common.NodeHttpHeaders.locationHeader];
     if (location == null) {
       throw StateError('Response has no Location header for redirect.');
     }

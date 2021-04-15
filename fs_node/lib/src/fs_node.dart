@@ -78,7 +78,7 @@ Future<T> ioWrap<T>(Future<T> future) async {
   try {
     return await future;
   } on node.FileSystemException catch (e) {
-    //io.stderr.writeln(st);
+    //stderr.writeln(st);
     throw ioWrapError(e);
   } catch (e) {
     // catch anything in javascript

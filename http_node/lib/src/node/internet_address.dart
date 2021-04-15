@@ -1,14 +1,13 @@
 // Copyright (c) 2017, Anatoly Pulyaevskiy. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
 import 'dart:async';
-import 'dart:io' as io;
 import 'dart:js';
 import 'dart:typed_data';
 
 import 'package:node_interop/dns.dart';
 import 'package:node_interop/net.dart';
 
-export 'dart:io' show InternetAddressType;
+import 'http_common.dart' as common;
 
 /// An internet address.
 ///
@@ -18,25 +17,26 @@ export 'dart:io' show InternetAddressType;
 /// An Internet address combined with a port number represents an
 /// endpoint to which a socket can connect or a listening socket can
 /// bind.
-class InternetAddress implements io.InternetAddress {
-  static const int _ipv6AddrLength = 16;
+class InternetAddress implements common.InternetAddress {
+  // static const int _ipv6AddrLength = 16;
 
   final String? _host;
-  final Uint8List _inAddr;
+  // final Uint8List _inAddr;
 
   @override
   final String address;
 
-  @override
+  //@override
   String get host => _host ?? address;
 
   @override
-  io.InternetAddressType get type => net.isIPv4(address)
-      ? io.InternetAddressType.IPv4
-      : io.InternetAddressType.IPv6;
+  common.InternetAddressType get type => net.isIPv4(address)
+      ? common.InternetAddressType.IPv4
+      : common.InternetAddressType.IPv6;
 
   InternetAddress._(this.address, [this._host])
-      : _inAddr = _inet_pton(address) {
+  //: _inAddr = _inet_pton(address)
+  {
     if (net.isIP(address) == 0) {
       throw ArgumentError('$address is not valid.');
     }
@@ -56,8 +56,8 @@ class InternetAddress implements io.InternetAddress {
   /// [InternetAddressType.IPv6] it will only lookup addresses of the
   /// specified type. The order of the list can, and most likely will,
   /// change over time.
-  static Future<List<io.InternetAddress>> lookup(String host) {
-    final completer = Completer<List<io.InternetAddress>>();
+  static Future<List<InternetAddress>> lookup(String host) {
+    final completer = Completer<List<InternetAddress>>();
     final options = DNSLookupOptions(all: true, verbatim: true);
 
     void handleLookup(error, result) {
@@ -76,16 +76,16 @@ class InternetAddress implements io.InternetAddress {
     return completer.future;
   }
 
+  /*
   @override
   bool get isLinkLocal {
     // Copied from dart:io
-    switch (type) {
-      case io.InternetAddressType.IPv4:
-        // Checking for 169.254.0.0/16.
-        return _inAddr[0] == 169 && _inAddr[1] == 254;
-      case io.InternetAddressType.IPv6:
-        // Checking for fe80::/10.
-        return _inAddr[0] == 0xFE && (_inAddr[1] & 0xB0) == 0x80;
+    if (type == common.InternetAddressType.IPv4) {
+      // Checking for 169.254.0.0/16.
+      return _inAddr[0] == 169 && _inAddr[1] == 254;
+    } else if (type == common.InternetAddressType.IPv6) {
+      // Checking for fe80::/10.
+      return _inAddr[0] == 0xFE && (_inAddr[1] & 0xB0) == 0x80;
     }
     throw StateError('Unreachable');
   }
@@ -93,14 +93,13 @@ class InternetAddress implements io.InternetAddress {
   @override
   bool get isLoopback {
     // Copied from dart:io
-    switch (type) {
-      case io.InternetAddressType.IPv4:
-        return _inAddr[0] == 127;
-      case io.InternetAddressType.IPv6:
-        for (var i = 0; i < _ipv6AddrLength - 1; i++) {
-          if (_inAddr[i] != 0) return false;
-        }
-        return _inAddr[_ipv6AddrLength - 1] == 1;
+    if (type == common.InternetAddressType.IPv4) {
+      return _inAddr[0] == 127;
+    } else if (type == common.InternetAddressType.IPv6) {
+      for (var i = 0; i < _ipv6AddrLength - 1; i++) {
+        if (_inAddr[i] != 0) return false;
+      }
+      return _inAddr[_ipv6AddrLength - 1] == 1;
     }
     throw StateError('Unreachable');
   }
@@ -108,13 +107,12 @@ class InternetAddress implements io.InternetAddress {
   @override
   bool get isMulticast {
     // Copied from dart:io
-    switch (type) {
-      case io.InternetAddressType.IPv4:
-        // Checking for 224.0.0.0 through 239.255.255.255.
-        return _inAddr[0] >= 224 && _inAddr[0] < 240;
-      case io.InternetAddressType.IPv6:
-        // Checking for ff00::/8.
-        return _inAddr[0] == 0xFF;
+    if (type == common.InternetAddressType.IPv4) {
+      // Checking for 224.0.0.0 through 239.255.255.255.
+      return _inAddr[0] >= 224 && _inAddr[0] < 240;
+    } else if (type == common.InternetAddressType.IPv6) {
+      // Checking for ff00::/8.
+      return _inAddr[0] == 0xFF;
     }
     throw StateError('Unreachable');
   }
@@ -123,8 +121,8 @@ class InternetAddress implements io.InternetAddress {
   Uint8List get rawAddress => Uint8List.fromList(_inAddr);
 
   @override
-  Future<io.InternetAddress> reverse() {
-    final completer = Completer<io.InternetAddress>();
+  Future<InternetAddress> reverse() {
+    final completer = Completer<InternetAddress>();
     void reverseResult(error, result) {
       if (error != null) {
         completer.completeError(error as Object);
@@ -137,7 +135,7 @@ class InternetAddress implements io.InternetAddress {
     dns.reverse(address, allowInterop(reverseResult));
     return completer.future;
   }
-
+  */
   @override
   String toString() => '$address';
 }
@@ -148,7 +146,7 @@ const int _kColon = 58;
 ///
 /// This implementation assumes that [ip] address has been validated for
 /// correctness.
-// ignore: non_constant_identifier_names
+// ignore: non_constant_identifier_names, unused_element
 Uint8List _inet_pton(String ip) {
   if (ip.contains(':')) {
     // ipv6

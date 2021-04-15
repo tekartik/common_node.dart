@@ -6,7 +6,7 @@ export 'package:fs_shim/fs.dart'
         // Link,
         FileSystemEntityType;
 
-// export 'package:node_io/node_io.dart';
+// export 'package:node_io/node_dart';
 export 'node/directory.dart';
 export 'node/error.dart';
 export 'node/file.dart';

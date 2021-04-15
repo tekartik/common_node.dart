@@ -1,11 +1,13 @@
 // Copyright (c) 2017, Anatoly Pulyaevskiy. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
-import 'dart:io' as io;
 import 'dart:js_util' as js_util;
 
 import 'package:node_interop/http.dart';
 import 'package:node_interop/js.dart';
 import 'package:node_interop/util.dart';
+
+import 'http_common.dart' as common;
+import 'http_server_common.dart' as common;
 
 /// List of HTTP header names which can only have single value.
 const _singleValueHttpHeaders = [
@@ -45,7 +47,7 @@ class ResponseHttpHeaders extends HttpHeaders {
 
   void _checkMutable() {
     if (_mutable == false) {
-      throw io.HttpException('HTTP headers are not mutable.');
+      throw StateError('HTTP headers are not mutable.');
     }
   }
 
@@ -55,12 +57,13 @@ class ResponseHttpHeaders extends HttpHeaders {
   @override
   Iterable<String> _getHeaderNames() => _headerNames;
 
+  /*
   @override
   void _removeHeader(String name) {
     _checkMutable();
     _nativeResponse.removeHeader(name);
     _headerNames.remove(name);
-  }
+  }*/
 
   @override
   void _setHeader(String name, value) {
@@ -81,74 +84,79 @@ class RequestHttpHeaders extends HttpHeaders {
 
   @override
   void _setHeader(String name, dynamic value) =>
-      throw io.HttpException('HTTP headers are not mutable.');
+      throw StateError('HTTP headers are not mutable.');
 
+  /*
   @override
   void _removeHeader(String name) =>
-      throw io.HttpException('HTTP headers are not mutable.');
-
+      throw StateError('HTTP headers are not mutable.');
+  */
   @override
   Iterable<String> _getHeaderNames() =>
       List<String>.from(objectKeys(_request.headers));
 }
 
 /// Proxy to native JavaScript HTTP headers.
-abstract class HttpHeaders implements io.HttpHeaders {
+abstract class HttpHeaders implements common.HttpHeaders {
   dynamic _getHeader(String name);
+
   void _setHeader(String name, value);
-  void _removeHeader(String name);
+
+  //void _removeHeader(String name);
+
   Iterable<String> _getHeaderNames();
 
   dynamic getHeader(String name) => _getHeader(name);
 
+  /*
   @override
   bool get chunkedTransferEncoding =>
-      _getHeader(io.HttpHeaders.transferEncodingHeader) == 'chunked';
+      _getHeader(HttpHeaders.transferEncodingHeader) == 'chunked';
 
   @override
   set chunkedTransferEncoding(bool chunked) {
     if (chunked) {
-      _setHeader(io.HttpHeaders.transferEncodingHeader, 'chunked');
+      _setHeader(HttpHeaders.transferEncodingHeader, 'chunked');
     } else {
-      _removeHeader(io.HttpHeaders.transferEncodingHeader);
+      _removeHeader(HttpHeaders.transferEncodingHeader);
     }
   }
+  */
 
-  @override
   int get contentLength {
-    var value = _getHeader(io.HttpHeaders.contentLengthHeader);
+    var value = _getHeader(common.nodeContentLengthHeader);
     if (value != null) return int.parse(value.toString());
     return 0;
   }
 
-  @override
   set contentLength(int length) {
-    _setHeader(io.HttpHeaders.contentLengthHeader, length);
+    _setHeader(common.nodeContentLengthHeader, length);
   }
 
   @override
-  io.ContentType? get contentType {
+  common.ContentType? get contentType {
     if (_contentType != null) return _contentType;
-    var value = _getHeader(io.HttpHeaders.contentTypeHeader)?.toString();
+    var value = _getHeader(common.nodeContentLengthHeader)?.toString();
     if (value == null || value.isEmpty) return null;
     var types = value.split(',');
-    _contentType = io.ContentType.parse(types.first);
+    _contentType = common.ContentType.parse(types.first);
     return _contentType;
   }
 
-  io.ContentType? _contentType;
+  common.ContentType? _contentType;
 
   @override
-  set contentType(io.ContentType? type) {
-    _setHeader(io.HttpHeaders.contentTypeHeader, type.toString());
+  set contentType(common.ContentType? type) {
+    _setHeader(common.httpHeaderContentType, type.toString());
   }
 
+  /*
   @override
   DateTime? get date {
-    var value = _getHeader(io.HttpHeaders.dateHeader)?.toString();
+    var value = _getHeader(HttpHeaders.dateHeader)?.toString();
     if (value == null || value.isEmpty) return null;
     try {
-      return io.HttpDate.parse(value);
+      return HttpDate.parse(value);
     } on Exception {
       return null;
     }
@@ -156,15 +164,15 @@ abstract class HttpHeaders implements io.HttpHeaders {
 
   @override
   set date(DateTime? date) {
-    _setHeader(io.HttpHeaders.dateHeader, io.HttpDate.format(date!));
+    _setHeader(HttpHeaders.dateHeader, HttpDate.format(date!));
   }
 
   @override
   DateTime? get expires {
-    var value = _getHeader(io.HttpHeaders.expiresHeader)?.toString();
+    var value = _getHeader(HttpHeaders.expiresHeader)?.toString();
     if (value == null || value.isEmpty) return null;
     try {
-      return io.HttpDate.parse(value);
+      return HttpDate.parse(value);
     } on Exception {
       return null;
     }
@@ -172,12 +180,15 @@ abstract class HttpHeaders implements io.HttpHeaders {
 
   @override
   set expires(DateTime? expires) {
-    _setHeader(io.HttpHeaders.expiresHeader, io.HttpDate.format(expires!));
+    _setHeader(HttpHeaders.expiresHeader, HttpDate.format(expires!));
   }
 
+   */
+
+  /*
   @override
   String? get host {
-    var value = _getHeader(io.HttpHeaders.hostHeader)?.toString();
+    var value = _getHeader(HttpHeaders.hostHeader)?.toString();
     if (value != null) {
       return value.split(':').first;
     }
@@ -191,12 +202,12 @@ abstract class HttpHeaders implements io.HttpHeaders {
     if (_port != null) {
       hostAndPort = '$host:$_port';
     }
-    _setHeader(io.HttpHeaders.hostHeader, hostAndPort);
+    _setHeader(HttpHeaders.hostHeader, hostAndPort);
   }
 
   @override
   int? get port {
-    var value = _getHeader(io.HttpHeaders.hostHeader)?.toString();
+    var value = _getHeader(HttpHeaders.hostHeader)?.toString();
     if (value != null) {
       var parts = value.split(':');
       if (parts.length == 2) return int.parse(parts.last);
@@ -210,15 +221,15 @@ abstract class HttpHeaders implements io.HttpHeaders {
     if (value != null) {
       hostAndPort = '$host:$value';
     }
-    _setHeader(io.HttpHeaders.hostHeader, hostAndPort);
+    _setHeader(HttpHeaders.hostHeader, hostAndPort);
   }
 
   @override
   DateTime? get ifModifiedSince {
-    var value = _getHeader(io.HttpHeaders.ifModifiedSinceHeader)?.toString();
+    var value = _getHeader(HttpHeaders.ifModifiedSinceHeader)?.toString();
     if (value == null || value.isEmpty) return null;
     try {
-      return io.HttpDate.parse(value);
+      return HttpDate.parse(value);
     } on Exception {
       return null;
     }
@@ -226,22 +237,22 @@ abstract class HttpHeaders implements io.HttpHeaders {
 
   @override
   set ifModifiedSince(DateTime? ifModifiedSince) {
-    _setHeader(io.HttpHeaders.ifModifiedSinceHeader,
-        io.HttpDate.format(ifModifiedSince!));
+    _setHeader(
+        HttpHeaders.ifModifiedSinceHeader, HttpDate.format(ifModifiedSince!));
   }
 
   @override
   bool get persistentConnection {
-    var connection = _getHeader(io.HttpHeaders.connectionHeader);
+    var connection = _getHeader(HttpHeaders.connectionHeader);
     return (connection == 'keep-alive');
   }
 
   @override
   set persistentConnection(bool persistentConnection) {
     var value = persistentConnection ? 'keep-alive' : 'close';
-    _setHeader(io.HttpHeaders.connectionHeader, value);
+    _setHeader(HttpHeaders.connectionHeader, value);
   }
-
+*/
   bool _isMultiValue(String name) => !_singleValueHttpHeaders.contains(name);
 
   @override
@@ -265,7 +276,7 @@ abstract class HttpHeaders implements io.HttpHeaders {
     final values = this[name];
     if (values == null) return null;
     if (values.length > 1) {
-      throw io.HttpException('More than one value for header $name');
+      throw StateError('More than one value for header $name');
     }
     return values[0];
   }
@@ -284,6 +295,7 @@ abstract class HttpHeaders implements io.HttpHeaders {
     }
   }
 
+/*
   @override
   void clear() {
     var names = _getHeaderNames();
@@ -291,7 +303,7 @@ abstract class HttpHeaders implements io.HttpHeaders {
       _removeHeader(name);
     }
   }
-
+*/
   @override
   void forEach(void Function(String name, List<String> values) f) {
     var names = _getHeaderNames();
@@ -300,6 +312,7 @@ abstract class HttpHeaders implements io.HttpHeaders {
     });
   }
 
+/*
   @override
   void noFolding(String name) {
     throw UnsupportedError('Folding is not supported for Node.');
@@ -316,7 +329,7 @@ abstract class HttpHeaders implements io.HttpHeaders {
   void removeAll(String name) {
     _removeHeader(name);
   }
-
+*/
   @override
   void set(String name, Object value, {bool preserveHeaderCase = false}) {
     if (preserveHeaderCase) {

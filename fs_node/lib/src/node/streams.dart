@@ -7,6 +7,7 @@ import 'dart:typed_data';
 
 import 'package:node_interop/node.dart';
 import 'package:node_interop/stream.dart';
+import 'package:tekartik_fs_node/src/file_node.dart';
 
 abstract class HasReadable {
   Readable get nativeInstance;
@@ -200,5 +201,40 @@ class NodeIOSink extends WritableStream<List<int>> {
 
   void writeln([Object? obj = '']) {
     _write(encoding.encode('$obj\n'));
+  }
+}
+
+/// Writable stream of bytes, also accepts `String` values which are encoded
+/// with specified [Encoding].
+class NodeUint8ListSink extends WritableStream<Uint8List> {
+  static dynamic _nodeIoSinkConvert(List<int> data) {
+    if (data is! Uint8List) {
+      data = Uint8List.fromList(data);
+    }
+    return Buffer.from(data);
+  }
+
+  NodeUint8ListSink(Writable nativeStream, {this.encoding = utf8})
+      : super(nativeStream, convert: _nodeIoSinkConvert);
+
+  Encoding encoding;
+
+  Future flush() => drain;
+
+  void write(Object? obj) {
+    _write(asUint8List(encoding.encode(obj.toString())));
+  }
+
+  void writeAll(Iterable objects, [String separator = '']) {
+    var data = objects.map((obj) => obj.toString()).join(separator);
+    _write(asUint8List(encoding.encode(data)));
+  }
+
+  void writeCharCode(int charCode) {
+    _write(asUint8List(encoding.encode(String.fromCharCode(charCode))));
+  }
+
+  void writeln([Object? obj = '']) {
+    _write(asUint8List(encoding.encode('$obj\n')));
   }
 }

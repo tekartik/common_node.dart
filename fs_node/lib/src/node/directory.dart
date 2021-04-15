@@ -44,7 +44,7 @@ import 'platform.dart';
 /// named directory and all its necessary parent directories,
 /// if they do not already exist.
 ///
-///     import 'package:node_io/node_io.dart';
+///     import 'package:node_io/node_dart';
 ///
 ///     void main() {
 ///       // Creates dir/ and dir/subdir/.
@@ -65,7 +65,7 @@ import 'platform.dart';
 /// objects. Use the listen callback function to process each object
 /// as it become available.
 ///
-///     import 'package:node_io/node_io.dart';
+///     import 'package:node_io/node_dart';
 ///
 ///     void main() {
 ///       // Get the system temp directory.

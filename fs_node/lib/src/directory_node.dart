@@ -88,7 +88,7 @@ class DirectoryNode extends FileSystemEntityNode implements Directory {
             controller.add(entity);
           }).asFuture());
         }
-        //} else if (data is io.Link) {
+        //} else if (data is Link) {
         //  controller.add(new LinkImpl.io(data));
       } else {
         controller.addError(
@@ -107,7 +107,7 @@ class DirectoryNode extends FileSystemEntityNode implements Directory {
     StreamSubscription<FileSystemEntityNode> _transformer(
         Stream<node.FileSystemEntity> input, bool cancelOnError) {
       StreamController<FileSystemEntityNode> controller;
-      //StreamSubscription<io.FileSystemEntity> subscription;
+      //StreamSubscription<FileSystemEntity> subscription;
       controller = new StreamController<FileSystemEntityNode>(
           onListen: () {
 
@@ -118,7 +118,7 @@ class DirectoryNode extends FileSystemEntityNode implements Directory {
                 controller.add(new FileNode.io(data));
               } else if (data is node.Directory) {
                 controller.add(new DirectoryNode.io(data));
-                //} else if (data is io.Link) {
+                //} else if (data is Link) {
                 //  controller.add(new LinkImpl.io(data));
               } else {
                 controller.addError(new UnsupportedError(
@@ -136,7 +136,7 @@ class DirectoryNode extends FileSystemEntityNode implements Directory {
             _transformer));
       */
 
-    // as Stream<io.FileSystemEntity, FileSystemEntity>;
+    // as Stream<FileSystemEntity, FileSystemEntity>;
     return controller.stream;
   }
 

@@ -56,7 +56,7 @@ void main() {
       });
       /*
       test('link', () {
-        io.Link ioLink = new io.Link('link');
+        Link ioLink = new Link('link');
         Link link = wrapIoLink(ioLink);
         expect(unwrapIoLink(link), ioLink);
       });
@@ -66,8 +66,8 @@ void main() {
         node.FileSystemEntity ioFse;
         FileSystemEntityNode fse;
         /*
-        io.FileSystemEntity ioFse = new io.Link('link');
-        FileSystemEntity fse = wrapIoLink(ioFse as io.Link);
+        FileSystemEntity ioFse = new Link('link');
+        FileSystemEntity fse = wrapIoLink(ioFse as Link);
         expect(ioFse.path, fse.path);
         */
 
@@ -94,7 +94,7 @@ void main() {
 
       /*
       test('filesystemexception', () {
-        const ioFileSystemException = io.FileSystemException();
+        const ioFileSystemException = FileSystemException();
         final fileSystemException =
             wrapIoFileSystemException(ioFileSystemException);
         expect(unwrapIoFileSystemException(fileSystemException),
@@ -152,13 +152,13 @@ void main() {
       });
 
       test('filestat', () async {
-        io.FileStat ioFileStat = await io.Directory.current.stat();
+        FileStat ioFileStat = await Directory.current.stat();
         FileStat fileStat = await Directory.current.stat();
         expect(fileStat.size, ioFileStat.size);
       });
 
       test('current', () {
-        expect(Directory.current.path, io.Directory.current.path);
+        expect(Directory.current.path, Directory.current.path);
       });
 
       test('FileSystemEntity', () async {

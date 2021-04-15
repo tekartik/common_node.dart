@@ -1,29 +1,24 @@
-name: tekartik_fs_node_test
-description: fs_shim on node test
+name: tekartik_http_node_test
+description: http on node test
 version: 0.4.0
 publish_to: none
 #homepage: https://www.example.com
 #author: alex <email@example.com>
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.5.0 <3.0.0'
 
 dependencies:
   path: '>=1.6.1'
   fs_shim: '>=0.11.0+3'
   node_interop: '>=1.0.3'
-  tekartik_fs_node:
+  tekartik_http_node:
     git:
       url: git://github.com/tekartik/common_node.dart
-      path: fs_node
+      path: http_node
       ref: null_safety
     version: '>=0.2.0'
-  tekartik_platform_node:
-    git:
-      url: git://github.com/tekartik/common_node.dart
-      path: platform_node
-      ref: null_safety
-    version: '>=0.2.0'
+
   # node_io: '>=1.0.1+2'
   # node_io: any
 
@@ -56,6 +51,8 @@ dev_dependencies:
 dependency_overrides:
   tekartik_platform_node:
     path: ../platform_node
+  tekartik_http_node:
+    path: ../http_node
   tekartik_fs_node:
     path: ../fs_node
   # fs_shim:

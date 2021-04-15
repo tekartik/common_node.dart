@@ -1,19 +1,21 @@
 // Copyright (c) 2017, Anatoly Pulyaevskiy. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
-
 import 'dart:async';
-import 'dart:io' as io;
 import 'dart:js';
 import 'dart:js_util';
 import 'dart:typed_data';
-
+import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:node_interop/http.dart' as _http;
+
 // ignore: implementation_imports
 import 'package:tekartik_fs_node/src/node/streams.dart';
 
+import 'http_common.dart' as common;
 import 'http_headers.dart';
+import 'http_server_common.dart' as common;
 import 'internet_address.dart';
 
+/*
 export 'dart:io'
     show
         HttpDate,
@@ -26,27 +28,14 @@ export 'dart:io'
         HttpRequest,
         HttpResponse,
         HttpConnectionInfo;
-
+*/
 List<int> _asIntList(dynamic list) =>
     list is List<int> ? list : (list as List).cast<int>();
 
-class _HttpConnectionInfo implements io.HttpConnectionInfo {
-  @override
-  final int localPort;
-
-  @override
-  final InternetAddress remoteAddress;
-
-  @override
-  final int remotePort;
-
-  _HttpConnectionInfo(this.localPort, this.remoteAddress, this.remotePort);
-}
-
 /// A server that delivers content, such as web pages, using the HTTP protocol.
 ///
-/// The HttpServer is a [Stream] that provides [io.HttpRequest] objects. Each
-/// HttpRequest has an associated [io.HttpResponse] object.
+/// The HttpServer is a [Stream] that provides [HttpRequest] objects. Each
+/// HttpRequest has an associated [HttpResponse] object.
 /// The server responds to a request by writing to that HttpResponse object.
 /// The following example shows how to bind an HttpServer to an IPv6
 /// [InternetAddress] on port 80 (the standard port for HTTP servers)
@@ -70,13 +59,13 @@ class _HttpConnectionInfo implements io.HttpConnectionInfo {
 ///
 /// Incomplete requests, in which all or part of the header is missing, are
 /// ignored, and no exceptions or HttpRequest objects are generated for them.
-/// Likewise, when writing to an HttpResponse, any [io.Socket] exceptions are
+/// Likewise, when writing to an HttpResponse, any [Socket] exceptions are
 /// ignored and any future writes are ignored.
 ///
 /// The HttpRequest exposes the request headers and provides the request body,
 /// if it exists, as a Stream of data. If the body is unread, it is drained
 /// when the server writes to the HttpResponse or closes it.
-abstract class HttpServer implements io.HttpServer {
+abstract class HttpServer implements common.HttpServer {
   /// Starts listening for HTTP requests on the specified [address] and
   /// [port].
   ///
@@ -113,24 +102,24 @@ abstract class HttpServer implements io.HttpServer {
   /// isolates are bound to the port, then the incoming connections will be
   /// distributed among all the bound `HttpServer`s. Connections can be
   /// distributed over multiple isolates this way.
-  static Future<io.HttpServer> bind(address, int port,
+  static Future<HttpServer> bind(address, int port,
           {int backlog = 0, bool v6Only = false, bool shared = false}) =>
       _HttpServer.bind(address, port,
           backlog: backlog, v6Only: v6Only, shared: shared);
 }
 
-class _HttpServer extends Stream<io.HttpRequest> implements HttpServer {
+class _HttpServer extends Stream<common.HttpRequest> implements HttpServer {
   @override
-  final io.InternetAddress address;
+  final InternetAddress address;
   @override
   final int port;
 
   late _http.HttpServer _server;
-  Completer<io.HttpServer>? _listenCompleter;
-  late StreamController<io.HttpRequest> _controller;
+  Completer<HttpServer>? _listenCompleter;
+  late StreamController<common.HttpRequest> _controller;
 
   _HttpServer._(this.address, this.port) {
-    _controller = StreamController<io.HttpRequest>(
+    _controller = StreamController<common.HttpRequest>(
       onListen: _onListen,
       onPause: _onPause,
       onResume: _onResume,
@@ -163,17 +152,17 @@ class _HttpServer extends Stream<io.HttpRequest> implements HttpServer {
     if (_controller.isPaused) {
       // Reject any incoming request before listening started or subscription
       // is paused.
-      response.statusCode = io.HttpStatus.serviceUnavailable;
+      response.statusCode = common.httpStatusCodeServiceUnavailable;
       response.end();
       return;
     }
     _controller.add(NodeHttpRequest(request, response));
   }
 
-  Future<io.HttpServer> _bind() {
+  Future<HttpServer> _bind() {
     assert(_server.listening == false && _listenCompleter == null);
 
-    _listenCompleter = Completer<io.HttpServer>();
+    _listenCompleter = Completer<HttpServer>();
     void listeningHandler() {
       _listenCompleter!.complete(this);
       _listenCompleter = null;
@@ -183,7 +172,7 @@ class _HttpServer extends Stream<io.HttpRequest> implements HttpServer {
     return _listenCompleter!.future;
   }
 
-  static Future<io.HttpServer> bind(address, int port,
+  static Future<HttpServer> bind(address, int port,
       {int backlog = 0, bool v6Only = false, bool shared = false}) async {
     assert(!shared, 'Shared is not implemented yet');
 
@@ -196,6 +185,7 @@ class _HttpServer extends Stream<io.HttpRequest> implements HttpServer {
     return server._bind();
   }
 
+  /*
   @override
   late bool autoCompress; // TODO: Implement autoCompress
 
@@ -204,6 +194,8 @@ class _HttpServer extends Stream<io.HttpRequest> implements HttpServer {
 
   @override
   String? serverHeader; // TODO: Implement serverHeader
+
+   */
 
   @override
   Future close({bool force = false}) {
@@ -220,17 +212,15 @@ class _HttpServer extends Stream<io.HttpRequest> implements HttpServer {
     return completer.future;
   }
 
+  /*
   @override
-  io.HttpConnectionsInfo connectionsInfo() {
-    throw UnimplementedError();
-  }
+  HttpHeaders get defaultResponseHeaders => throw UnimplementedError();
+
+   */
 
   @override
-  io.HttpHeaders get defaultResponseHeaders => throw UnimplementedError();
-
-  @override
-  StreamSubscription<io.HttpRequest> listen(
-    void Function(io.HttpRequest event)? onData, {
+  StreamSubscription<common.HttpRequest> listen(
+    void Function(common.HttpRequest event)? onData, {
     Function? onError,
     void Function()? onDone,
     bool? cancelOnError,
@@ -239,15 +229,16 @@ class _HttpServer extends Stream<io.HttpRequest> implements HttpServer {
         onError: onError, onDone: onDone, cancelOnError: cancelOnError);
   }
 
+/*
   @override
   set sessionTimeout(int timeout) {
     throw UnimplementedError();
-  }
+  }*/
 }
 
 /// Server side HTTP request object which delegates IO operations to
 /// Node.js native representations.
-class NodeHttpRequest implements io.HttpRequest, HasReadable {
+class NodeHttpRequest implements common.HttpRequest, HasReadable {
   final ReadableStream<Uint8List> _delegate;
   final _http.ServerResponse _nativeResponse;
 
@@ -259,47 +250,51 @@ class NodeHttpRequest implements io.HttpRequest, HasReadable {
   _http.IncomingMessage get nativeInstance =>
       _delegate.nativeInstance as _http.IncomingMessage;
 
+  /*
   @override
-  io.X509Certificate get certificate => throw UnimplementedError();
-
-  @override
-  io.HttpConnectionInfo get connectionInfo {
+  HttpConnectionInfo get connectionInfo {
     var socket = nativeInstance.socket;
     var address = InternetAddress(socket.remoteAddress);
     return _HttpConnectionInfo(socket.localPort, address, socket.remotePort);
-  }
+  }*/
 
   @override
-  int get contentLength => headers.contentLength;
+  int get contentLength => // headers.contentLength;
+      requestHeaders.contentLength;
 
+  /*
   @override
-  List<io.Cookie> get cookies {
+  List<Cookie> get cookies {
     if (_cookies != null) return _cookies!;
-    _cookies = <io.Cookie>[];
-    final values = headers[io.HttpHeaders.setCookieHeader];
+    _cookies = <Cookie>[];
+    final values = headers[HttpHeaders.setCookieHeader];
     if (values != null) {
       values.forEach((value) {
-        _cookies!.add(io.Cookie.fromSetCookieValue(value));
+        _cookies!.add(Cookie.fromSetCookieValue(value));
       });
     }
     return _cookies!;
   }
 
-  List<io.Cookie>? _cookies;
-
+  List<Cookie>? _cookies;
+  */
   @override
-  io.HttpHeaders get headers => _headers ??= RequestHttpHeaders(nativeInstance);
-  io.HttpHeaders? _headers;
+  common.HttpHeaders get headers => requestHeaders;
+
+  RequestHttpHeaders get requestHeaders =>
+      _headers ??= RequestHttpHeaders(nativeInstance);
+  RequestHttpHeaders? _headers;
 
   @override
   String get method => nativeInstance.method;
 
+  /*
   @override
-  bool get persistentConnection => headers.persistentConnection;
+  bool get persistentConnection => requestHeaders.persistentConnection;
 
   @override
   String get protocolVersion => nativeInstance.httpVersion;
-
+  */
   @override
   Uri get requestedUri {
     if (_requestedUri == null) {
@@ -333,13 +328,16 @@ class NodeHttpRequest implements io.HttpRequest, HasReadable {
   Uri? _requestedUri;
 
   @override
-  io.HttpResponse get response =>
+  common.HttpResponse get response =>
       _response ??= NodeHttpResponse(_nativeResponse);
-  io.HttpResponse? _response; // ignore: close_sinks
+  NodeHttpResponse? _response; // ignore: close_sinks
 
+  /*
   @override
-  io.HttpSession get session =>
+  common.HttpSession get session =>
       throw UnsupportedError('Sessions are not supported by Node HTTP server.');
+
+   */
 
   @override
   Uri get uri => Uri.parse(nativeInstance.url);
@@ -555,13 +553,15 @@ class NodeHttpRequest implements io.HttpRequest, HasReadable {
 
 /// Server side HTTP response object which delegates IO operations to
 /// Node.js native representations.
-class NodeHttpResponse extends NodeIOSink implements io.HttpResponse {
+class NodeHttpResponse extends NodeUint8ListSink
+    implements common.HttpResponse {
   NodeHttpResponse(_http.ServerResponse nativeResponse) : super(nativeResponse);
 
-  @override
-  _http.ServerResponse get nativeInstance =>
-      super.nativeInstance as _http.ServerResponse;
+  //@override
+  _http.ServerResponse get nativeResponse =>
+      nativeInstance as _http.ServerResponse;
 
+  /*
   @override
   bool get bufferOutput => throw UnimplementedError();
 
@@ -569,7 +569,7 @@ class NodeHttpResponse extends NodeIOSink implements io.HttpResponse {
   set bufferOutput(bool buffer) {
     throw UnimplementedError();
   }
-
+  */
   @override
   int get contentLength => throw UnimplementedError();
 
@@ -578,42 +578,45 @@ class NodeHttpResponse extends NodeIOSink implements io.HttpResponse {
     throw UnimplementedError();
   }
 
+  /*
   @override
   Duration get deadline => throw UnimplementedError();
 
   @override
   set deadline(Duration? value) {
     throw UnimplementedError();
-  }
+  }*/
 
+  /*
   @override
   bool get persistentConnection => headers.persistentConnection;
 
   @override
   set persistentConnection(bool persistent) {
     headers.persistentConnection = persistent;
-  }
+  }*/
 
+  /*
   @override
-  String get reasonPhrase => nativeInstance.statusMessage;
+  String get reasonPhrase => nativeResponse.statusMessage;
 
   @override
   set reasonPhrase(String phrase) {
-    if (nativeInstance.headersSent) {
+    if (nativeResponse.headersSent) {
       throw StateError('Headers already sent.');
     }
-    nativeInstance.statusMessage = phrase;
+    nativeResponse.statusMessage = phrase;
   }
-
+  */
   @override
-  int get statusCode => nativeInstance.statusCode.round();
+  int get statusCode => nativeResponse.statusCode.round();
 
   @override
   set statusCode(int code) {
-    if (nativeInstance.headersSent) {
+    if (nativeResponse.headersSent) {
       throw StateError('Headers already sent.');
     }
-    nativeInstance.statusCode = code;
+    nativeResponse.statusCode = code;
   }
 
   @override
@@ -623,40 +626,41 @@ class NodeHttpResponse extends NodeIOSink implements io.HttpResponse {
     return super.close();
   }
 
+  /*
   @override
-  io.HttpConnectionInfo get connectionInfo {
+  HttpConnectionInfo get connectionInfo {
     var socket = nativeInstance.socket;
     var address = InternetAddress(socket.remoteAddress);
     return _HttpConnectionInfo(socket.localPort, address, socket.remotePort);
   }
 
   @override
-  List<io.Cookie> get cookies {
+  List<Cookie> get cookies {
     if (_cookies != null) return _cookies!;
-    _cookies = <io.Cookie>[];
-    final values = headers[io.HttpHeaders.setCookieHeader];
+    _cookies = <Cookie>[];
+    final values = headers[HttpHeaders.setCookieHeader];
     if (values != null) {
       values.forEach((value) {
-        _cookies!.add(io.Cookie.fromSetCookieValue(value));
+        _cookies!.add(Cookie.fromSetCookieValue(value));
       });
     }
     return _cookies!;
   }
 
-  List<io.Cookie>? _cookies;
+  List<Cookie>? _cookies;
 
   @override
-  Future<io.Socket> detachSocket({bool writeHeaders = true}) {
+  Future<Socket> detachSocket({bool writeHeaders = true}) {
     throw UnimplementedError();
   }
-
+  */
   @override
-  io.HttpHeaders get headers =>
-      _headers ??= ResponseHttpHeaders(nativeInstance);
+  HttpHeaders get headers => _headers ??= ResponseHttpHeaders(nativeResponse);
   ResponseHttpHeaders? _headers;
 
   @override
-  Future redirect(Uri location, {int status = io.HttpStatus.movedTemporarily}) {
+  Future redirect(Uri location,
+      {int status = common.NodeHttpStatus.movedTemporarily}) {
     statusCode = status;
     headers.set('location', '$location');
     return close();
