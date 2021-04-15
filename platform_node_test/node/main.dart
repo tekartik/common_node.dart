@@ -1,10 +1,8 @@
-// @dart=2.9
 import 'dart:convert';
 import 'package:tekartik_platform/context.dart';
 
 import 'package:tekartik_platform_node/context_node.dart';
-import 'package:tekartik_platform_node_test/platform_context_example.dart'
-    as common;
+import 'package:tekartik_platform_test/platform_context_example.dart' as common;
 
 void main() {
   run(platformContextNode);

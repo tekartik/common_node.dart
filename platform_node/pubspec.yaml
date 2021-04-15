@@ -34,14 +34,4 @@ dev_dependencies:
       ref: null_safety
     version: '>=0.2.1'
   process_run: '>=0.10.0+1'
-  # needed node dependencies
-  build_runner:
-  tekartik_build_node:
-    git:
-      url: git://github.com/tekartik/build_node.dart
-      path: packages/build_node
-      ref: null_safety
 
-dependency_overrides:
-  # tekartik_build_node:
-  #  path: ../../../tekartik/build_node.dart/packages/build_node

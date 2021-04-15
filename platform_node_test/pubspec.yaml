@@ -6,52 +6,49 @@ publish_to: none
 #author: alex <email@example.com>
 
 environment:
-  sdk: '>=2.7.0-0 <3.0.0'
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   tekartik_platform:
     git:
       url: git://github.com/tekartik/platform.dart
       path: platform
-      ref: dart2
+      ref: null_safety
     version: '>=0.2.1'
   tekartik_platform_io:
     git:
       url: git://github.com/tekartik/platform.dart
       path: platform_io
-      ref: dart2
+      ref: null_safety
     version: '>=0.2.1'
   tekartik_platform_node:
     git:
       url: git://github.com/tekartik/common_node.dart
       path: platform_node
-      ref: dart2
+      ref: null_safety
     version: '>=0.2.1'
   path: '>=1.6.1'
 
 dev_dependencies:
   test: ">=1.2.0"
   dev_test: any
-  build_runner: '>=1.7.0'
   build_test: '>=0.10.8'
-  build_node_compilers: ">=0.2.2"
   process_run: '>=0.10.0+1'
   tekartik_platform_test:
     git:
       url: git://github.com/tekartik/platform.dart
       path: platform_test
-      ref: dart2
+      ref: null_safety
     version: '>=0.2.1'
-  tekartik_app_node_build:
+  # needed node dependencies
+  build_runner:
+  tekartik_build_node:
     git:
-      url: git://github.com/tekartik/app_node_utils.dart
-      path: app_build
-      ref: dart2
-    version: '>=0.2.3'
+      url: git://github.com/tekartik/build_node.dart
+      path: packages/build_node
+      ref: null_safety
 dependency_overrides:
   tekartik_platform_node:
     path: ../platform_node
-#  tekartik_platform_io:
-#    path: ../platform_io
-#  tekartik_platform_test:
-#    path: ../platform_test
+  tekartik_build_node:
+    path: ../../../tekartik/build_node.dart/packages/build_node

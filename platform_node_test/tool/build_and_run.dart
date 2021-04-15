@@ -1,10 +1,11 @@
 import 'package:process_run/shell.dart';
+import 'package:tekartik_build_node/build_node.dart';
 
 Future main() async {
+  await nodeBuild();
   var shell = Shell();
 
   await shell.run('''
-  pub run build_runner build example --output=example:build
-  node build/platform_context_node_example.dart.js
+  node build/node/main.dart.js
   ''');
 }
