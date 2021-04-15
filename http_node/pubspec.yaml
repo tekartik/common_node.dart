@@ -23,6 +23,12 @@ dependencies:
   # node_io: '>=1.0.1+2'
   # node_http: '>=1.0.0'
   meta: '>=1.2.3'
+  tekartik_fs_node:
+    git:
+      url: git://github.com/tekartik/common_node.dart
+      path: fs_node
+      ref: null_safety
+    version: '>=0.1.0'
 
 dev_dependencies:
   test: ">=1.5.2"
@@ -35,12 +41,7 @@ dev_dependencies:
       url: git://github.com/tekartik/build_utils.dart
       ref: null_safety
     version: '>=0.6.5+1'
-  tekartik_fs_node:
-    git:
-      url: git://github.com/tekartik/common_node.dart
-      path: fs_node
-      ref: null_safety
-    version: '>=0.1.0'
+
   tekartik_platform_node:
     git:
       url: git://github.com/tekartik/common_node.dart

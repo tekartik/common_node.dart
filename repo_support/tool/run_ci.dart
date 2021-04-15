@@ -18,6 +18,7 @@ Future<void> main() async {
   // TODO fix tests
   for (var dir in [
     'fs_node_test',
+    'http_node_test',
   ]) {
     var path = join(topDir, dir);
     await nodePackageRunCi(path, NodePackageRunCiOptions(noNodeTest: true));

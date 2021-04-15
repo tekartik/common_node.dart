@@ -13,6 +13,20 @@ bool get runningOnTravis => Platform.environment['TRAVIS'] == 'true';
 
 void main() {
   run(httpFactoryNode);
+  test('server', () async {
+    var server = await httpFactoryNode.server.bind(localhost, 0);
+    // print('### PORT ${server.port}');
+    server.listen((request) {
+      request.response
+        ..write('test')
+        ..close();
+    });
+    var client = httpFactoryNode.client.newClient();
+    expect(await client.read(Uri.parse('http://$localhost:${server.port}')),
+        'test');
+    client.close();
+    await server.close();
+  });
   test('localhost', () async {
     var server = await httpFactoryNode.server.bind(localhost, 0);
     // print('### PORT ${server.port}');
