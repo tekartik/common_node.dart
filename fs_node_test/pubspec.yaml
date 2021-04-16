@@ -59,10 +59,10 @@ dependency_overrides:
   tekartik_fs_node:
     path: ../fs_node
   # Temp dev
-  fs_shim:
-    path: ../../fs_shim.dart/fs
-  tekartik_fs_test:
-    path: ../../fs_shim.dart/fs_test
+  # fs_shim:
+  #   path: ../../fs_shim.dart/fs
+  # tekartik_fs_test:
+  #   path: ../../fs_shim.dart/fs_test
 
 # node_io:
 #   git:

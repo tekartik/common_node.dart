@@ -7,9 +7,10 @@ Future<void> main() async {
   for (var dir in [
     'platform_node',
     'platform_node_test',
-    'http_redirect_node',
     'fs_node',
     'fs_node_test',
+    'http_node',
+    'http_node_test',
   ]) {
     var path = join(topDir, dir);
     await nodePackageRunCi(path);
@@ -17,8 +18,7 @@ Future<void> main() async {
 
   // TODO fix tests
   for (var dir in [
-    'http_node',
-    'http_node_test',
+    'http_redirect_node',
   ]) {
     var path = join(topDir, dir);
     await nodePackageRunCi(path, NodePackageRunCiOptions(noNodeTest: true));

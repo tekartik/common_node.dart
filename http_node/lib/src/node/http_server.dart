@@ -349,7 +349,7 @@ class NodeHttpRequest implements common.HttpRequest, HasReadable {
     void Function()? onDone,
     bool? cancelOnError,
   }) {
-    return const Stream<Uint8List>.empty().listen(
+    return _delegate.listen(
       onData,
       onError: onError,
       onDone: onDone,

@@ -8,6 +8,7 @@ import 'dart:typed_data';
 import 'package:node_interop/node.dart';
 import 'package:node_interop/stream.dart';
 import 'package:tekartik_fs_node/src/file_node.dart';
+import 'package:tekartik_fs_node/src/import_common.dart';
 
 abstract class HasReadable {
   Readable get nativeInstance;

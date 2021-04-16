@@ -5,7 +5,7 @@ Future main() async {
 
   await shell.run('''
 
-pub run test -p node test/http_node_test.dart
+dart test -p node
 
 ''');
 }
