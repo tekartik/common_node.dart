@@ -11,6 +11,8 @@ import 'package:node_interop/path.dart' as node_path;
 import 'directory.dart';
 import 'platform.dart';
 
+final _notFoundDateTime = DateTime.fromMillisecondsSinceEpoch(0);
+
 abstract class FileSystemEntity {
   static final RegExp _absoluteWindowsPathPattern =
       RegExp(r'^(\\\\|[a-zA-Z]:[/\\])');
@@ -94,9 +96,9 @@ class FileStat {
       this.mode, this.size);
 
   FileStat.notFound()
-      : changed = DateTime(0),
-        modified = DateTime(0),
-        accessed = DateTime(0),
+      : changed = _notFoundDateTime,
+        modified = _notFoundDateTime,
+        accessed = _notFoundDateTime,
         type = fs_shim.FileSystemEntityType.notFound,
         mode = 0,
         size = -1;
