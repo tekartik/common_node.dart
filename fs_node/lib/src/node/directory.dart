@@ -4,12 +4,13 @@
 import 'dart:async';
 import 'dart:js' as js;
 
+import 'package:fs_shim/fs.dart' as fs_shim;
 import 'package:node_interop/fs.dart';
 import 'package:node_interop/node.dart';
 import 'package:node_interop/os.dart';
 import 'package:node_interop/path.dart' as node_path;
 import 'package:path/path.dart';
-import 'package:fs_shim/fs.dart' as fs_shim;
+
 import 'file.dart';
 import 'file_system_entity.dart';
 import 'link.dart';

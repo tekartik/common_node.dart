@@ -4,9 +4,9 @@ library tekartik_http_node.http_node_test;
 import 'dart:convert';
 
 import 'package:tekartik_http/http.dart';
-import 'package:tekartik_platform_node/src/interop/platform_interop.dart';
 import 'package:tekartik_http_node/http_node.dart';
 import 'package:tekartik_http_test/http_test.dart';
+import 'package:tekartik_platform_node/src/interop/platform_interop.dart';
 import 'package:test/test.dart';
 
 bool get runningOnTravis => Platform.environment['TRAVIS'] == 'true';

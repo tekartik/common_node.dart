@@ -3,6 +3,7 @@ import 'package:tekartik_platform_node/context_universal.dart';
 import 'package:test/test.dart';
 
 bool get runningOnTravis => platform.environment['TRAVIS'] == 'true';
+
 bool get runningOnGithub => platform.environment['GITHUB_ACTIONS'] == 'true';
 
 void main() {

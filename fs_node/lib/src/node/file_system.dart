@@ -15,13 +15,7 @@ class NodeFileSystem {
       {bool followLinks = true}) async {
     Stats stats;
     try {
-      stats = await invokeAsync1(
-          followLinks
-              ? fs.stat as void Function(
-                  dynamic _, void Function(Object, Stats))
-              : fs.lstat as void Function(
-                  dynamic _, void Function(Object, Stats)),
-          path);
+      stats = await invokeAsync1(followLinks ? fs.stat : fs.lstat, path);
     } catch (_) {
       return fs_shim.FileSystemEntityType.notFound;
     }

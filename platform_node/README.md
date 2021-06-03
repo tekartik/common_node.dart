@@ -7,7 +7,6 @@
       path: platform_node
       ref: null_safety
     version: '>=0.2.1'
-
 ```
 Use dart2
 

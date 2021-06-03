@@ -9,7 +9,9 @@ import 'package:node_interop/http.dart';
 import 'package:node_interop/https.dart';
 import 'package:node_interop/node.dart';
 import 'package:node_interop/util.dart';
+
 import 'http_common.dart' as common;
+
 export 'package:node_interop/http.dart' show HttpAgentOptions;
 export 'package:node_interop/https.dart' show HttpsAgentOptions;
 
@@ -212,5 +214,6 @@ class _RedirectInfo {
   final int statusCode;
   final String? method;
   final Uri location;
+
   const _RedirectInfo(this.statusCode, this.method, this.location);
 }

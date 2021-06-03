@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:fs_shim/fs.dart' as fs;
 import 'package:fs_shim/fs.dart';
-
 import 'package:tekartik_fs_node/src/file_system_node.dart';
 import 'package:tekartik_fs_node/src/import_common.dart';
 

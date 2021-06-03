@@ -1,19 +1,24 @@
 import 'package:fs_shim/fs.dart' as fs;
 import 'package:fs_shim/fs.dart';
 import 'package:tekartik_fs_node/src/utils.dart';
+
 import 'import_common_node.dart' as node;
 
 // OSError Wrap/unwrap
 OSErrorNode wrapIoOSError(node.NodeOSError ioOSError) =>
     OSErrorNode.io(ioOSError);
+
 node.NodeOSError? unwrapIoOSError(OSError osError) =>
     (osError as OSErrorNode).ioOSError;
 
 class OSErrorNode implements fs.OSError {
   node.NodeOSError? ioOSError;
+
   OSErrorNode.io(this.ioOSError);
+
   @override
   int get errorCode => ioOSError!.errorCode;
+
   @override
   String get message => ioOSError!.message;
 
@@ -25,6 +30,7 @@ class OSErrorNode implements fs.OSError {
 FileSystemExceptionNode wrapIoFileSystemException(
         node.FileSystemException ioFileSystemException) =>
     FileSystemExceptionNode.io(ioFileSystemException);
+
 node.FileSystemException? unwrapIoFileSystemException(
         FileSystemException fileSystemException) =>
     (fileSystemException as FileSystemExceptionNode).ioFileSystemException;

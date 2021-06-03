@@ -4,9 +4,9 @@ import 'dart:async';
 import 'dart:js';
 import 'dart:js_util';
 import 'dart:typed_data';
-import 'package:tekartik_common_utils/common_utils_import.dart';
-import 'package:node_interop/http.dart' as _http;
 
+import 'package:node_interop/http.dart' as _http;
+import 'package:tekartik_common_utils/common_utils_import.dart';
 // ignore: implementation_imports
 import 'package:tekartik_fs_node/src/node/streams.dart';
 

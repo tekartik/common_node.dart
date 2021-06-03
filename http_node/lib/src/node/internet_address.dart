@@ -21,6 +21,7 @@ class InternetAddress implements common.InternetAddress {
   // static const int _ipv6AddrLength = 16;
 
   final String? _host;
+
   // final Uint8List _inAddr;
 
   @override
