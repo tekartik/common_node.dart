@@ -1,0 +1,37 @@
+name: tekartik_platform_node
+description: Platform node
+version: 0.3.0
+publish_to: none
+#homepage: https://www.example.com
+#author: alex <email@example.com>
+
+environment:
+  sdk: '>=2.12.0 <3.0.0'
+
+dependencies:
+  tekartik_platform:
+    git:
+      url: git://github.com/tekartik/platform.dart
+      path: platform
+      ref: null_safety
+    version: '>=0.2.1'
+  tekartik_platform_io:
+    git:
+      url: git://github.com/tekartik/platform.dart
+      path: platform_io
+      ref: null_safety
+    version: '>=0.2.1'
+  # node_io: '>=2.0.0'
+  node_interop: '>=2.0.0'
+
+dev_dependencies:
+  test: ">=1.2.0"
+  dev_test: any
+  tekartik_platform_test:
+    git:
+      url: git://github.com/tekartik/platform.dart
+      path: platform_test
+      ref: null_safety
+    version: '>=0.2.1'
+  process_run: '>=0.10.0+1'
+
