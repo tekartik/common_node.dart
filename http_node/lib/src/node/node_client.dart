@@ -159,10 +159,10 @@ class _RequestHandler {
     }));
 
     // TODO: Support StreamedRequest by consuming body asynchronously.
-    _body.forEach((List<int> chunk) {
+    for (var chunk in _body) {
       var buffer = Buffer.from(chunk);
       nodeRequest.write(buffer);
-    });
+    }
     nodeRequest.end();
 
     return completer.future;

@@ -307,9 +307,9 @@ abstract class HttpHeaders implements common.HttpHeaders {
   @override
   void forEach(void Function(String name, List<String> values) f) {
     var names = _getHeaderNames();
-    names.forEach((String name) {
+    for (var name in names) {
       f(name, this[name]!);
-    });
+    }
   }
 
 /*

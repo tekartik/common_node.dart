@@ -43,8 +43,8 @@ class FileSystemNode extends Object with FileSystemMixin implements FileSystem {
   int get hashCode => name.hashCode;
 
   @override
-  bool operator ==(o) {
-    return o is FileSystemNode;
+  bool operator ==(Object other) {
+    return other is FileSystemNode;
   }
 
   @override

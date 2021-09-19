@@ -138,7 +138,7 @@ class InternetAddress implements common.InternetAddress {
   }
   */
   @override
-  String toString() => '$address';
+  String toString() => address;
 }
 
 const int _kColon = 58;
