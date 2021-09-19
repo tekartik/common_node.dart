@@ -22,7 +22,7 @@ void run(HttpFactory factory) {
       //devPrint('port: $port');
 
       var httpRedirectServer = await HttpRedirectServer.startServer(
-          httpServerFactory: factory.server,
+          httpFactory: factory,
           options: Options()
             ..host = localhost
             ..port = 0
