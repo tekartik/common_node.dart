@@ -1,6 +1,3 @@
-import 'dart:async';
-
-import 'package:fs_shim/fs.dart';
 import 'package:path/path.dart';
 import 'package:tekartik_fs_node/src/directory_node.dart';
 import 'package:tekartik_fs_node/src/file_stat_node.dart';

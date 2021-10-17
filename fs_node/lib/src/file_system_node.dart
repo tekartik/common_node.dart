@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:fs_shim/fs.dart';
 // ignore: implementation_imports
 import 'package:fs_shim/src/common/fs_mixin.dart';

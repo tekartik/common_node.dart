@@ -7,7 +7,6 @@ import 'package:node_interop/js.dart';
 import 'package:node_interop/util.dart';
 
 import 'http_common.dart' as common;
-import 'http_server_common.dart' as common;
 
 /// List of HTTP header names which can only have single value.
 const _singleValueHttpHeaders = [

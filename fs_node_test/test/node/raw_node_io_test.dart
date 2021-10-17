@@ -3,8 +3,6 @@
 // is governed by a BSD-style license that can be found in the LICENSE file.
 library fs_shim.raw_node_io_test;
 
-import 'dart:convert';
-
 import 'package:path/path.dart';
 import 'package:tekartik_fs_node/src/fs_node.dart';
 import 'package:tekartik_fs_node/src/import_common_node.dart';
