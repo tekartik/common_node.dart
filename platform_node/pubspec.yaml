@@ -21,9 +21,13 @@ dependencies:
       path: platform_io
       ref: null_safety
     version: '>=0.2.1'
+  tekartik_common_utils:
+    git:
+      url: git://github.com/tekartik/common_utils.dart
+      ref: null_safety
   # node_io: '>=2.0.0'
   node_interop: '>=2.0.0'
-
+  pub_semver:
 dev_dependencies:
   test: ">=1.2.0"
   dev_test: any

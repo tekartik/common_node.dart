@@ -60,6 +60,3 @@ dependency_overrides:
     path: ../fs_node
   tekartik_platform_node:
     path: ../platform_node
-  # Temp dev
-  tekartik_http_test:
-    path: ../../http.dart/http_test

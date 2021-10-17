@@ -13,6 +13,9 @@ void run(PlatformContext context) {
 
   common.print = print;
   common.run(context);
+  if (context.node != null) {
+    print('nodeVersion: $nodeVersion');
+  }
 }
 
 /*
