@@ -10,9 +10,14 @@ import 'package:tekartik_platform_node/src/interop/platform_interop.dart';
 import 'package:test/test.dart';
 
 bool get runningOnTravis => Platform.environment['TRAVIS'] == 'true';
+bool get runningOnGithubActions =>
+    Platform.environment['GITHUB_ACTIONS'] == 'true';
+var supportsLocalHttpServer = !runningOnGithubActions;
 
 void main() {
-  run(httpFactoryNode);
+  if (supportsLocalHttpServer) {
+    run(httpFactoryNode);
+  }
   test('server', () async {
     var server = await httpFactoryNode.server.bind(localhost, 0);
     // print('### PORT ${server.port}');
@@ -26,7 +31,7 @@ void main() {
         'test');
     client.close();
     await server.close();
-  });
+  }, skip: !supportsLocalHttpServer);
   test('localhost', () async {
     var server = await httpFactoryNode.server.bind(localhost, 0);
     // print('### PORT ${server.port}');
@@ -40,7 +45,7 @@ void main() {
         'test');
     client.close();
     await server.close();
-  });
+  }, skip: !supportsLocalHttpServer);
   test('connected', () async {
     var client = httpFactoryNode.client.newClient();
     var content = await client.read(Uri.parse('https://api.github.com'),
