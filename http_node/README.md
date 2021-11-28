@@ -3,9 +3,9 @@
 ```yaml
  tekartik_http_node:
     git:
-      url: git://github.com/tekartik/common_node.dart
+      url: https://github.com/tekartik/common_node.dart
       path: http_node
-      ref: null_safety
+      ref: dart2_3
 ```
     Need dart > 2
         

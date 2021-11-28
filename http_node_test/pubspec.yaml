@@ -14,15 +14,15 @@ dependencies:
   node_interop: '>=1.0.3'
   tekartik_http_node:
     git:
-      url: git://github.com/tekartik/common_node.dart
+      url: https://github.com/tekartik/common_node.dart
       path: http_node
-      ref: null_safety
+      ref: dart2_3
     version: '>=0.2.0'
   tekartik_http_test:
     git:
-      url: git://github.com/tekartik/http.dart
+      url: https://github.com/tekartik/http.dart
       path: http_test
-      ref: null_safety
+      ref: dart2_3
     version: '>=0.2.0'
 
   # node_io: '>=1.0.1+2'
@@ -34,20 +34,20 @@ dev_dependencies:
   dev_test: any
   tekartik_fs_test:
     git:
-      url: git://github.com/tekartik/fs_shim.dart
+      url: https://github.com/tekartik/fs_shim.dart
       path: fs_test
-      ref: null_safety
+      ref: dart2_3
     version: '>=0.1.0'
   tekartik_platform:
     git:
-      url: git://github.com/tekartik/platform.dart
+      url: https://github.com/tekartik/platform.dart
       path: platform
-      ref: null_safety
+      ref: dart2_3
   tekartik_http_io:
     git:
-      url: git://github.com/tekartik/http.dart
+      url: https://github.com/tekartik/http.dart
       path: http_io
-      ref: null_safety
+      ref: dart2_3
     version: '>=0.2.0'
   process_run: '>=0.10.0+1'
   # needed node dependencies
@@ -55,9 +55,9 @@ dev_dependencies:
   build_web_compilers:
   tekartik_build_node:
     git:
-      url: git://github.com/tekartik/build_node.dart
+      url: https://github.com/tekartik/build_node.dart
       path: packages/build_node
-      ref: null_safety
+      ref: dart2_3
 
 dependency_overrides:
   tekartik_platform_node:
@@ -73,7 +73,7 @@ dependency_overrides:
 
 # node_io:
 #   git:
-#      url: git://github.com/tekartik/node-interop
+#      url: https://github.com/tekartik/node-interop
 #      path: node_io
 #  node_io:
 #    path: /media/ssd/devx/git/github.com/tekartik/node-interop/node_io
