@@ -5,7 +5,7 @@ import 'dart:js';
 import 'dart:js_util';
 import 'dart:typed_data';
 
-import 'package:node_interop/http.dart' as _http;
+import 'package:node_interop/http.dart' as http_node;
 import 'package:tekartik_common_utils/common_utils_import.dart';
 // ignore: implementation_imports
 import 'package:tekartik_fs_node/src/node/streams.dart';
@@ -113,7 +113,7 @@ class _HttpServer extends Stream<common.HttpRequest> implements HttpServer {
   @override
   final int port;
 
-  late _http.HttpServer _server;
+  late http_node.HttpServer _server;
   Completer<HttpServer>? _listenCompleter;
   late StreamController<common.HttpRequest> _controller;
 
@@ -124,7 +124,7 @@ class _HttpServer extends Stream<common.HttpRequest> implements HttpServer {
       onResume: _onResume,
       onCancel: _onCancel,
     );
-    _server = _http.http.createServer(allowInterop(_jsRequestHandler));
+    _server = http_node.http.createServer(allowInterop(_jsRequestHandler));
     _server.on('error', allowInterop(_jsErrorHandler));
   }
 
@@ -147,7 +147,7 @@ class _HttpServer extends Stream<common.HttpRequest> implements HttpServer {
   }
 
   void _jsRequestHandler(
-      _http.IncomingMessage request, _http.ServerResponse response) {
+      http_node.IncomingMessage request, http_node.ServerResponse response) {
     if (_controller.isPaused) {
       // Reject any incoming request before listening started or subscription
       // is paused.
@@ -239,15 +239,15 @@ class _HttpServer extends Stream<common.HttpRequest> implements HttpServer {
 /// Node.js native representations.
 class NodeHttpRequest implements common.HttpRequest, HasReadable {
   final ReadableStream<Uint8List> _delegate;
-  final _http.ServerResponse _nativeResponse;
+  final http_node.ServerResponse _nativeResponse;
 
-  NodeHttpRequest(_http.IncomingMessage nativeRequest, this._nativeResponse)
+  NodeHttpRequest(http_node.IncomingMessage nativeRequest, this._nativeResponse)
       : _delegate = ReadableStream(nativeRequest,
             convert: (chunk) => Uint8List.fromList(_asIntList(chunk)));
 
   @override
-  _http.IncomingMessage get nativeInstance =>
-      _delegate.nativeInstance as _http.IncomingMessage;
+  http_node.IncomingMessage get nativeInstance =>
+      _delegate.nativeInstance as http_node.IncomingMessage;
 
   /*
   @override
@@ -554,11 +554,12 @@ class NodeHttpRequest implements common.HttpRequest, HasReadable {
 /// Node.js native representations.
 class NodeHttpResponse extends NodeUint8ListSink
     implements common.HttpResponse {
-  NodeHttpResponse(_http.ServerResponse nativeResponse) : super(nativeResponse);
+  NodeHttpResponse(http_node.ServerResponse nativeResponse)
+      : super(nativeResponse);
 
   //@override
-  _http.ServerResponse get nativeResponse =>
-      nativeInstance as _http.ServerResponse;
+  http_node.ServerResponse get nativeResponse =>
+      nativeInstance as http_node.ServerResponse;
 
   /*
   @override

@@ -161,11 +161,11 @@ class File extends FileSystemEntity {
   Future<File> create({bool recursive = false}) {
     // write an empty file
     final completer = Completer<File>();
-    void callback(err, [_fd]) {
+    void callback(err, [fileDescriptor]) {
       if (err != null) {
         completer.completeError(err as Object);
       } else {
-        var fd = _fd as int;
+        var fd = fileDescriptor as int;
         fs.close(fd, js.allowInterop((err) {
           if (err != null) {
             completer.completeError(err as Object);
