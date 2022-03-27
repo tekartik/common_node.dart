@@ -148,8 +148,8 @@ class Directory extends FileSystemEntity {
         controller.addError(err as Object);
         controller.close();
       } else {
-        for (var _file in files) {
-          var filePath = _file as String;
+        for (var file in files) {
+          var filePath = file as String;
           // Need to append the original path to build a proper path
           filePath = join(path, filePath);
           final stat = FileStat.statSync(filePath);
@@ -219,9 +219,9 @@ class Directory extends FileSystemEntity {
     }
 
     final completer = Completer<Directory>();
-    void callback(err, _result) {
+    void callback(err, stringResult) {
       if (err == null) {
-        var result = _result as String;
+        var result = stringResult as String;
         completer.complete(Directory(result));
       } else {
         completer.completeError(err as Object);

@@ -35,9 +35,7 @@ class InternetAddress implements common.InternetAddress {
       ? common.InternetAddressType.IPv4
       : common.InternetAddressType.IPv6;
 
-  InternetAddress._(this.address, [this._host])
-  //: _inAddr = _inet_pton(address)
-  {
+  InternetAddress._(this.address, [String? host]) : _host = host {
     if (net.isIP(address) == 0) {
       throw ArgumentError('$address is not valid.');
     }
