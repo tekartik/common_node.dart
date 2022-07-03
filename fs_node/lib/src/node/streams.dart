@@ -108,7 +108,7 @@ class WritableStream<S> implements StreamSink<S> {
   /// Writes [data] to nativeStream.
   void _write(S data) {
     var completer = Completer();
-    void _flush([JsError? error]) {
+    void doFlush([JsError? error]) {
       if (completer.isCompleted) return;
       if (error != null) {
         completer.completeError(error);
@@ -118,7 +118,7 @@ class WritableStream<S> implements StreamSink<S> {
     }
 
     var chunk = (_convert == null) ? data : _convert!(data);
-    var isFlushed = nativeInstance.write(chunk, allowInterop(_flush)) as bool;
+    var isFlushed = nativeInstance.write(chunk, allowInterop(doFlush)) as bool;
     if (!isFlushed) {
       // Keep track of the latest unflushed chunk of data.
       _drainCompleter = completer;

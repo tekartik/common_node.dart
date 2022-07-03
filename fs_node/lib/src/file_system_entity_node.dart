@@ -4,7 +4,6 @@ import 'package:tekartik_fs_node/src/file_stat_node.dart';
 import 'package:tekartik_fs_node/src/file_system_node.dart';
 import 'package:tekartik_fs_node/src/import_common.dart';
 
-import 'file_system_node.dart';
 import 'fs_node.dart';
 import 'import_common_node.dart' as node;
 
