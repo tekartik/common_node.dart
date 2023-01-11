@@ -154,8 +154,8 @@ class _RequestHandler {
     }
 
     var nodeRequest = sendRequest(options, allowInterop(handleResponse));
-    nodeRequest.on('error', allowInterop((e) {
-      completer.completeError(e as Object);
+    nodeRequest.on('error', allowInterop((Object e) {
+      completer.completeError(e);
     }));
 
     // TODO: Support StreamedRequest by consuming body asynchronously.

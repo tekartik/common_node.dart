@@ -143,12 +143,12 @@ class Directory extends FileSystemEntity {
     }
     final controller = StreamController<FileSystemEntity>();
 
-    void callback(dynamic err, [dynamic files]) {
+    void callback(Object? err, [Iterable? files]) {
       if (err != null) {
-        controller.addError(err as Object);
+        controller.addError(err);
         controller.close();
       } else {
-        for (var file in files) {
+        for (var file in files!) {
           var filePath = file as String;
           // Need to append the original path to build a proper path
           filePath = join(path, filePath);
@@ -219,12 +219,12 @@ class Directory extends FileSystemEntity {
     }
 
     final completer = Completer<Directory>();
-    void callback(err, stringResult) {
+    void callback(Object? err, String? stringResult) {
       if (err == null) {
         var result = stringResult as String;
         completer.complete(Directory(result));
       } else {
-        completer.completeError(err as Object);
+        completer.completeError(err);
       }
     }
 

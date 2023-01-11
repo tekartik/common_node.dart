@@ -101,7 +101,7 @@ abstract class HttpServer implements common.HttpServer {
   /// isolates are bound to the port, then the incoming connections will be
   /// distributed among all the bound `HttpServer`s. Connections can be
   /// distributed over multiple isolates this way.
-  static Future<HttpServer> bind(address, int port,
+  static Future<HttpServer> bind(Object? address, int port,
           {int backlog = 0, bool v6Only = false, bool shared = false}) =>
       _HttpServer.bind(address, port,
           backlog: backlog, v6Only: v6Only, shared: shared);
@@ -138,12 +138,12 @@ class _HttpServer extends Stream<common.HttpRequest> implements HttpServer {
     _server.close();
   }
 
-  void _jsErrorHandler(error) {
+  void _jsErrorHandler(Object error) {
     if (_listenCompleter != null) {
-      _listenCompleter!.completeError(error as Object);
+      _listenCompleter!.completeError(error);
       _listenCompleter = null;
     }
-    _controller.addError(error as Object);
+    _controller.addError(error);
   }
 
   void _jsRequestHandler(
@@ -171,7 +171,7 @@ class _HttpServer extends Stream<common.HttpRequest> implements HttpServer {
     return _listenCompleter!.future;
   }
 
-  static Future<HttpServer> bind(address, int port,
+  static Future<HttpServer> bind(Object? address, int port,
       {int backlog = 0, bool v6Only = false, bool shared = false}) async {
     assert(!shared, 'Shared is not implemented yet');
 
@@ -199,7 +199,7 @@ class _HttpServer extends Stream<common.HttpRequest> implements HttpServer {
   @override
   Future close({bool force = false}) {
     assert(!force, 'Force argument is not supported by Node HTTP server');
-    final completer = Completer();
+    final completer = Completer<void>();
     _server.close(allowInterop(([error]) {
       _controller.close();
       if (error != null) {

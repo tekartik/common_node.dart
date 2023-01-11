@@ -57,11 +57,11 @@ abstract class FileSystemEntity {
 
   Future<String> resolveSymbolicLinks() {
     var completer = Completer<String>();
-    void callback(err, String resolvedPath) {
+    void callback(Object? err, String? resolvedPath) {
       if (err == null) {
-        completer.complete(resolvedPath);
+        completer.complete(resolvedPath as String);
       } else {
-        completer.completeError(err as Object);
+        completer.completeError(err);
       }
     }
 
@@ -132,7 +132,7 @@ class FileStat {
     var completer = Completer<FileStat>();
 
     // stats has to be an optional param despite what the documentation says...
-    void callback(err, [stats]) {
+    void callback(Object? err, [Object? stats]) {
       if (err == null) {
         completer.complete(FileStat._fromNodeStats(stats as Stats));
       } else {
@@ -161,7 +161,7 @@ class FileStat {
   String modeString() {
     var permissions = mode & 0xFFF;
     var codes = const ['---', '--x', '-w-', '-wx', 'r--', 'r-x', 'rw-', 'rwx'];
-    var result = [];
+    var result = <String>[];
     if ((permissions & 0x800) != 0) result.add('(suid) ');
     if ((permissions & 0x400) != 0) result.add('(guid) ');
     if ((permissions & 0x200) != 0) result.add('(sticky) ');

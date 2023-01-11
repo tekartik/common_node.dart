@@ -38,7 +38,7 @@ void main() {
       expect(await fs.type('.'), FileSystemEntityType.directory);
     });
     test('test_path', () async {
-      expect(fileSystemContext.basePath,
+      expect(fileSystemContext.outPath,
           endsWith(join('.dart_tool', 'tekartik_fs_node', 'test', 'fs')));
     });
 

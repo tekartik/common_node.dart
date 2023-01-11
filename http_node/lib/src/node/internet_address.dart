@@ -59,9 +59,9 @@ class InternetAddress implements common.InternetAddress {
     final completer = Completer<List<InternetAddress>>();
     final options = DNSLookupOptions(all: true, verbatim: true);
 
-    void handleLookup(error, result) {
+    void handleLookup(Object? error, Object? result) {
       if (error != null) {
-        completer.completeError(error as Object);
+        completer.completeError(error);
       } else {
         final addresses = List<DNSAddress>.from(result as List);
         var list = addresses
