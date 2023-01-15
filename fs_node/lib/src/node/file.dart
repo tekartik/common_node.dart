@@ -145,9 +145,9 @@ class File extends FileSystemEntity {
 
   Future<File> copy(String newPath) {
     final completer = Completer<File>();
-    void callback(err) {
+    void callback(Object? err) {
       if (err != null) {
-        completer.completeError(err as Object);
+        completer.completeError(err);
       } else {
         completer.complete(File(newPath));
       }
@@ -161,9 +161,9 @@ class File extends FileSystemEntity {
   Future<File> create({bool recursive = false}) {
     // write an empty file
     final completer = Completer<File>();
-    void callback(err, [fileDescriptor]) {
+    void callback(Object? err, [Object? fileDescriptor]) {
       if (err != null) {
-        completer.completeError(err as Object);
+        completer.completeError(err);
       } else {
         var fd = fileDescriptor as int;
         fs.close(fd, js.allowInterop((err) {
@@ -188,9 +188,9 @@ class File extends FileSystemEntity {
           UnsupportedError('Recursive delete is not supported by Node API'));
     }
     final completer = Completer<File>();
-    void callback(err) {
+    void callback(Object? err) {
       if (err != null) {
-        completer.completeError(err as Object);
+        completer.completeError(err);
       } else {
         completer.complete(this);
       }
@@ -251,9 +251,9 @@ class File extends FileSystemEntity {
 
   Future<File> rename(String newPath) {
     final completer = Completer<File>();
-    void cb(err) {
+    void cb(Object? err) {
       if (err != null) {
-        completer.completeError(err as Object);
+        completer.completeError(err);
       } else {
         completer.complete(File(newPath));
       }
@@ -277,10 +277,10 @@ class File extends FileSystemEntity {
     atime ??= Date(currentStat.accessed.millisecondsSinceEpoch);
     mtime ??= Date(currentStat.modified.millisecondsSinceEpoch);
 
-    final completer = Completer();
-    void cb([err]) {
+    final completer = Completer<void>();
+    void cb([Object? err]) {
       if (err != null) {
-        completer.completeError(err as Object);
+        completer.completeError(err);
       } else {
         completer.complete();
       }

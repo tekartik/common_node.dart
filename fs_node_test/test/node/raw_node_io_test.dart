@@ -38,7 +38,7 @@ void main() {
       var all = <int>[];
       await stream.listen((data) {
         all.addAll(data);
-      }).asFuture();
+      }).asFuture<void>();
       expect(utf8.decode(all), 'content');
     });
 
@@ -79,7 +79,7 @@ void main() {
       var all = <int>[];
       await stream.listen((data) {
         all.addAll(data);
-      }).asFuture();
+      }).asFuture<void>();
       expect(utf8.decode(all), 'content');
     });
 

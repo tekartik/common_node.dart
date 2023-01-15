@@ -21,7 +21,7 @@ class ReadableStream<T> extends Stream<T> implements HasReadable {
   /// It is not recommended to interact with this object directly.
   @override
   final Readable nativeInstance;
-  final Function(dynamic data)? _convert;
+  final Object? Function(dynamic data)? _convert;
   late StreamController<T> _controller;
 
   /// Creates new [ReadableStream] which wraps [nativeInstance] of `Readable`
@@ -59,8 +59,7 @@ class ReadableStream<T> extends Stream<T> implements HasReadable {
   @override
   StreamSubscription<T> listen(void Function(T event)? onData,
       {Function? onError, void Function()? onDone, bool? cancelOnError}) {
-    nativeInstance.on('data', allowInterop((chunk) {
-      assert(chunk != null);
+    nativeInstance.on('data', allowInterop((Object chunk) {
       var data = (_convert == null) ? chunk : _convert!(chunk);
       _controller.add(data as T);
     }));
@@ -107,7 +106,7 @@ class WritableStream<S> implements StreamSink<S> {
 
   /// Writes [data] to nativeStream.
   void _write(S data) {
-    var completer = Completer();
+    var completer = Completer<void>();
     void doFlush([JsError? error]) {
       if (completer.isCompleted) return;
       if (error != null) {

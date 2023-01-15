@@ -60,7 +60,7 @@ fs.FileMode wrapIofileModeImpl(node.FileMode ioFileMode) {
   }
 }
 
-FileSystemExceptionNode ioWrapError(e) {
+FileSystemExceptionNode ioWrapError(Object? e) {
   // devPrint('error $e ${e.runtimeType}');
   if (e is node.FileSystemException) {
     return wrapIoFileSystemException(e); //FileSystemExceptionNode.io(e);
@@ -145,7 +145,7 @@ class WriteFileSinkNode implements StreamSink<List<int>> {
   Future addStream(Stream<List<int>> stream) async {
     await stream.listen((List<int> data) {
       add(data);
-    }).asFuture();
+    }).asFuture<void>();
   }
 }
 
@@ -154,7 +154,7 @@ class ReadFileStreamCtrlNode {
     _ctlr = StreamController();
     _nodeStream.listen((data) {
       _ctlr.add(data);
-    }, onError: (error, StackTrace stackTrace) {
+    }, onError: (Object error, StackTrace stackTrace) {
       _ctlr.addError(ioWrapError(error));
     }, onDone: () {
       _ctlr.close();

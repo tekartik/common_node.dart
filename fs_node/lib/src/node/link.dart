@@ -48,9 +48,9 @@ class Link extends FileSystemEntity {
     }
 
     final completer = Completer<Link>();
-    void cb([err]) {
+    void cb([Object? err]) {
       if (err != null) {
-        completer.completeError(err as Object);
+        completer.completeError(err);
       } else {
         completer.complete(this);
       }
@@ -68,9 +68,9 @@ class Link extends FileSystemEntity {
           UnsupportedError('Recursive flag is not supported by Node.js'));
     }
     final completer = Completer<Link>();
-    void callback(err) {
+    void callback(Object? err) {
       if (err != null) {
-        completer.completeError(err as Object);
+        completer.completeError(err);
       } else {
         completer.complete(this);
       }
@@ -83,9 +83,9 @@ class Link extends FileSystemEntity {
 
   Future<Link> rename(String newPath) {
     final completer = Completer<Link>();
-    void cb(err) {
+    void cb(Object? err) {
       if (err != null) {
-        completer.completeError(err as Object);
+        completer.completeError(err);
       } else {
         completer.complete(Link(newPath));
       }
@@ -98,9 +98,9 @@ class Link extends FileSystemEntity {
 
   Future<String> target() {
     final completer = Completer<String>();
-    void cb(err, String target) {
+    void cb(Object? err, String target) {
       if (err != null) {
-        completer.completeError(err as Object);
+        completer.completeError(err);
       } else {
         completer.complete(target);
       }

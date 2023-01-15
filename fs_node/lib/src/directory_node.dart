@@ -86,7 +86,7 @@ class DirectoryNode extends FileSystemEntityNode implements Directory {
               .list(recursive: true, followLinks: followLinks)
               .listen((FileSystemEntity entity) {
             controller.add(entity);
-          }).asFuture());
+          }).asFuture<void>());
         }
         //} else if (data is Link) {
         //  controller.add(new LinkImpl.io(data));
@@ -94,7 +94,7 @@ class DirectoryNode extends FileSystemEntityNode implements Directory {
         controller.addError(
             UnsupportedError('type $data ${data.runtimeType} not supported'));
       }
-    }, onError: (e) {
+    }, onError: (Object e) {
       // Important here to wrap the error
       controller.addError(ioWrapError(e));
     }, onDone: () async {

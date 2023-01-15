@@ -79,7 +79,7 @@ class RequestHttpHeaders extends HttpHeaders {
 
   @override
   dynamic _getHeader(String name) =>
-      js_util.getProperty(_request.headers as Object, name);
+      js_util.getProperty<dynamic>(_request.headers as Object, name);
 
   @override
   void _setHeader(String name, dynamic value) =>
@@ -99,7 +99,7 @@ class RequestHttpHeaders extends HttpHeaders {
 abstract class HttpHeaders implements common.HttpHeaders {
   dynamic _getHeader(String name);
 
-  void _setHeader(String name, value);
+  void _setHeader(String name, Object? value);
 
   //void _removeHeader(String name);
 
@@ -288,7 +288,9 @@ abstract class HttpHeaders implements common.HttpHeaders {
       throw UnsupportedError('HttpHeaders.add(preserveHeaderCase: true)');
     } else {
       final existingValues = this[name];
-      var values = existingValues != null ? List.from(existingValues) : [];
+      var values = existingValues != null
+          ? List<String>.from(existingValues)
+          : <String>[];
       values.add(value.toString());
       _setHeader(name, values);
     }

@@ -18,7 +18,11 @@ class FileSystemTestContextNode extends FileSystemTestContext {
   @override
   final FileSystemNode fs = fileSystemNode;
 
+  late String _basePath;
+  @override
+  String get outPath => _basePath;
+
   FileSystemTestContextNode(String path) {
-    basePath = join('.dart_tool', 'tekartik_fs_node', 'test', path);
+    _basePath = join('.dart_tool', 'tekartik_fs_node', 'test', path);
   }
 }
