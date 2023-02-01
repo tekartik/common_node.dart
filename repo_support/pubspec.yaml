@@ -12,7 +12,6 @@ dev_dependencies:
   process_run: '>=0.10.3'
   test:
   dev_test:
-  pedantic:
   tekartik_build_node:
     git:
       url: https://github.com/tekartik/build_node.dart
