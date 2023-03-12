@@ -1,12 +1,15 @@
 // Copyright (c) 2017, Anatoly Pulyaevskiy. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
 import 'dart:async';
-import 'dart:js';
-import 'dart:js_util';
+
+//import 'dart:js_util' as jsu;
 import 'dart:typed_data';
 
+import 'package:js/js.dart' as js;
+import 'package:js/js_util.dart' as jsu;
 import 'package:node_interop/http.dart' as http_node;
 import 'package:tekartik_common_utils/common_utils_import.dart';
+
 // ignore: implementation_imports
 import 'package:tekartik_fs_node/src/node/streams.dart';
 
@@ -124,8 +127,8 @@ class _HttpServer extends Stream<common.HttpRequest> implements HttpServer {
       onResume: _onResume,
       onCancel: _onCancel,
     );
-    _server = http_node.http.createServer(allowInterop(_jsRequestHandler));
-    _server.on('error', allowInterop(_jsErrorHandler));
+    _server = http_node.http.createServer(js.allowInterop(_jsRequestHandler));
+    _server.on('error', js.allowInterop(_jsErrorHandler));
   }
 
   void _onListen() {}
@@ -167,7 +170,8 @@ class _HttpServer extends Stream<common.HttpRequest> implements HttpServer {
       _listenCompleter = null;
     }
 
-    _server.listen(port, address.address, null, allowInterop(listeningHandler));
+    _server.listen(
+        port, address.address, null, js.allowInterop(listeningHandler));
     return _listenCompleter!.future;
   }
 
@@ -200,7 +204,7 @@ class _HttpServer extends Stream<common.HttpRequest> implements HttpServer {
   Future close({bool force = false}) {
     assert(!force, 'Force argument is not supported by Node HTTP server');
     final completer = Completer<void>();
-    _server.close(allowInterop(([error]) {
+    _server.close(js.allowInterop(([error]) {
       _controller.close();
       if (error != null) {
         completer.complete(error);
@@ -304,7 +308,7 @@ class NodeHttpRequest implements common.HttpRequest, HasReadable {
       if (proto != null) {
         scheme = proto.first;
       } else {
-        var isSecure = (getProperty(socket, 'encrypted') as bool?) ?? false;
+        var isSecure = (jsu.getProperty(socket, 'encrypted') as bool?) ?? false;
         scheme = isSecure ? 'https' : 'http';
       }
       var hostList = headers['x-forwarded-host'];
