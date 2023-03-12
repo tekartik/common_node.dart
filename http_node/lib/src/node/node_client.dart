@@ -8,7 +8,7 @@ import 'package:http/http.dart';
 import 'package:node_interop/http.dart';
 import 'package:node_interop/https.dart';
 import 'package:node_interop/node.dart';
-import 'package:node_interop/util.dart';
+import 'package:node_interop/util.dart' as node;
 
 import 'http_common.dart' as common;
 
@@ -87,7 +87,7 @@ class _RequestHandler {
 
   Future<StreamedResponse> send() async {
     _body = await request.finalize().toList();
-    _headers = jsify(request.headers);
+    _headers = node.jsify(request.headers);
 
     var response = await _send();
     if (request.followRedirects && response.isRedirect) {
@@ -126,7 +126,7 @@ class _RequestHandler {
     var completer = Completer<StreamedResponse>();
 
     void handleResponse(IncomingMessage response) {
-      final rawHeaders = dartify(response.headers) as Map;
+      final rawHeaders = node.dartify(response.headers) as Map;
       final headers = <String, String>{};
 
       for (var key in rawHeaders.keys) {
