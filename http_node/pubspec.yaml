@@ -4,20 +4,20 @@ version: 0.6.0
 publish_to: none
 
 environment:
-  sdk: '>=2.18.0 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   tekartik_http:
     git:
       url: https://github.com/tekartik/http.dart
       path: http
-      ref: dart2_3
+      ref: dart3a
     version: '>=0.6.0'
   tekartik_http_io:
     git:
       url: https://github.com/tekartik/http.dart
       path: http_io
-      ref: dart2_3
+      ref: dart3a
     version: '>=0.6.0'
   node_interop:
   http:
@@ -29,7 +29,7 @@ dependencies:
     git:
       url: https://github.com/tekartik/common_node.dart
       path: fs_node
-      ref: dart2_3
+      ref: dart3a
     version: '>=0.1.0'
 
 dev_dependencies:
@@ -38,24 +38,18 @@ dev_dependencies:
   build_runner: '>=1.7.0'
   build_test: '>=0.10.8'
   # build_node_compilers: ">=0.2.2"
-  tekartik_build_utils:
-    git:
-      url: https://github.com/tekartik/build_utils.dart
-      ref: dart2_3
-    version: '>=0.6.5+1'
-
   tekartik_platform_node:
     git:
       url: https://github.com/tekartik/common_node.dart
       path: platform_node
-      ref: dart2_3
+      ref: dart3a
     version: '>=0.1.0'
 
   tekartik_http_test:
     git:
       url: https://github.com/tekartik/http.dart
       path: http_test
-      ref: dart2_3
+      ref: dart3a
     version: '>=0.1.0'
 dependency_overrides:
   tekartik_fs_node:
