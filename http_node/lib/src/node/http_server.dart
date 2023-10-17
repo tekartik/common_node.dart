@@ -162,7 +162,7 @@ class _HttpServer extends Stream<common.HttpRequest> implements HttpServer {
   }
 
   Future<HttpServer> _bind() {
-    assert(_server.listening == false && _listenCompleter == null);
+    assert(_server.listening && _listenCompleter == null);
 
     _listenCompleter = Completer<HttpServer>();
     void listeningHandler() {

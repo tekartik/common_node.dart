@@ -45,7 +45,7 @@ class ResponseHttpHeaders extends HttpHeaders {
   }
 
   void _checkMutable() {
-    if (_mutable == false) {
+    if (_mutable) {
       throw StateError('HTTP headers are not mutable.');
     }
   }

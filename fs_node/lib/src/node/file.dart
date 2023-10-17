@@ -207,12 +207,12 @@ class File extends FileSystemEntity {
   }
 
   Future<DateTime> lastAccessed() =>
-      FileStat.stat(path).then((_) => _.accessed);
+      FileStat.stat(path).then((stat) => stat.accessed);
 
   Future<DateTime> lastModified() =>
-      FileStat.stat(path).then((_) => _.modified);
+      FileStat.stat(path).then((stat) => stat.modified);
 
-  Future<int> length() => FileStat.stat(path).then((_) => _.size);
+  Future<int> length() => FileStat.stat(path).then((stat) => stat.size);
 
   Stream<Uint8List> openRead([int? start, int? end]) {
     var options = ReadStreamOptions();
@@ -296,7 +296,7 @@ class File extends FileSystemEntity {
       bool flush = false}) async {
     var sink = openWrite(mode: mode);
     sink.add(bytes);
-    if (flush == true) {
+    if (flush) {
       await sink.flush();
     }
     await sink.close();
@@ -309,7 +309,7 @@ class File extends FileSystemEntity {
       bool flush = false}) async {
     var sink = openWrite(mode: mode, encoding: encoding);
     sink.write(contents);
-    if (flush == true) {
+    if (flush) {
       await sink.flush();
     }
     await sink.close();
