@@ -558,8 +558,7 @@ class NodeHttpRequest implements common.HttpRequest, HasReadable {
 /// Node.js native representations.
 class NodeHttpResponse extends NodeUint8ListSink
     implements common.HttpResponse {
-  NodeHttpResponse(http_node.ServerResponse nativeResponse)
-      : super(nativeResponse);
+  NodeHttpResponse(http_node.ServerResponse super.nativeResponse);
 
   //@override
   http_node.ServerResponse get nativeResponse =>
