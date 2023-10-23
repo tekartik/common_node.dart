@@ -38,7 +38,7 @@ FileNode wrapIoFile(node.File ioFile) => FileNode.io(ioFile);
 node.File unwrapIoFile(File file) => (file as FileNode).ioFile;
 
 class FileNode extends FileSystemEntityNode with FileMixin implements File {
-  FileNode.io(node.File file) : super(file);
+  FileNode.io(node.File super.file);
 
   FileNode(String path) : super(node.File(path));
 

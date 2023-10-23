@@ -13,7 +13,7 @@ DirectoryNode wrapIoDirectory(node.Directory ioDirectory) =>
 node.Directory unwrapIoDirectory(Directory dir) => (dir as DirectoryNode).ioDir;
 
 class DirectoryNode extends FileSystemEntityNode implements Directory {
-  DirectoryNode.io(node.Directory dir) : super(dir);
+  DirectoryNode.io(node.Directory super.dir);
 
   DirectoryNode(String path) : super(node.Directory(path));
 

@@ -179,8 +179,8 @@ class NodeIOSink extends WritableStream<List<int>> {
     return Buffer.from(data);
   }
 
-  NodeIOSink(Writable nativeStream, {this.encoding = utf8})
-      : super(nativeStream, convert: _nodeIoSinkConvert);
+  NodeIOSink(super.nativeStream, {this.encoding = utf8})
+      : super(convert: _nodeIoSinkConvert);
 
   Encoding encoding;
 
@@ -214,8 +214,8 @@ class NodeUint8ListSink extends WritableStream<Uint8List> {
     return Buffer.from(data);
   }
 
-  NodeUint8ListSink(Writable nativeStream, {this.encoding = utf8})
-      : super(nativeStream, convert: _nodeIoSinkConvert);
+  NodeUint8ListSink(super.nativeStream, {this.encoding = utf8})
+      : super(convert: _nodeIoSinkConvert);
 
   Encoding encoding;
 

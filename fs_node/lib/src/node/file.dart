@@ -18,14 +18,13 @@ List<int> _asIntList(dynamic list) =>
     list is List<int> ? list : (list as List).cast<int>();
 
 class _ReadStream extends ReadableStream<Uint8List> {
-  _ReadStream(ReadStream nativeStream)
-      : super(nativeStream,
-            convert: (chunk) => Uint8List.fromList(_asIntList(chunk)));
+  _ReadStream(ReadStream super.nativeStream)
+      : super(convert: (chunk) => Uint8List.fromList(_asIntList(chunk)));
 }
 
 class _WriteStream extends NodeIOSink {
-  _WriteStream(WriteStream nativeStream, Encoding encoding)
-      : super(nativeStream, encoding: encoding);
+  _WriteStream(WriteStream super.nativeStream, Encoding encoding)
+      : super(encoding: encoding);
 }
 
 /// A reference to a file on the file system.
