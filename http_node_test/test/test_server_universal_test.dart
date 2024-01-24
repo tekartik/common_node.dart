@@ -3,7 +3,7 @@ library test_service_universal_client_test;
 
 // Copyright (c) 2017, Alexandre Roux. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
-import 'package:dev_test/build_support.dart';
+import 'package:dev_build/build_support.dart';
 import 'package:process_run/shell.dart';
 import 'package:tekartik_http_io/http_server_io.dart';
 import 'package:tekartik_http_test/test_server.dart';

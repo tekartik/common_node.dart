@@ -8,7 +8,7 @@ import 'package:tekartik_fs_test/test_common.dart';
 //import 'package:tekartik_platform/context.dart';
 //import 'package:tekartik_platform_node/context_node.dart';
 
-export 'package:dev_test/test.dart';
+export 'package:test/test.dart';
 
 class PlatformContextNode extends PlatformContext {}
 

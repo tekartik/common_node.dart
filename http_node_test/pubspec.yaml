@@ -30,7 +30,7 @@ dependencies:
 
 dev_dependencies:
   test: ">=1.0.0"
-  dev_test: any
+  dev_build: any
   tekartik_fs_test:
     git:
       url: https://github.com/tekartik/fs_shim.dart

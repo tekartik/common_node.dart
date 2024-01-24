@@ -30,7 +30,6 @@ dependencies:
   pub_semver:
 dev_dependencies:
   test: ">=1.2.0"
-  dev_test: any
   tekartik_platform_test:
     git:
       url: https://github.com/tekartik/platform.dart
