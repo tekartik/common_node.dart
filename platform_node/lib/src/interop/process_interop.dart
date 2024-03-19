@@ -1,1 +1,10 @@
-export 'package:node_interop/node_interop.dart' show process;
+import 'dart:js_interop';
+
+@JS()
+extension type Process._(JSObject _) implements JSObject {
+  /// node version
+  external String get version;
+}
+
+@JS()
+external Process get process;

@@ -1,10 +1,63 @@
 // Copyright (c) 2017, Anatoly Pulyaevskiy. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
-import 'package:node_interop/node.dart';
-import 'package:node_interop/os.dart';
-import 'package:node_interop/path.dart';
-import 'package:node_interop/util.dart';
+import 'dart:js_interop' as js;
+import 'dart:js_interop_unsafe' as js;
+
+@js.JS('require')
+external js.JSAny? require(String module);
+
+var jsOs = require('os') as JsOs;
+
+extension type JsOs._(js.JSObject _) implements js.JSObject {
+  external String platform();
+
+  external String release();
+
+  external js.JSArray<js.JSAny> cpus();
+
+  external String hostname();
+}
+
+extension type JsProcess._(js.JSObject _) implements js.JSObject {
+  external JsProcessEnv get env;
+
+  external String get argv0;
+
+  external String get execPath;
+
+  external js.JSArray get argv;
+
+  external js.JSArray get execArgv;
+}
+
+extension type JsPath._(js.JSObject _) implements js.JSObject {
+  external String get sep;
+}
+
+extension on js.JSArray {
+  List<String> toDartStringList() =>
+      List<String>.from(toDart.map((e) => (e as js.JSString).toDart));
+}
+
+@js.JS('process')
+external JsProcess get jsProcess;
+
+var jsPath = require('path') as JsPath;
+
+@js.JS('Object.keys')
+external js.JSArray jsObjectKeys(js.JSObject object);
+
+extension type JsProcessEnv._(js.JSObject _) implements js.JSObject {
+  Map<String, String> toMap() {
+    var map = <String, String>{};
+    var keys = jsObjectKeys(this).toDartStringList();
+    for (var key in keys) {
+      map[key] = (getProperty(key.toJS) as js.JSString).toDart;
+    }
+    return map;
+  }
+}
 
 /// Information about the environment in which the current program is running.
 ///
@@ -61,24 +114,24 @@ import 'package:node_interop/util.dart';
 ///     }
 abstract class Platform {
   /// The number of individual execution units of the machine.
-  static int get numberOfProcessors => os.cpus().length;
+  static int get numberOfProcessors => jsOs.cpus().toDart.length;
 
   /// The path separator used by the operating system to separate
   /// components in file paths.
-  static String get pathSeparator => path.sep;
+  static String get pathSeparator => jsPath.sep;
 
   /// Get the name of the current locale.
   static String get localeName =>
       throw UnsupportedError('Not supported in Node.');
 
   /// A string representing the operating system or platform.
-  static String get operatingSystem => os.platform();
+  static String get operatingSystem => jsOs.platform();
 
   /// A string representing the version of the operating system or platform.
-  static String get operatingSystemVersion => os.release();
+  static String get operatingSystemVersion => jsOs.release();
 
   /// The local hostname for the system.
-  static String get localHostname => os.hostname();
+  static String get localHostname => jsOs.hostname();
 
   /// Whether the operating system is a version of
   /// [Linux](https://en.wikipedia.org/wiki/Linux).
@@ -119,8 +172,12 @@ abstract class Platform {
   /// so on Windows the map is case-insensitive and will convert
   /// all keys to upper case.
   /// On other platforms, keys can be distinguished by case.
-  static Map<String, String> get environment =>
-      Map.unmodifiable(dartify(process.env));
+  static Map<String, String> get environment {
+    var map = jsProcess.env.toMap();
+    return map;
+  }
+
+  // Map<String, String>.unmodifiable(jsProcess.env.dartify() as Map);
 
   /// The path of the executable used to run the script in this isolate.
   ///
@@ -129,14 +186,14 @@ abstract class Platform {
   /// was found by searching the system path.
   ///
   /// Use [resolvedExecutable] to get an absolute path to the executable.
-  static String get executable => process.argv0;
+  static String get executable => jsProcess.argv0;
 
   /// The path of the executable used to run the script in this
   /// isolate after it has been resolved by the OS.
   ///
   /// This is the absolute path, with all symlinks resolved, to the
   /// executable used to run the script.
-  static String get resolvedExecutable => process.execPath;
+  static String get resolvedExecutable => jsProcess.execPath;
 
   /// The absolute URI of the script being run in this isolate.
   ///
@@ -159,7 +216,11 @@ abstract class Platform {
   /// These are the command-line flags to the executable that precedes
   /// the script name.
   /// Provides a list every time the value is read.
-  static List<String> get executableArguments => List.from(process.execArgv);
+  static List<String> get executableArguments =>
+      jsProcess.execArgv.toDartStringList();
+
+  /// All node arguments (node file.js other args)
+  static List<String> get arguments => jsProcess.argv.toDartStringList();
 
   /// The `--package-root` flag passed to the executable used to run the script
   /// in this isolate.

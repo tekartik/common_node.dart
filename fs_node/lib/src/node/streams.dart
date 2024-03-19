@@ -60,7 +60,7 @@ class ReadableStream<T> extends Stream<T> implements HasReadable {
   StreamSubscription<T> listen(void Function(T event)? onData,
       {Function? onError, void Function()? onDone, bool? cancelOnError}) {
     nativeInstance.on('data', allowInterop((Object chunk) {
-      var data = (_convert == null) ? chunk : _convert!(chunk);
+      var data = (_convert == null) ? chunk : _convert(chunk);
       _controller.add(data as T);
     }));
     nativeInstance.on('end', allowInterop(() {
@@ -116,7 +116,7 @@ class WritableStream<S> implements StreamSink<S> {
       }
     }
 
-    var chunk = (_convert == null) ? data : _convert!(data);
+    var chunk = (_convert == null) ? data : _convert(data);
     var isFlushed = nativeInstance.write(chunk, allowInterop(doFlush)) as bool;
     if (!isFlushed) {
       // Keep track of the latest unflushed chunk of data.

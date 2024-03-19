@@ -6,6 +6,6 @@ Future main() async {
   var shell = Shell();
 
   await shell.run('''
-  node build/node/main.dart.js
+  node build/node/main.dart.js argtmp
   ''');
 }
