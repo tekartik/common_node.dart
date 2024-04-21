@@ -1,4 +1,4 @@
-@TestOn('vm || browser')
+@TestOn('vm || node')
 library tekartik_http_node.test.http_node_api_test;
 
 import 'package:tekartik_common_utils/env_utils.dart';
