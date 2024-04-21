@@ -1,5 +1,5 @@
 @TestOn('node')
-library tekartik_platform_node.context_node_test;
+library;
 
 import 'package:pub_semver/pub_semver.dart';
 import 'package:tekartik_platform_node/context_node.dart';
@@ -15,7 +15,7 @@ void main() {
       });
     });
     test('nodeVersion', () {
-      expect(nodeVersion, greaterThan(Version(8, 0, 0)));
+      expect(nodeVersion, greaterThan(Version(18, 0, 0)));
     });
   });
 }
