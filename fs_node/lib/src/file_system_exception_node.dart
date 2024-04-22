@@ -5,8 +5,9 @@ import 'package:tekartik_fs_node/src/utils.dart';
 import 'import_common_node.dart' as node;
 
 // OSError Wrap/unwrap
-OSErrorNode wrapIoOSError(node.NodeOSError ioOSError) =>
-    OSErrorNode.io(ioOSError);
+OSErrorNode wrapIoOSError(OSError ioOSError) => (ioOSError is OSErrorNode)
+    ? ioOSError
+    : OSErrorNode.io(ioOSError as node.NodeOSError);
 
 node.NodeOSError? unwrapIoOSError(OSError osError) =>
     (osError as OSErrorNode).ioOSError;
@@ -130,8 +131,7 @@ class FileSystemExceptionNode implements fs.FileSystemException {
         osError = osErrorFromMessage(e);
 
   FileSystemExceptionNode.io(this.ioFileSystemException)
-      : osError =
-            wrapIoOSError(ioFileSystemException!.osError as node.NodeOSError),
+      : osError = wrapIoOSError(ioFileSystemException!.osError!),
         status = _statusFromException(ioFileSystemException),
         _message = ioFileSystemException.message;
 
@@ -144,7 +144,7 @@ class FileSystemExceptionNode implements fs.FileSystemException {
   final String? _message;
 
   @override
-  String get message => _message!;
+  String get message => _message ?? 'no_message';
 
   @override
   String? get path => ioFileSystemException!.path;

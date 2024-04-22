@@ -35,14 +35,14 @@ Future<String> _wrapFutureString(Future<String> future) => ioWrap(future);
 // Wrap/unwrap
 FileNode wrapIoFile(node.File ioFile) => FileNode.io(ioFile);
 
-node.File unwrapIoFile(File file) => (file as FileNode).ioFile;
+node.File unwrapIoFile(File file) => (file as FileNode).nodeFile;
 
 class FileNode extends FileSystemEntityNode with FileMixin implements File {
   FileNode.io(node.File super.file);
 
   FileNode(String path) : super(node.File(path));
 
-  node.File get ioFile => nativeInstance as node.File;
+  node.File get nodeFile => nativeInstance as node.File;
 
   @override
   Future<FileNode> create({bool recursive = false}) async {
@@ -52,7 +52,7 @@ class FileNode extends FileSystemEntityNode with FileMixin implements File {
     if (recursive) {
       await pathRecursiveCreateParent(path);
     }
-    await ioWrap(ioFile.create(recursive: false));
+    await ioWrap(nodeFile.create(recursive: false));
 
     return this;
   }
@@ -84,7 +84,7 @@ class FileNode extends FileSystemEntityNode with FileMixin implements File {
 
      */
     var ioMode = fileWriteMode(mode);
-    var ioSink = ioFile.openWrite(mode: ioMode, encoding: encoding);
+    var ioSink = nodeFile.openWrite(mode: ioMode, encoding: encoding);
     final sink = WriteFileSinkNode(ioSink);
 
     return sink;
@@ -96,26 +96,26 @@ class FileNode extends FileSystemEntityNode with FileMixin implements File {
   Stream<Uint8List> openRead([int? start, int? end]) {
     // Node is end inclusive!
     return ReadFileStreamCtrlNode(intListStreamToUint8ListStream(
-            ioFile.openRead(start, end != null ? end - 1 : null)))
+            nodeFile.openRead(start, end != null ? end - 1 : null)))
         .stream;
   }
 
   @override
   Future<FileNode> rename(String newPath) async {
-    await ioWrap(ioFile.rename(newPath));
+    await ioWrap(nodeFile.rename(newPath));
     return FileNode(newPath);
   }
 
   @override
   Future<FileNode> copy(String newPath) async {
-    await ioWrap(ioFile.copy(newPath));
+    await ioWrap(nodeFile.copy(newPath));
     return FileNode(newPath);
   }
 
   @override
   Future<FileNode> writeAsBytes(List<int> bytes,
           {FileMode mode = FileMode.write, bool flush = false}) =>
-      ioWrap(ioFile.writeAsBytes(bytes,
+      ioWrap(nodeFile.writeAsBytes(bytes,
               mode: fileWriteMode(mode), flush: flush))
           .then(_me);
 
@@ -124,20 +124,20 @@ class FileNode extends FileSystemEntityNode with FileMixin implements File {
           {FileMode mode = FileMode.write,
           Encoding encoding = utf8,
           bool flush = false}) =>
-      ioWrap(ioFile.writeAsString(contents,
+      ioWrap(nodeFile.writeAsString(contents,
               mode: fileWriteMode(mode), encoding: encoding, flush: flush))
           .then(_me);
 
   @override
   Future<Uint8List> readAsBytes() async =>
-      asUint8List(await ioWrap(ioFile.readAsBytes()));
+      asUint8List(await ioWrap(nodeFile.readAsBytes()));
 
   @override
   Future<String> readAsString({Encoding encoding = utf8}) =>
-      _wrapFutureString(ioFile.readAsString(encoding: encoding));
+      _wrapFutureString(nodeFile.readAsString(encoding: encoding));
 
   @override
-  File get absolute => FileNode.io(ioFile.absolute);
+  File get absolute => FileNode.io(nodeFile.absolute);
 
   @override
   String toString() => "File: '$path'";

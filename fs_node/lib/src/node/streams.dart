@@ -1,14 +1,12 @@
 // Copyright (c) 2018, Anatoly Pulyaevskiy. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
-import 'dart:async';
-import 'dart:convert';
 import 'dart:js';
 import 'dart:typed_data';
 
 import 'package:node_interop/node.dart';
 import 'package:node_interop/stream.dart';
 import 'package:tekartik_fs_node/src/file_node.dart';
-import 'package:tekartik_fs_node/src/import_common.dart';
+import 'package:tekartik_js_utils/js_utils_import.dart';
 
 abstract class HasReadable {
   Readable get nativeInstance;
@@ -94,20 +92,22 @@ class WritableStream<S> implements StreamSink<S> {
     nativeInstance.on('error', allowInterop(_errorHandler));
   }
 
+  Object? _closeError;
+
   void _errorHandler(JsError error) {
+    _closeError = error;
+    // devPrint('_errorHandler $error');
     if (_drainCompleter != null && !_drainCompleter!.isCompleted) {
       _drainCompleter!.completeError(error);
     } else if (_closeCompleter != null && !_closeCompleter!.isCompleted) {
       _closeCompleter!.completeError(error);
-    } else {
-      throw error;
-    }
+    } else {}
   }
 
   /// Writes [data] to nativeStream.
   void _write(S data) {
     var completer = Completer<void>();
-    void doFlush([JsError? error]) {
+    void handleFlush([JsError? error]) {
       if (completer.isCompleted) return;
       if (error != null) {
         completer.completeError(error);
@@ -117,10 +117,12 @@ class WritableStream<S> implements StreamSink<S> {
     }
 
     var chunk = (_convert == null) ? data : _convert(data);
-    var isFlushed = nativeInstance.write(chunk, allowInterop(doFlush)) as bool;
-    if (!isFlushed) {
-      // Keep track of the latest unflushed chunk of data.
-      _drainCompleter = completer;
+    nativeInstance.write(chunk, allowInterop(handleFlush)) as bool;
+    // !isFlushed) {
+    var previous = _drainCompleter;
+    _drainCompleter = completer;
+    if (previous != null) {
+      drain.whenComplete(() {});
     }
   }
 
@@ -129,9 +131,13 @@ class WritableStream<S> implements StreamSink<S> {
   ///
   /// If there is no buffered data to drain then returned Future completes in
   /// next event-loop iteration.
-  Future get drain {
-    if (_drainCompleter != null && !_drainCompleter!.isCompleted) {
-      return _drainCompleter!.future;
+  Future<void> get drain async {
+    if (_drainCompleter != null) {
+      try {
+        await _drainCompleter!.future;
+      } catch (e) {
+        _closeError ??= e;
+      }
     }
     return Future.value();
   }
@@ -151,19 +157,32 @@ class WritableStream<S> implements StreamSink<S> {
     throw UnimplementedError();
   }
 
-  @override
-  Future close() {
-    if (_closeCompleter != null) return _closeCompleter!.future;
-    _closeCompleter = Completer();
-    void end() {
-      if (!_closeCompleter!.isCompleted) _closeCompleter!.complete();
-    }
-
-    nativeInstance.end(allowInterop(end));
-    return _closeCompleter!.future;
-  }
-
   Completer? _closeCompleter;
+
+  @override
+  Future close() async {
+    if (_closeError != null) {
+      throw _closeError!;
+    }
+    _closeCompleter ??= () {
+      var completer = Completer<void>.sync();
+
+      void end([Object? error]) {
+        if (!_closeCompleter!.isCompleted) {
+          if (error != null || _closeError != null) {
+            _closeCompleter!.completeError(error ?? _closeError!);
+          } else {
+            _closeCompleter!.complete();
+          }
+        }
+      }
+
+      nativeInstance.end(allowInterop(end));
+      return completer;
+    }();
+
+    return await _closeCompleter!.future;
+  }
 
   @override
   Future get done => close();

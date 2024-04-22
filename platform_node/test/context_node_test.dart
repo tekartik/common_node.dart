@@ -18,12 +18,12 @@ void main() {
       } else if (platformContextNode.node!.isWindows) {
         expect(platformContextNode.platform!.isWindows, isTrue);
         expect(map, {
-          'node': {'platform': 'win32'}
+          'node': {'platform': 'windows'}
         });
       } else if (platformContextNode.node!.isMacOS) {
         expect(platformContextNode.platform!.isMacOS, isTrue);
         expect(map, {
-          'node': {'platform': 'darwin'}
+          'node': {'platform': 'macos'}
         });
       }
     });

@@ -1,8 +1,10 @@
+import 'dart:js_util';
 import 'dart:typed_data';
 
 import 'package:fs_shim/fs.dart' as fs;
 import 'package:tekartik_fs_node/src/file_system_node.dart';
 import 'package:tekartik_fs_node/src/import_common.dart';
+import 'package:tekartik_js_utils/js_utils_import.dart';
 
 import 'file_system_exception_node.dart';
 import 'import_common_node.dart' as node;
@@ -61,13 +63,27 @@ fs.FileMode wrapIofileModeImpl(node.FileMode ioFileMode) {
 }
 
 FileSystemExceptionNode ioWrapError(Object? e) {
-  // devPrint('error $e ${e.runtimeType}');
   if (e is node.FileSystemException) {
     return wrapIoFileSystemException(e); //FileSystemExceptionNode.io(e);
   } else {
-    // print(e.toString());
     return FileSystemExceptionNode.fromString(e.toString());
   }
+  // return e;
+}
+
+FileSystemExceptionNode wrapJsError(Object e) {
+  //  {errno: -21, code: EISDIR, syscall: open,
+  //  path: ...
+  //  }
+
+  // devPrint('error ${jsObjectToDebugString(e)}');
+  var errNo = parseInt(getProperty<Object?>(e, 'errno'));
+  if (errNo == -21) {
+    errNo = fs.FileSystemException.statusIsADirectory;
+  }
+  // devPrint('errNo $errNo');
+  return FileSystemExceptionNode(status: errNo, message: e.toString());
+
   // return e;
 }
 
@@ -128,7 +144,13 @@ class WriteFileSinkNode implements StreamSink<List<int>> {
   // always flush on node
   @override
   Future close() async {
-    await ioWrap(ioSink.flush());
+    try {
+      await ioWrap(ioSink.flush());
+    } catch (e) {
+      // ignoring flush error, reported in close...
+      // devPrint('flush error $e');
+    }
+
     await ioWrap(ioSink.close());
   }
 

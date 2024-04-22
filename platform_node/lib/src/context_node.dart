@@ -19,8 +19,8 @@ class NodeImpl with PlatformMixin implements Node {
     String? platform;
     if (isLinux) {
       platform = 'linux';
-    } else if (isMac) {
-      platform = 'mac';
+    } else if (isMacOS) {
+      platform = 'macos';
     } else if (isWindows) {
       platform = 'windows';
     }

@@ -20,7 +20,12 @@ dependencies:
     version: '>=0.2.0'
   # node_io: '>=1.0.1+2'
   # node_io: any
-
+  tekartik_js_utils:
+    git:
+      url: https://github.com/tekartik/js_utils.dart
+      path: js_utils
+      ref: dart3a
+    version: '>=0.1.0'
 dev_dependencies:
   test: ">=1.0.0"
   tekartik_fs_test:
