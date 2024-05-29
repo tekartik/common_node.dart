@@ -65,6 +65,8 @@ dependency_overrides:
     path: ../http_node
   tekartik_fs_node:
     path: ../fs_node
+  tekartik_core_node:
+    path: ../core_node
   # fs_shim:
   #  path: ../fs
   # tekartik_fs_test:

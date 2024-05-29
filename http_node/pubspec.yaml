@@ -20,6 +20,11 @@ dependencies:
       ref: dart3a
     version: '>=0.6.0'
   node_interop:
+  tekartik_core_node:
+    git:
+      url: https://github.com/tekartik/common_node.dart
+      path: core_node
+      ref: dart3a
   http:
   # node_interop: ">=1.0.3"
   # node_io: '>=1.0.1+2'
@@ -55,3 +60,5 @@ dependency_overrides:
     path: ../fs_node
   tekartik_platform_node:
     path: ../platform_node
+  tekartik_core_node:
+    path: ../core_node

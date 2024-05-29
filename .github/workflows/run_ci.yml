@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    name: Test on ${{ matrix.os }} / ${{ matrix.dart }}
+    name: Test on ${{ matrix.os }} / ${{ matrix.dart }} / ${{ matrix.node }}
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -18,14 +18,25 @@ jobs:
         include:
           - os: ubuntu-latest
             dart: stable
+            node: 20
+          - os: ubuntu-latest
+            dart: stable
+            node: 22
+          - os: ubuntu-latest
+            dart: stable
+            node: 18
           - os: ubuntu-latest
             dart: beta
+            node: 20
           - os: ubuntu-latest
             dart: dev
+            node: 20
           - os: windows-latest
             dart: stable
+            node: 20
           - os: macos-latest
             dart: stable
+            node: 20
     steps:
       - uses: actions/checkout@v4
       - uses: dart-lang/setup-dart@v1.4
@@ -33,7 +44,7 @@ jobs:
           sdk: ${{ matrix.dart }}
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ matrix.node }}
       - run: dart --version
       - run: dart pub get
       - run: dart run tool/run_ci.dart
