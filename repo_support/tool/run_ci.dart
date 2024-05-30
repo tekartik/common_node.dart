@@ -13,7 +13,6 @@ Future<void> main() async {
     'platform_node_test',
     'fs_node',
     'fs_node_test',
-    'http_node_test',
   ]) {
     var path = join(topDir, dir);
     await nodePackageRunCi(path);
@@ -30,6 +29,7 @@ Future<void> main() async {
 
   for (var dir in [
     'http_node',
+    'http_node_test',
   ]) {
     var path = join(topDir, dir);
 
