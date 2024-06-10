@@ -6,8 +6,6 @@ import 'dart:js_interop_unsafe' as js;
 
 import 'package:tekartik_core_node/require.dart';
 
-
-
 var jsOs = require<JsOs>('os');
 
 extension type JsOs._(js.JSObject _) implements js.JSObject {
