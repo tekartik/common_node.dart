@@ -4,10 +4,11 @@
 import 'dart:js_interop' as js;
 import 'dart:js_interop_unsafe' as js;
 
-@js.JS('require')
-external js.JSAny? require(String module);
+import 'package:tekartik_core_node/require.dart';
 
-var jsOs = require('os') as JsOs;
+
+
+var jsOs = require<JsOs>('os');
 
 extension type JsOs._(js.JSObject _) implements js.JSObject {
   external String platform();

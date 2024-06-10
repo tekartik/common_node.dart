@@ -26,6 +26,7 @@ dependencies:
       path: core_node
       ref: dart3a
   http:
+  fetch_client:
   # node_interop: ">=1.0.3"
   # node_io: '>=1.0.1+2'
   # node_http: '>=1.0.0'

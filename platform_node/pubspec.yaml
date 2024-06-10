@@ -28,6 +28,11 @@ dependencies:
   # node_io: '>=2.0.0'
   # node_interop: '>=2.0.0'
   pub_semver:
+  tekartik_core_node:
+    git:
+      url: https://github.com/tekartik/common_node.dart
+      path: core_node
+      ref: dart3a
 dev_dependencies:
   test: ">=1.2.0"
   tekartik_platform_test:
@@ -38,3 +43,6 @@ dev_dependencies:
     version: '>=0.2.1'
   process_run: '>=0.10.0+1'
 
+dependency_overrides:
+  tekartik_core_node:
+    path: ../core_node
