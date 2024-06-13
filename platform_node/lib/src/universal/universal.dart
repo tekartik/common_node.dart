@@ -9,3 +9,6 @@ PlatformContext get platformContextUniversal =>
 
 /// Get the platform information
 Platform get platform => platformContextUniversal.platform!;
+
+/// Get the platform information
+Platform get platformUniversal => platformContextUniversal.platform!;
