@@ -1,8 +1,8 @@
 import 'package:path/path.dart';
-import 'package:tekartik_fs_node/src/directory_node.dart';
-import 'package:tekartik_fs_node/src/file_stat_node.dart';
-import 'package:tekartik_fs_node/src/file_system_node.dart';
 import 'package:tekartik_fs_node/src/import_common.dart';
+import 'package:tekartik_fs_node/src/node_legacy/directory_node.dart';
+import 'package:tekartik_fs_node/src/node_legacy/file_stat_node.dart';
+import 'package:tekartik_fs_node/src/node_legacy/file_system_node.dart';
 
 import 'fs_node.dart';
 import 'import_common_node.dart' as node;

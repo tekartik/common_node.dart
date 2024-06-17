@@ -4,8 +4,8 @@
 library fs_shim.raw_node_io_test;
 
 import 'package:path/path.dart';
-import 'package:tekartik_fs_node/src/fs_node.dart';
-import 'package:tekartik_fs_node/src/import_common_node.dart';
+import 'package:tekartik_fs_node/src/node_legacy/fs_node.dart';
+import 'package:tekartik_fs_node/src/node_legacy/import_common_node.dart';
 import 'package:test/test.dart';
 
 void main() {

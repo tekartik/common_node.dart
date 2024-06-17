@@ -2,8 +2,8 @@ import 'dart:js_util';
 import 'dart:typed_data';
 
 import 'package:fs_shim/fs.dart' as fs;
-import 'package:tekartik_fs_node/src/file_system_node.dart';
 import 'package:tekartik_fs_node/src/import_common.dart';
+import 'package:tekartik_fs_node/src/node_legacy/file_system_node.dart';
 import 'package:tekartik_js_utils/js_utils_import.dart';
 
 import 'file_system_exception_node.dart';

@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
-import 'package:tekartik_fs_node/src/file_system_entity_node.dart';
-import 'package:tekartik_fs_node/src/fs_node.dart';
 import 'package:tekartik_fs_node/src/import_common.dart';
+import 'package:tekartik_fs_node/src/node_legacy/file_system_entity_node.dart';
+import 'package:tekartik_fs_node/src/node_legacy/fs_node.dart';
 
 //import 'package:fs_shim/src/common/compat.dart'; // ignore: implementation_imports
 

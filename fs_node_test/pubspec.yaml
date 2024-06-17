@@ -10,7 +10,7 @@ environment:
 
 dependencies:
   path: '>=1.6.1'
-  fs_shim: '>=0.11.0+3'
+  fs_shim: '>=2.3.1+2'
   node_interop: '>=1.0.3'
   tekartik_fs_node:
     git:
@@ -54,13 +54,15 @@ dev_dependencies:
 dependency_overrides:
   tekartik_platform_node:
     path: ../platform_node
+  tekartik_core_node:
+    path: ../core_node
   tekartik_fs_node:
     path: ../fs_node
   # Temp dev
   # fs_shim:
   #   path: ../../fs_shim.dart/fs
-  # tekartik_fs_test:
-  #  path: ../../fs_shim.dart/fs_test
+  tekartik_fs_test:
+    path: ../../fs_shim.dart/fs_test
 
 # node_io:
 #   git:

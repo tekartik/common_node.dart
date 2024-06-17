@@ -1,7 +1,7 @@
+import '../import_common.dart';
 import 'file_node.dart';
 import 'file_system_entity_node.dart';
 import 'fs_node.dart';
-import 'import_common.dart';
 import 'import_common_node.dart' as node;
 
 DirectoryNode get currentDirectory => DirectoryNode.io(node.Directory.current);

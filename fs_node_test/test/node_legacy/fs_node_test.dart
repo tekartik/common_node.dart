@@ -2,27 +2,33 @@
 // Copyright (c) 2015, Alexandre Roux. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
-library;
+library fs_shim.fs_io_test;
 
 import 'package:fs_shim/fs.dart';
+import 'package:path/path.dart';
+import 'package:tekartik_fs_node/src/node_legacy/directory_node.dart';
+import 'package:tekartik_fs_node/src/node_legacy/file_node.dart';
+import 'package:tekartik_fs_node/src/node_legacy/file_stat_node.dart';
+import 'package:tekartik_fs_node/src/node_legacy/file_system_entity_node.dart';
+import 'package:tekartik_fs_node/src/node_legacy/file_system_exception_node.dart';
+import 'package:tekartik_fs_node/src/node_legacy/fs_node.dart';
+import 'package:tekartik_fs_node/src/node_legacy/import_common_node.dart'
+    as node;
 import 'package:tekartik_fs_test/fs_test.dart';
 
-import '../node_legacy/test_common_node.dart';
+import 'test_common_node.dart';
+import 'test_setup.dart';
 
 void main() {
+  nodeTestSetup();
+
   var fileSystemContext = FileSystemTestContextNode('fs');
   FileSystem fs = fileSystemContext.fs;
 
   group('fs_node', () {
-    test('basics', () {
-      expect(fs.supportsFileLink, isFalse);
-      expect(fs.supportsLink, isFalse);
-      expect(fs.supportsRandomAccess, isFalse);
-    });
-
     test('name', () {
       expect(fs.name, 'node_io');
-    }); /*
+    });
     test('equals', () {
       // Files cannot be compared!
       expect(node.File('test'), isNot(node.File('test')));
@@ -34,7 +40,7 @@ void main() {
     });
     test('test_path', () async {
       expect(fileSystemContext.outPath,
-          endsWith(join('.dart_tool', 'tekartik_fs_node', 'test', 'fs')));
+          startsWith(join('.dart_tool', 'tekartik_fs_node', 'test', 'fs')));
     });
 
     group('conversion', () {
@@ -127,6 +133,47 @@ void main() {
         ioFset = node.FileSystemEntityType.link;
         fset = wrapIoFileSystemEntityType(ioFset);
         expect(unwrapIoFileSystemEntityType(fset), ioFset);
+      });
+    });
+
+    /*
+    group('raw', () {
+      test('dir', () async {
+        Directory dir = new Directory('dir');
+        File file = new File('file');
+        expect(file.fs, fs);
+        expect(dir.fs, fs);
+
+        try {
+          dir = new Directory(join(Directory.current.path,
+              'never_exist_such_a_dummy_dir_for_fs_shim_testing'));
+          await dir.list().toList();
+        } catch (_) {}
+      });
+
+      test('filestat', () async {
+        FileStat ioFileStat = await Directory.current.stat();
+        FileStat fileStat = await Directory.current.stat();
+        expect(fileStat.size, ioFileStat.size);
+      });
+
+      test('current', () {
+        expect(Directory.current.path, Directory.current.path);
+      });
+
+      test('FileSystemEntity', () async {
+        expect(await FileSystemEntity.isLink(Directory.current.path), isFalse);
+        expect(
+            await FileSystemEntity.isDirectory(Directory.current.path), isTrue);
+        expect(await FileSystemEntity.isFile(Directory.current.path), isFalse);
+        expect(
+            await FileSystemEntity.type(Directory.current.path,
+                followLinks: true),
+            FileSystemEntityType.directory);
+        expect(
+            await FileSystemEntity.type(Directory.current.path,
+                followLinks: false),
+            FileSystemEntityType.directory);
       });
     });
     */

@@ -11,7 +11,7 @@ import 'package:node_interop/http.dart' as http_node;
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
 // ignore: implementation_imports
-import 'package:tekartik_fs_node/src/node/streams.dart';
+import 'package:tekartik_fs_node/src/node_legacy/streams.dart';
 
 import 'http_common.dart' as common;
 import 'http_headers.dart';
