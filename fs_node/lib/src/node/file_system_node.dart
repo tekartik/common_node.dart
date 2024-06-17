@@ -5,6 +5,7 @@ import 'package:path/path.dart' as p;
 
 import '../import_common.dart';
 import 'fs_node_js_interop.dart' as node;
+// ignore: unused_import
 import 'import_js.dart' as js;
 
 /// Basic implementation, no support for links yet
@@ -180,7 +181,7 @@ class DirectoryNode extends FileSystemEntityNode
             .toDart;
       }());
     } on FileSystemExceptionNode catch (e) {
-      devPrint('create.error: ${e.status}');
+      // devPrint('create.error: ${e.status}');
       if (e.status == FileSystemException.statusAlreadyExists) {
         // Already exists
       } else {
@@ -205,7 +206,7 @@ Future<T> catchErrorAsync<T>(Future<T> future) async {
 
     if (e is js.JSObject) {
       // {errno: -17, code: EEXIST, syscall: mkdir, path: /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub}
-      devPrint(js.jsAnyToDebugString(e));
+      // devPrint(js.jsAnyToDebugString(e));
       var jsFsError = e as node.JsFsError;
       // print('message: ${jsFsError.message}');
       // print('message: ${jsFsError.toString()}');
