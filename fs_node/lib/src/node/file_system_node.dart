@@ -2,6 +2,7 @@ import 'dart:js_interop' as js;
 import 'dart:typed_data';
 
 import 'package:path/path.dart' as p;
+import 'package:tekartik_js_utils/js_utils_import.dart';
 
 import '../import_common.dart';
 import 'fs_node_js_interop.dart' as node;
@@ -11,6 +12,7 @@ import 'import_js.dart' as js;
 /// Basic implementation, no support for links yet
 class FileSystemNode with FileSystemMixin implements FileSystem {
   final node.JsFs nativeInstance = node.jsFs;
+  final node.JsFsSync nativeInstanceSync = node.jsFsSync;
 
   @override
   bool get supportsFileLink => false;
@@ -32,11 +34,13 @@ class FileSystemNode with FileSystemMixin implements FileSystem {
       {bool followLinks = true}) async {
     try {
       return await catchErrorAsync(() async {
-        var fileStat = await nativeInstance.stat(path!).toDart;
+        var fileStat = await nativeInstance.lstat(path!).toDart;
         if (fileStat.isDirectory()) {
           return FileSystemEntityType.directory;
         } else if (fileStat.isFile()) {
           return FileSystemEntityType.file;
+        } else if (fileStat.isSymbolicLink()) {
+          return FileSystemEntityType.link;
         }
         return FileSystemEntityType.notFound;
       }());
@@ -91,19 +95,26 @@ mixin FileSystemEntityNodeMixin on FileSystemEntityNode {
 
     try {
       return await catchErrorAsync(() async {
-        var jsFileStat = await fsNode.nativeInstance.stat(path).toDart;
+        var jsFileStat = await fsNode.nativeInstance.lstat(path).toDart;
+        // jsFileStat: {dev: 66311, mode: 33204, nlink: 1, uid: 1000, gid: 1000, rdev: 0, blksize: 4096, ino: 47590381, size: 4, blocks: 8, atimeMs: 1718633112014.787, mtimeMs: 1718633112014.787, ctimeMs: 1718633112014.787, birthtimeMs: 1718633112014.787, atime: {}, mtime: {}, ctime: {}, birthtime: {}}
+        // devPrint('jsFileStat: ${js.jsAnyToDebugString(jsFileStat)}');
+        //devPrint('jsFileStat modified: ${jsFileStat.mtime}');
         if (jsFileStat.isDirectory()) {
+          //devPrint('isDirectory');
           return FileStatNode(
               mode: jsFileStat.mode,
-              modified: null,
+              modified: DateTime.fromMillisecondsSinceEpoch(
+                  jsFileStat.mtimeMs.toInt()),
               size: jsFileStat.size,
               type: FileSystemEntityType.directory);
         } else if (jsFileStat.isFile()) {
+          //devPrint('isFile ${jsFileStat.mtimeMs}');
           return FileStatNode(
-              mode: 0,
-              modified: null,
-              size: -1,
-              type: FileSystemEntityType.notFound);
+              mode: jsFileStat.mode,
+              modified: DateTime.fromMillisecondsSinceEpoch(
+                  jsFileStat.mtimeMs.toInt()),
+              size: jsFileStat.size,
+              type: FileSystemEntityType.file);
         }
         return notFound();
       }());
@@ -112,13 +123,42 @@ mixin FileSystemEntityNodeMixin on FileSystemEntityNode {
     }
   }
 
-  @override
-  Future<FileSystemEntity> rename(String newPath) async {
+  Future<void> _rename(String newPath) async {
     await catchErrorAsync(() async {
       await fsNode.nativeInstance.rename(path, newPath).toDart;
     }());
+  }
 
-    return this;
+  bool _isDirectory() {
+    try {
+      var jsFileStat = fsNode.nativeInstanceSync.lstatSync(path);
+      return jsFileStat.isDirectory();
+    } catch (_) {
+      return false;
+    }
+  }
+
+  bool _isFile() {
+    try {
+      var jsFileStat = fsNode.nativeInstanceSync.lstatSync(path);
+      return jsFileStat.isFile();
+    } catch (_) {
+      return false;
+    }
+  }
+
+  void _throwIsADirectoryError([String? path]) {
+    throw FileSystemExceptionNode(
+        message: 'Is a directory',
+        path: path ?? this.path,
+        status: FileSystemException.statusIsADirectory);
+  }
+
+  void _throwIsNotADirectoryError([String? path]) {
+    throw FileSystemExceptionNode(
+        message: 'Not a directory',
+        path: path ?? this.path,
+        status: FileSystemException.statusNotADirectory);
   }
 
   @override
@@ -132,25 +172,83 @@ class FileNode extends FileSystemEntityNode
 
   @override
   Future<File> create({bool recursive = false}) async {
+    if (_isDirectory()) {
+      _throwIsADirectoryError();
+    }
     if (recursive) {
       await parent.create(recursive: true);
     }
-    fsNode.nativeInstance.writeFileBytes(path, Uint8List(0).toJS);
+    if (!await parent.exists()) {
+      throw FileSystemExceptionNode(
+          message: 'Missing parent folder',
+          path: path,
+          status: FileSystemException.statusNotFound);
+    }
+    if (!await exists()) {
+      await writeAsBytes(Uint8List(0));
+    }
     return this;
   }
 
   @override
-  Future<FileSystemEntity> delete({bool recursive = false}) async {
+  Future<FileNode> delete({bool recursive = false}) async {
+    if (_isDirectory()) {
+      _throwIsADirectoryError();
+    }
+    await _delete(recursive: recursive);
+    return this;
+  }
+
+  @override
+  Future<File> writeAsBytes(Uint8List bytes,
+      {FileMode mode = FileMode.write, bool flush = false}) {
+    return catchErrorAsync(() async {
+      if (mode == FileMode.append) {
+        await fsNode.nativeInstance
+            .appendFileBytes(path, Uint8List.fromList(bytes).toJS)
+            .toDart;
+      } else {
+        await fsNode.nativeInstance
+            .writeFileBytes(path, Uint8List.fromList(bytes).toJS)
+            .toDart;
+      }
+      return this;
+    }());
+  }
+
+  @override
+  Future<FileSystemEntity> rename(String newPath) async {
+    await _rename(newPath);
+    return FileNode(fsNode, newPath);
+  }
+
+  @override
+  Future<Uint8List> readAsBytes() {
+    return catchErrorAsync(() async {
+      var bytes =
+          (await fsNode.nativeInstance.readFileBytes(path).toDart).toDart;
+      return bytes;
+    }());
+  }
+
+  Future<void> _delete({bool recursive = false}) async {
     await catchErrorAsync(() async {
       await fsNode.nativeInstance
           .rm(path, node.JsFsRmOptions(recursive: recursive, force: recursive))
           .toDart;
     }());
-    return this;
   }
 
   @override
   File get absolute => FileNode(fsNode, absolutePath);
+
+  @override
+  Future<File> copy(String newPath) async {
+    await catchErrorAsync(() async {
+      await fsNode.nativeInstance.cp(path, newPath).toDart;
+    }());
+    return FileNode(fsNode, newPath);
+  }
 
   @override
   String toString() => "File: '$path'";
@@ -162,18 +260,94 @@ class DirectoryNode extends FileSystemEntityNode
   DirectoryNode(super.fsNode, super.path);
 
   @override
-  Future<FileSystemEntity> delete({bool recursive = false}) async {
+  Future<DirectoryNode> delete({bool recursive = false}) async {
+    if (_isFile()) {
+      _throwIsNotADirectoryError();
+    }
     await catchErrorAsync(() async {
-      await fsNode.nativeInstance
-          .rmdir(
-              path, node.JsFsRmOptions(recursive: recursive, force: recursive))
-          .toDart;
+      if (!recursive) {
+        try {
+          await fsNode.nativeInstance.rm(path).toDart;
+        } catch (_) {
+          // For compat, it seems
+          // SystemError [ERR_FS_EISDIR]: Path is a directory: rm returned EISDIR (is a directory)
+          // ignore: deprecated_member_use_from_same_package
+          await fsNode.nativeInstance.rmdir(path).toDart;
+        }
+      } else {
+        await fsNode.nativeInstance
+            .rm(path, node.JsFsRmOptions(recursive: recursive, force: true))
+            .toDart;
+      }
     }());
     return this;
   }
 
   @override
+  Stream<FileSystemEntity> list(
+      {bool recursive = false, bool followLinks = true}) {
+    var cancelled = false;
+    late StreamController<FileSystemEntity> ctlr;
+    ctlr = StreamController<FileSystemEntity>(
+        sync: true,
+        onListen: () async {
+          try {
+            await catchErrorAsync(() async {
+              var files = (await fsNode.nativeInstance
+                      .readdir(
+                          path, node.JsFsReaddirOptions(recursive: recursive))
+                      .toDart)
+                  .toDart
+                  .map((e) => e.toDart);
+
+              for (var file in files) {
+                var filePath = fsNode.path.join(path, file);
+                var jsFileStat = fsNode.nativeInstanceSync.lstatSync(filePath);
+                if (jsFileStat.isDirectory()) {
+                  ctlr.add(DirectoryNode(fsNode, filePath));
+                } else if (jsFileStat.isFile()) {
+                  ctlr.add(FileNode(fsNode, filePath));
+                }
+              }
+              //for (var i = 0; i < files.length; i++) {}
+              await ctlr.close();
+            }());
+          } catch (e) {
+            if (!cancelled) {
+              ctlr.addError(e);
+              ctlr.close().unawait();
+            }
+          }
+
+          /*
+          while (!cancelled) {
+            for (var file in files) {
+              var filePath = file as String;
+              // Need to append the original path to build a proper path
+              filePath = p.join(path, filePath);
+              var stat = FileStatNode(
+                  mode: 0,
+                  modified: null,
+                  size: -1,
+                  type: FileSystemEntityType.notFound);
+              ctlr.add(stat);
+            }
+            ctlr.close();
+          }*/
+        },
+        onCancel: () {
+          cancelled = true;
+        });
+    return ctlr.stream;
+    // TODO: implement list
+    //return super.list(recursive, followLinks);
+  }
+
+  @override
   Future<DirectoryNode> create({bool recursive = false}) async {
+    if (_isDirectory()) {
+      return this;
+    }
     try {
       await catchErrorAsync(() async {
         await fsNode.nativeInstance
@@ -181,9 +355,12 @@ class DirectoryNode extends FileSystemEntityNode
             .toDart;
       }());
     } on FileSystemExceptionNode catch (e) {
-      // devPrint('create.error: ${e.status}');
       if (e.status == FileSystemException.statusAlreadyExists) {
         // Already exists
+        var jsFileStat = fsNode.nativeInstanceSync.lstatSync(path);
+        if (!jsFileStat.isDirectory()) {
+          rethrow;
+        }
       } else {
         rethrow;
       }
@@ -193,6 +370,12 @@ class DirectoryNode extends FileSystemEntityNode
 
   @override
   Directory get absolute => DirectoryNode(fsNode, absolutePath);
+
+  @override
+  Future<FileSystemEntity> rename(String newPath) async {
+    await _rename(newPath);
+    return DirectoryNode(fsNode, newPath);
+  }
 
   @override
   String toString() => "Directory: '$path'";
@@ -243,7 +426,7 @@ class FileSystemExceptionNode implements FileSystemException {
 
   @override
   String toString() =>
-      'FileSystemException(status: status, $message, path: $path)';
+      'FileSystemException(status: $status, $message, path: $path)';
 }
 
 class FileStatNode implements FileStat {

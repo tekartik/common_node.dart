@@ -7,10 +7,10 @@ library;
 import 'package:fs_shim/fs.dart';
 import 'package:tekartik_fs_test/fs_test.dart';
 
-import '../node_legacy/test_common_node.dart';
+import 'test_common_node.dart';
 
 void main() {
-  var fileSystemContext = FileSystemTestContextNode('fs');
+  var fileSystemContext = FileSystemTestContextNode('fs_node');
   FileSystem fs = fileSystemContext.fs;
 
   group('fs_node', () {

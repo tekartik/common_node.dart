@@ -1,10 +1,20 @@
 import 'dart:js_interop' as js;
 
 import 'package:tekartik_core_node/require.dart';
+import 'import_js.dart' as js;
 
 var jsFs = require<JsFs>('node:fs/promises');
+var jsFsSync = require<JsFsSync>('node:fs');
 
-extension type JsFs._(js.JSObject _) implements js.JSObject {
+extension type JsFsSync._(js.JSObject _) implements js.JSObject {}
+
+extension JsFsSyncExt on JsFsSync {
+  external JsFsStats lstatSync(String path);
+}
+
+extension type JsFs._(js.JSObject _) implements js.JSObject {}
+
+extension JsFsExt on JsFs {
   /// Added in: v10.0.0
   /// path <string> | <Buffer> | <URL>
   /// Returns: <Promise> Fulfills with undefined upon success.
@@ -44,6 +54,7 @@ extension type JsFs._(js.JSObject _) implements js.JSObject {
   /// Asynchronous rmdir(2). No arguments other than a possible exception are given to the completion callback.
   /// sing fs.rmdir() on a file (not a directory) results in an ENOENT error on Windows and an ENOTDIR error on POSIX.
   /// To get a behavior similar to the rm -rf Unix command, use fs.rm() with options { recursive: true, force: true }.
+  @Deprecated('use rm')
   external js.JSPromise rmdir(String path, [JsFsRmOptions? options]);
 
   /// fsPromises.mkdir(path[, options])#
@@ -58,7 +69,7 @@ extension type JsFs._(js.JSObject _) implements js.JSObject {
   /// The optional options argument can be an integer specifying mode (permission and sticky bits), or an object with a mode property and a recursive property indicating whether parent directories should be created. Calling fsPromises.mkdir() when path is a directory that exists results in a rejection only when recursive is false.
   external js.JSPromise mkdir(String path, [JsFsMkdirOptions? options]);
 
-  /// fsPromises.stat(path[, options])#
+  /// fsPromises.lstat(path[, options])#
   /// History
   /// Version	Changes
   /// v10.5.0
@@ -71,7 +82,7 @@ extension type JsFs._(js.JSObject _) implements js.JSObject {
   /// options <Object>
   /// bigint <boolean> Whether the numeric values in the returned <fs.Stats> object should be bigint. Default: false.
   /// Returns: <Promise> Fulfills with the <fs.Stats> object for the given path.
-  external js.JSPromise<JsFsStats> stat(String path);
+  external js.JSPromise<JsFsStats> lstat(String path);
 
   /// fsPromises.rename(oldPath, newPath)#
   /// Added in: v10.0.0
@@ -79,13 +90,54 @@ extension type JsFs._(js.JSObject _) implements js.JSObject {
   /// newPath <string> | <Buffer> | <URL>
   /// Returns: <Promise> Fulfills with undefined upon success.
   /// Renames oldPath to newPath.
-  external js.JSPromise<JsFsStats> rename(String oldPath, String newPath);
+  external js.JSPromise rename(String oldPath, String newPath);
+
+  /// fsPromises.readdir(path[, options])#
+  /// History
+  /// path <string> | <Buffer> | <URL>
+  /// options <string> | <Object>
+  /// encoding <string> Default: 'utf8'
+  /// withFileTypes <boolean> Default: false
+  /// recursive <boolean> If true, reads the contents of a directory recursively. In recursive mode, it will list all files, sub files, and directories. Default: false.
+  /// Returns: <Promise> Fulfills with an array of the names of the files in the directory excluding '.' and '..'.
+  /// Reads the contents of a directory.
+  ///
+  /// The optional options argument can be a string specifying an encoding, or an object with an encoding property specifying the character encoding to use for the filenames. If the encoding is set to 'buffer', the filenames returned will be passed as <Buffer> objects.
+  ///
+  /// If options.withFileTypes is set to true, the returned array will contain <fs.Dirent> objects.
+  external js.JSPromise<js.JSArray<js.JSString>> readdir(String path,
+      [JsFsReaddirOptions options]);
+  @js.JS('appendFile')
+  external js.JSPromise appendFileBytes(String path, js.JSUint8Array bytes);
 
   @js.JS('writeFile')
   external js.JSPromise writeFileBytes(String path, js.JSUint8Array bytes);
-}
 
-extension JsFsExt on JsFs {}
+  @js.JS('readFile')
+  external js.JSPromise<js.JSUint8Array> readFileBytes(String path);
+
+  /// fsPromises.cp(src, dest[, options])#
+  /// History
+  /// src <string> | <URL> source path to copy.
+  /// dest <string> | <URL> destination path to copy to.
+  /// options <Object>
+  /// dereference <boolean> dereference symlinks. Default: false.
+  /// errorOnExist <boolean> when force is false, and the destination exists, throw an error. Default: false.
+  /// filter <Function> Function to filter copied files/directories. Return true to copy the item, false to ignore it. When ignoring a directory, all of its contents will be skipped as well. Can also return a Promise that resolves to true or false Default: undefined.
+  /// src <string> source path to copy.
+  /// dest <string> destination path to copy to.
+  /// Returns: <boolean> | <Promise>
+  /// force <boolean> overwrite existing file or directory. The copy operation will ignore errors if you set this to false and the destination exists. Use the errorOnExist option to change this behavior. Default: true.
+  /// mode <integer> modifiers for copy operation. Default: 0. See mode flag of fsPromises.copyFile().
+  /// preserveTimestamps <boolean> When true timestamps from src will be preserved. Default: false.
+  /// recursive <boolean> copy directories recursively Default: false
+  /// verbatimSymlinks <boolean> When true, path resolution for symlinks will be skipped. Default: false
+  /// Returns: <Promise> Fulfills with undefined upon success.
+  /// Asynchronously copies the entire directory structure from src to dest, including subdirectories and files.
+  ///
+  /// When copying a directory to another directory, globs are not supported and behavior is similar to cp dir1/ dir2/.
+  external js.JSPromise cp(String src, String dest, [JsFsCopyOptions? options]);
+}
 
 extension type JsFsRmOptions._(js.JSObject _) implements js.JSObject {
   external JsFsRmOptions({bool? recursive, bool? force});
@@ -94,10 +146,20 @@ extension type JsFsMkdirOptions._(js.JSObject _) implements js.JSObject {
   external JsFsMkdirOptions({bool? recursive});
 }
 
+extension type JsFsReaddirOptions._(js.JSObject _) implements js.JSObject {
+  external JsFsReaddirOptions({bool? recursive});
+}
+
+extension type JsFsCopyOptions._(js.JSObject _) implements js.JSObject {
+  external JsFsCopyOptions({bool? recursive});
+}
+
 extension type JsFsStats._(js.JSObject _) implements js.JSObject {
   // {dev: 66311, mode: 16893, nlink: 2, uid: 1000, gid: 1000, rdev: 0, blksize: 4096, ino: 49676304, size: 4096, blocks: 8, atimeMs: 1718626106862.2302, mtimeMs: 1718626106862.2302, ctimeMs: 1718626106862.2302, birthtimeMs: 1718626106862.2302, atime: {}, mtime: {}, ctime: {}, birthtime: {}}
   external int get mode;
   external int get size;
+  external num get mtimeMs;
+  external js.JSDate get mtime;
 }
 
 extension JsFsStatsExt on JsFsStats {
@@ -118,6 +180,7 @@ extension JsFsStatsExt on JsFsStats {
   /// Returns: <boolean>
   /// Returns true if the <fs.Stats> object describes a symbolic link.
   /// This method is only valid when using fs.lstat().
+  external bool isSymbolicLink();
 }
 
 extension type JsFsError._(js.JSObject _) implements js.JSObject {}

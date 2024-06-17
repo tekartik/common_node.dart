@@ -9,8 +9,6 @@ import 'package:tekartik_fs_test/test_common.dart';
 //import 'package:tekartik_platform/context.dart';
 //import 'package:tekartik_platform_node/context_node.dart';
 
-export 'package:test/test.dart';
-
 class PlatformContextNode extends PlatformContext {}
 
 class FileSystemTestContextNode extends FileSystemTestContext {
@@ -19,7 +17,9 @@ class FileSystemTestContextNode extends FileSystemTestContext {
   @override
   final FileSystemNode fs = fileSystemNode;
 
+  @override
+  bool get supportsFileContentStream => true;
   FileSystemTestContextNode(String path) {
-    basePath = join('.dart_tool', 'tekartik_fs_node', 'test', path);
+    basePath = join('.dart_tool', 'tekartik_fs_node_legacy', 'test', path);
   }
 }

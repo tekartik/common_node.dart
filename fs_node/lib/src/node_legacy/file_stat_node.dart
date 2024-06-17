@@ -18,7 +18,7 @@ class FileStatNotFound extends FileStatNode {
   int get size => -1;
 
   @override
-  DateTime get modified => DateTime(0);
+  DateTime get modified => DateTime.fromMillisecondsSinceEpoch(0);
 
   @override
   FileSystemEntityType get type => FileSystemEntityType.notFound;

@@ -15,6 +15,7 @@ import 'package:tekartik_fs_node/src/node_legacy/fs_node.dart';
 import 'package:tekartik_fs_node/src/node_legacy/import_common_node.dart'
     as node;
 import 'package:tekartik_fs_test/fs_test.dart';
+import 'package:test/test.dart';
 
 import 'test_common_node.dart';
 import 'test_setup.dart';
@@ -22,7 +23,7 @@ import 'test_setup.dart';
 void main() {
   nodeTestSetup();
 
-  var fileSystemContext = FileSystemTestContextNode('fs');
+  var fileSystemContext = FileSystemTestContextNode('fs_node_legacy');
   FileSystem fs = fileSystemContext.fs;
 
   group('fs_node', () {
