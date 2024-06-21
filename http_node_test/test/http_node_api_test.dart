@@ -9,9 +9,6 @@ import 'package:test/test.dart';
 
 Future main() async {
   group('http_node_api', () {
-    test('multiplatform', () async {
-      httpFactoryUniversal;
-    });
     test('httpServerFactoryNode', () async {
       try {
         httpServerFactoryNode;
