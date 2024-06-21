@@ -25,14 +25,14 @@ Future<void> main() async {
     var shell = Shell(
         environment: ShellEnvironment()..vars[uriVarKey] = uri.toString());
     await shell.run(
-        'dart test -p vm test/test_server_client_only_universal_test.dart');
+        'dart test -p vm test/test_client_only_universal_legacy_runner.dart');
   });
   test('node', () async {
     if (isNodeSupportedSync) {
       var shell = Shell(
           environment: ShellEnvironment()..vars[uriVarKey] = uri.toString());
       await shell.run(
-          'dart test -p node test/test_server_client_only_universal_test.dart');
+          'dart test -p node test/test_client_only_universal_legacy_runner.dart');
     }
   });
 }

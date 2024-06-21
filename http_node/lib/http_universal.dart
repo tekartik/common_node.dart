@@ -1,1 +1,1 @@
-export 'src/universal/universal.dart' show httpFactoryUniversal;
+export 'http_universal_legacy.dart';
