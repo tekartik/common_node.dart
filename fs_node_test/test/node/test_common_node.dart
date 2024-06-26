@@ -18,7 +18,7 @@ class FileSystemTestContextNode extends FileSystemTestContext {
 
   /// Not supported yet.
   @override
-  bool get supportsFileContentStream => false;
+  bool get supportsFileContentStream => true;
   FileSystemTestContextNode(String path) {
     basePath = join('.dart_tool', 'tekartik_fs_node', 'test', path);
   }

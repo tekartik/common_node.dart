@@ -137,6 +137,14 @@ extension JsFsExt on JsFs {
   ///
   /// When copying a directory to another directory, globs are not supported and behavior is similar to cp dir1/ dir2/.
   external js.JSPromise cp(String src, String dest, [JsFsCopyOptions? options]);
+
+  /// fsPromises.open(path, flags[, mode])#
+  /// path <string> | <Buffer> | <URL>
+  /// flags <string> | <number> See support of file system flags. Default: 'r'.
+  /// mode <string> | <integer> Sets the file mode (permission and sticky bits) if the file is created. Default: 0o666 (readable and writable)
+  /// Returns: <Promise> Fulfills with a <FileHandle> object.
+  /// Opens a <FileHandle>.
+  external js.JSPromise<JsFsFileHandle> open(String path, String flags);
 }
 
 extension type JsFsRmOptions._(js.JSObject _) implements js.JSObject {
@@ -190,4 +198,44 @@ extension JsFsErrorExt on JsFsError {
   external String? get code;
   external String? get path;
   external String? get message;
+}
+
+extension type JsFsFileHandle._(js.JSObject _) implements js.JSObject {}
+
+extension JsFsFileHandleExt on JsFsFileHandle {
+  /// filehandle.write(buffer[, options])#
+  /// Added in: v18.3.0, v16.17.0
+  /// buffer <Buffer> | <TypedArray> | <DataView>
+  /// options <Object>
+  /// offset <integer> Default: 0
+  /// length <integer> Default: buffer.byteLength - offset
+  /// position <integer> Default: null
+  /// Returns: <Promise>
+  external js.JSPromise write(js.JSUint8Array buffer);
+
+  /// filehandle.close()#
+  /// Added in: v10.0.0
+  /// Returns: <Promise> Fulfills with undefined upon success.
+  /// Closes the file handle after waiting for any pending operation on the handle to complete.
+  external js.JSPromise close();
+
+  /// filehandle.read(buffer, offset, length, position)#
+  /// buffer <Buffer> | <TypedArray> | <DataView> A buffer that will be filled with the file data read.
+  /// offset <integer> The location in the buffer at which to start filling. Default: 0
+  /// length <integer> The number of bytes to read. Default: buffer.byteLength - offset
+  /// position <integer> | <bigint> | <null> The location where to begin reading data from the file. If null or -1, data will be read from the current file position, and the position will be updated. If position is a non-negative integer, the current file position will remain unchanged. Default:: null
+  /// Returns: <Promise> Fulfills upon success with an object with two properties:
+  /// bytesRead <integer> The number of bytes read
+  /// buffer <Buffer> | <TypedArray> | <DataView> A reference to the passed in buffer argument.
+  /// Reads data from the file and stores that in the given buffer.
+  ///
+  /// If the file is not modified concurrently, the end-of-file is reached when the number of bytes read is zero.
+  external js.JSPromise<JsFsFileReadResult> read(
+      js.JSUint8Array buffer, int offset, int length, int position);
+}
+
+extension type JsFsFileReadResult._(js.JSObject _) implements js.JSObject {}
+
+extension JsFsFileReadResultExt on JsFsFileReadResult {
+  external int get bytesRead;
 }

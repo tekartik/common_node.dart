@@ -3,18 +3,11 @@ import 'dart:typed_data';
 import 'package:tekartik_fs_node/src/import_common.dart';
 import 'package:tekartik_fs_node/src/node_legacy/file_system_entity_node.dart';
 import 'package:tekartik_fs_node/src/node_legacy/fs_node.dart';
+import 'package:tekartik_fs_node/src/utils.dart';
 
 //import 'package:fs_shim/src/common/compat.dart'; // ignore: implementation_imports
 
 import 'import_common_node.dart' as node;
-
-/// Concert a list to byte array
-Uint8List asUint8List(List<int> bytes) {
-  if (bytes is Uint8List) {
-    return bytes;
-  }
-  return Uint8List.fromList(bytes);
-}
 
 Stream<Uint8List> intListStreamToUint8ListStream(Stream stream) {
   if (stream is Stream<Uint8List>) {

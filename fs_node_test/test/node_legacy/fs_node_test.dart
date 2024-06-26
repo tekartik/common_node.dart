@@ -40,8 +40,10 @@ void main() {
       expect(await fs.type('.'), FileSystemEntityType.directory);
     });
     test('test_path', () async {
-      expect(fileSystemContext.outPath,
-          startsWith(join('.dart_tool', 'tekartik_fs_node', 'test', 'fs')));
+      expect(
+          fileSystemContext.outPath,
+          startsWith(
+              join('.dart_tool', 'tekartik_fs_node_legacy', 'test', 'fs')));
     });
 
     group('conversion', () {

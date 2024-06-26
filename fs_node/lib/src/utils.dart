@@ -1,4 +1,14 @@
+import 'dart:typed_data';
+
 import 'package:tekartik_fs_node/src/import_common.dart';
+
+/// Concert a list to byte array
+Uint8List asUint8List(List<int> bytes) {
+  if (bytes is Uint8List) {
+    return bytes;
+  }
+  return Uint8List.fromList(bytes);
+}
 
 int? statusFromMessage(String message) {
   // Error: ENOENT: no such file or directory, scandir '.dart_tool/fs_shim_node/test_out/fs_node/file/create_recursive'

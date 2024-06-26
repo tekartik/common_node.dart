@@ -5,7 +5,7 @@ import 'dart:typed_data';
 
 import 'package:node_interop/node.dart';
 import 'package:node_interop/stream.dart';
-import 'package:tekartik_fs_node/src/node_legacy/file_node.dart';
+import 'package:tekartik_fs_node/src/utils.dart';
 import 'package:tekartik_js_utils/js_utils_import.dart';
 
 abstract class HasReadable {

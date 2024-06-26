@@ -1,10 +1,10 @@
 import 'dart:js_interop' as js;
-import 'dart:typed_data';
 
 import 'package:path/path.dart' as p;
 import 'package:tekartik_js_utils/js_utils_import.dart';
 
 import '../import_common.dart';
+import 'file_node.dart';
 import 'fs_node_js_interop.dart' as node;
 // ignore: unused_import
 import 'import_js.dart' as js;
@@ -123,13 +123,13 @@ mixin FileSystemEntityNodeMixin on FileSystemEntityNode {
     }
   }
 
-  Future<void> _rename(String newPath) async {
+  Future<void> nodeRename(String newPath) async {
     await catchErrorAsync(() async {
       await fsNode.nativeInstance.rename(path, newPath).toDart;
     }());
   }
 
-  bool _isDirectory() {
+  bool nodeIsDirectory() {
     try {
       var jsFileStat = fsNode.nativeInstanceSync.lstatSync(path);
       return jsFileStat.isDirectory();
@@ -147,13 +147,6 @@ mixin FileSystemEntityNodeMixin on FileSystemEntityNode {
     }
   }
 
-  void _throwIsADirectoryError([String? path]) {
-    throw FileSystemExceptionNode(
-        message: 'Is a directory',
-        path: path ?? this.path,
-        status: FileSystemException.statusIsADirectory);
-  }
-
   void _throwIsNotADirectoryError([String? path]) {
     throw FileSystemExceptionNode(
         message: 'Not a directory',
@@ -163,95 +156,6 @@ mixin FileSystemEntityNodeMixin on FileSystemEntityNode {
 
   @override
   Directory get parent => DirectoryNode(fsNode, p.dirname(path));
-}
-
-class FileNode extends FileSystemEntityNode
-    with FileMixin, FileSystemEntityNodeMixin
-    implements File {
-  FileNode(super.fsNode, super.path);
-
-  @override
-  Future<File> create({bool recursive = false}) async {
-    if (_isDirectory()) {
-      _throwIsADirectoryError();
-    }
-    if (recursive) {
-      await parent.create(recursive: true);
-    }
-    if (!await parent.exists()) {
-      throw FileSystemExceptionNode(
-          message: 'Missing parent folder',
-          path: path,
-          status: FileSystemException.statusNotFound);
-    }
-    if (!await exists()) {
-      await writeAsBytes(Uint8List(0));
-    }
-    return this;
-  }
-
-  @override
-  Future<FileNode> delete({bool recursive = false}) async {
-    if (_isDirectory()) {
-      _throwIsADirectoryError();
-    }
-    await _delete(recursive: recursive);
-    return this;
-  }
-
-  @override
-  Future<File> writeAsBytes(Uint8List bytes,
-      {FileMode mode = FileMode.write, bool flush = false}) {
-    return catchErrorAsync(() async {
-      if (mode == FileMode.append) {
-        await fsNode.nativeInstance
-            .appendFileBytes(path, Uint8List.fromList(bytes).toJS)
-            .toDart;
-      } else {
-        await fsNode.nativeInstance
-            .writeFileBytes(path, Uint8List.fromList(bytes).toJS)
-            .toDart;
-      }
-      return this;
-    }());
-  }
-
-  @override
-  Future<FileSystemEntity> rename(String newPath) async {
-    await _rename(newPath);
-    return FileNode(fsNode, newPath);
-  }
-
-  @override
-  Future<Uint8List> readAsBytes() {
-    return catchErrorAsync(() async {
-      var bytes =
-          (await fsNode.nativeInstance.readFileBytes(path).toDart).toDart;
-      return bytes;
-    }());
-  }
-
-  Future<void> _delete({bool recursive = false}) async {
-    await catchErrorAsync(() async {
-      await fsNode.nativeInstance
-          .rm(path, node.JsFsRmOptions(recursive: recursive, force: recursive))
-          .toDart;
-    }());
-  }
-
-  @override
-  File get absolute => FileNode(fsNode, absolutePath);
-
-  @override
-  Future<File> copy(String newPath) async {
-    await catchErrorAsync(() async {
-      await fsNode.nativeInstance.cp(path, newPath).toDart;
-    }());
-    return FileNode(fsNode, newPath);
-  }
-
-  @override
-  String toString() => "File: '$path'";
 }
 
 class DirectoryNode extends FileSystemEntityNode
@@ -345,7 +249,7 @@ class DirectoryNode extends FileSystemEntityNode
 
   @override
   Future<DirectoryNode> create({bool recursive = false}) async {
-    if (_isDirectory()) {
+    if (nodeIsDirectory()) {
       return this;
     }
     try {
@@ -373,7 +277,7 @@ class DirectoryNode extends FileSystemEntityNode
 
   @override
   Future<FileSystemEntity> rename(String newPath) async {
-    await _rename(newPath);
+    await nodeRename(newPath);
     return DirectoryNode(fsNode, newPath);
   }
 
@@ -381,29 +285,41 @@ class DirectoryNode extends FileSystemEntityNode
   String toString() => "Directory: '$path'";
 }
 
+bool _handleError(Object error) {
+  if (error is js.JSObject) {
+    // {errno: -17, code: EEXIST, syscall: mkdir, path: /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub}
+    // devPrint(js.jsAnyToDebugString(e));
+    var jsFsError = error as node.JsFsError;
+    // print('message: ${jsFsError.message}');
+    // print('message: ${jsFsError.toString()}');
+    // print('errno: ${jsFsError.errno}');
+    // print('path: ${jsFsError.path}');
+
+    // Error: SystemError [ERR_FS_EISDIR]: Path is a directory: rm returned EISDIR (is a directory) /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub
+    // {code: ERR_FS_EISDIR, info: {code: EISDIR, message: is a directory, path: /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub, syscall: rm, errno: 21}, errno: 21, syscall: rm, path: /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub}
+    throw FileSystemExceptionNode(
+        message: jsFsError.message ?? jsFsError.toString(),
+        path: jsFsError.path,
+        status: jsFsError.errno?.abs());
+  }
+
+  return false;
+}
+
 Future<T> catchErrorAsync<T>(Future<T> future) async {
   try {
     return await future;
   } catch (e) {
-    // print('Error: $e');
+    _handleError(e);
+    rethrow;
+  }
+}
 
-    if (e is js.JSObject) {
-      // {errno: -17, code: EEXIST, syscall: mkdir, path: /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub}
-      // devPrint(js.jsAnyToDebugString(e));
-      var jsFsError = e as node.JsFsError;
-      // print('message: ${jsFsError.message}');
-      // print('message: ${jsFsError.toString()}');
-      // print('errno: ${jsFsError.errno}');
-      // print('path: ${jsFsError.path}');
-
-      // Error: SystemError [ERR_FS_EISDIR]: Path is a directory: rm returned EISDIR (is a directory) /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub
-      // {code: ERR_FS_EISDIR, info: {code: EISDIR, message: is a directory, path: /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub, syscall: rm, errno: 21}, errno: 21, syscall: rm, path: /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub}
-      throw FileSystemExceptionNode(
-          message: jsFsError.message ?? jsFsError.toString(),
-          path: jsFsError.path,
-          status: jsFsError.errno?.abs());
-    }
-
+T catchErrorSync<T>(T Function() action) {
+  try {
+    return action();
+  } catch (e) {
+    _handleError(e);
     rethrow;
   }
 }
