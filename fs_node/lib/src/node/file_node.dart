@@ -72,6 +72,16 @@ class FileNode extends FileSystemEntityNode
 
   @override
   Future<FileSystemEntity> rename(String newPath) async {
+    // Somehow on windows it might succeed to rename a directory over an empty
+    // file so catch that before
+    if (isWindows) {
+      if (await fsNode.type(newPath) != FileSystemEntityType.notFound) {
+        throw FileSystemExceptionNode(
+            message: 'Already exists',
+            status: FileSystemException.statusAlreadyExists,
+            path: newPath);
+      }
+    }
     await nodeRename(newPath);
     return FileNode(fsNode, newPath);
   }

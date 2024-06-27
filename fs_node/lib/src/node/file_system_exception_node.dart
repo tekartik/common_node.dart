@@ -29,7 +29,7 @@ class FileSystemExceptionNode implements FileSystemException {
       'FileSystemException(status: $status, $message, path: $path)';
 }
 
-bool get _isWindows => platformContextNode.node?.isWindows ?? false;
+bool get isWindows => platformContextNode.node?.isWindows ?? false;
 bool _handleError(Object error) {
   if (error is js.JSObject) {
     // {errno: -17, code: EEXIST, syscall: mkdir, path: /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub}
@@ -41,7 +41,7 @@ bool _handleError(Object error) {
     var jsFsError = error as node.JsFsError;
 
     var errno = jsFsError.errno;
-    if (_isWindows) {
+    if (isWindows) {
       // Perform some consistency in errors
       // windows
       // {errno: -4058, code: ENOENT, syscall: mkdir,

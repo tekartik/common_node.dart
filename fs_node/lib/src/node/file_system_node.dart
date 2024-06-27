@@ -125,14 +125,6 @@ mixin FileSystemEntityNodeMixin on FileSystemEntityNode {
   }
 
   Future<void> nodeRename(String newPath) async {
-    // Somehow on windows it might succeed to rename a directory over an empty
-    // file so catch that before
-    if (await fsNode.type(newPath) != FileSystemEntityType.notFound) {
-      throw FileSystemExceptionNode(
-          message: 'Already exists',
-          status: FileSystemException.statusAlreadyExists,
-          path: newPath);
-    }
     await catchErrorAsync(() async {
       await fsNode.nativeInstance.rename(path, newPath).toDart;
     });
@@ -286,6 +278,23 @@ class DirectoryNode extends FileSystemEntityNode
 
   @override
   Future<FileSystemEntity> rename(String newPath) async {
+    // Somehow on windows it might succeed to rename a directory over an empty
+    // file so catch that before
+    if (isWindows) {
+      var type = await fsNode.type(newPath);
+      if (type == FileSystemEntityType.file) {
+        throw FileSystemExceptionNode(
+            message: 'Not a directory',
+            status: FileSystemException.statusNotADirectory,
+            path: newPath);
+      }
+      if (type != FileSystemEntityType.notFound) {
+        throw FileSystemExceptionNode(
+            message: 'Already exists',
+            status: FileSystemException.statusAlreadyExists,
+            path: newPath);
+      }
+    }
     await nodeRename(newPath);
     return DirectoryNode(fsNode, newPath);
   }
