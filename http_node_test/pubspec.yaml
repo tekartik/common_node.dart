@@ -30,6 +30,11 @@ dependencies:
 dev_dependencies:
   test: ">=1.0.0"
   dev_build: any
+  http_client_conformance_tests:
+    git:
+      url: https://github.com/dart-lang/http
+      ref: master
+      path: pkgs/http_client_conformance_tests
   tekartik_fs_test:
     git:
       url: https://github.com/tekartik/fs_shim.dart
