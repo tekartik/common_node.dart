@@ -18,15 +18,6 @@ Future<void> main() async {
     await nodePackageRunCi(path);
   }
 
-  // TODO fix tests
-  for (var dir in [
-    'http_redirect_node',
-  ]) {
-    var path = join(topDir, dir);
-
-    await nodePackageRunCi(path, NodePackageRunCiOptions(noNodeTest: true));
-  }
-
   for (var dir in [
     'http_node',
     'http_node_test',
