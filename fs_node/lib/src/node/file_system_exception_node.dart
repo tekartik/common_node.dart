@@ -6,7 +6,7 @@ import 'fs_node_js_interop.dart' as node;
 import 'import_js.dart' as js;
 
 const _debugException = false;
-// var _debugException = devWarning(true);
+// _debugException = devWarning(true);
 
 class FileSystemExceptionNode implements FileSystemException {
   @override
