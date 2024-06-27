@@ -19,7 +19,6 @@ dependencies:
       path: http_io
       ref: dart3a
     version: '>=0.6.0'
-  node_interop:
   tekartik_core_node:
     git:
       url: https://github.com/tekartik/common_node.dart

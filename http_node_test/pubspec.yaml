@@ -11,7 +11,6 @@ environment:
 dependencies:
   path: '>=1.6.1'
   fs_shim: '>=0.11.0+3'
-  node_interop: '>=1.0.3'
   tekartik_http_node:
     git:
       url: https://github.com/tekartik/common_node.dart

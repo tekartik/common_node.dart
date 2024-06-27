@@ -1,1 +1,1 @@
-export 'fs_node_legacy.dart';
+export 'fs_node_interop.dart';

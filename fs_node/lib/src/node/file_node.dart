@@ -6,6 +6,7 @@ import 'package:tekartik_fs_node/src/utils.dart';
 import 'package:tekartik_js_utils/js_utils_import.dart';
 
 import '../import_common.dart';
+import 'file_system_exception_node.dart';
 import 'file_system_node.dart';
 import 'fs_node_js_interop.dart' as node;
 // ignore: unused_import
@@ -66,7 +67,7 @@ class FileNode extends FileSystemEntityNode
             .toDart;
       }
       return this;
-    }());
+    });
   }
 
   @override
@@ -81,7 +82,7 @@ class FileNode extends FileSystemEntityNode
       var bytes =
           (await fsNode.nativeInstance.readFileBytes(path).toDart).toDart;
       return bytes;
-    }());
+    });
   }
 
   Future<void> _delete({bool recursive = false}) async {
@@ -89,7 +90,7 @@ class FileNode extends FileSystemEntityNode
       await fsNode.nativeInstance
           .rm(path, node.JsFsRmOptions(recursive: recursive, force: recursive))
           .toDart;
-    }());
+    });
   }
 
   @override
@@ -99,7 +100,7 @@ class FileNode extends FileSystemEntityNode
   Future<File> copy(String newPath) async {
     await catchErrorAsync(() async {
       await fsNode.nativeInstance.cp(path, newPath).toDart;
-    }());
+    });
     return FileNode(fsNode, newPath);
   }
 
@@ -170,7 +171,7 @@ class WriteFileSinkNode implements StreamSink<List<int>> {
         await catchErrorAsync(() async {
           var jsFileHandle = await _jsFileHandle;
           await jsFileHandle!.write(asUint8List(data).toJS).toDart;
-        }());
+        });
       } catch (e) {
         addError(e);
       }
@@ -189,7 +190,7 @@ class WriteFileSinkNode implements StreamSink<List<int>> {
           await catchErrorAsync(() async {
             var jsFileHandle = await _jsFileHandle;
             await jsFileHandle!.close().toDart;
-          }());
+          });
           if (!doneCompleter.isCompleted) {
             doneCompleter.complete();
           }
@@ -264,7 +265,7 @@ class ReadFileStreamCtrlNode {
             position += result.bytesRead;
           }
           await _ctlr.close();
-        }());
+        });
       } catch (e) {
         _ctlr.addError(e);
       }

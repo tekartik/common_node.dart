@@ -5,6 +5,7 @@ import 'package:tekartik_js_utils/js_utils_import.dart';
 
 import '../import_common.dart';
 import 'file_node.dart';
+import 'file_system_exception_node.dart';
 import 'fs_node_js_interop.dart' as node;
 // ignore: unused_import
 import 'import_js.dart' as js;
@@ -43,7 +44,7 @@ class FileSystemNode with FileSystemMixin implements FileSystem {
           return FileSystemEntityType.link;
         }
         return FileSystemEntityType.notFound;
-      }());
+      });
     } on FileSystemExceptionNode catch (_) {
       return FileSystemEntityType.notFound;
     }
@@ -117,16 +118,24 @@ mixin FileSystemEntityNodeMixin on FileSystemEntityNode {
               type: FileSystemEntityType.file);
         }
         return notFound();
-      }());
+      });
     } on FileSystemExceptionNode catch (_) {
       return notFound();
     }
   }
 
   Future<void> nodeRename(String newPath) async {
+    // Somehow on windows it might succeed to rename a directory over an empty
+    // file so catch that before
+    if (await fsNode.type(newPath) != FileSystemEntityType.notFound) {
+      throw FileSystemExceptionNode(
+          message: 'Already exists',
+          status: FileSystemException.statusAlreadyExists,
+          path: newPath);
+    }
     await catchErrorAsync(() async {
       await fsNode.nativeInstance.rename(path, newPath).toDart;
-    }());
+    });
   }
 
   bool nodeIsDirectory() {
@@ -183,7 +192,7 @@ class DirectoryNode extends FileSystemEntityNode
             .rm(path, node.JsFsRmOptions(recursive: recursive, force: true))
             .toDart;
       }
-    }());
+    });
     return this;
   }
 
@@ -215,7 +224,7 @@ class DirectoryNode extends FileSystemEntityNode
               }
               //for (var i = 0; i < files.length; i++) {}
               await ctlr.close();
-            }());
+            });
           } catch (e) {
             if (!cancelled) {
               ctlr.addError(e);
@@ -257,7 +266,7 @@ class DirectoryNode extends FileSystemEntityNode
         await fsNode.nativeInstance
             .mkdir(path, node.JsFsMkdirOptions(recursive: recursive))
             .toDart;
-      }());
+      });
     } on FileSystemExceptionNode catch (e) {
       if (e.status == FileSystemException.statusAlreadyExists) {
         // Already exists
@@ -283,66 +292,6 @@ class DirectoryNode extends FileSystemEntityNode
 
   @override
   String toString() => "Directory: '$path'";
-}
-
-bool _handleError(Object error) {
-  if (error is js.JSObject) {
-    // {errno: -17, code: EEXIST, syscall: mkdir, path: /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub}
-    // devPrint(js.jsAnyToDebugString(e));
-    var jsFsError = error as node.JsFsError;
-    // print('message: ${jsFsError.message}');
-    // print('message: ${jsFsError.toString()}');
-    // print('errno: ${jsFsError.errno}');
-    // print('path: ${jsFsError.path}');
-
-    // Error: SystemError [ERR_FS_EISDIR]: Path is a directory: rm returned EISDIR (is a directory) /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub
-    // {code: ERR_FS_EISDIR, info: {code: EISDIR, message: is a directory, path: /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub, syscall: rm, errno: 21}, errno: 21, syscall: rm, path: /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub}
-    throw FileSystemExceptionNode(
-        message: jsFsError.message ?? jsFsError.toString(),
-        path: jsFsError.path,
-        status: jsFsError.errno?.abs());
-  }
-
-  return false;
-}
-
-Future<T> catchErrorAsync<T>(Future<T> future) async {
-  try {
-    return await future;
-  } catch (e) {
-    _handleError(e);
-    rethrow;
-  }
-}
-
-T catchErrorSync<T>(T Function() action) {
-  try {
-    return action();
-  } catch (e) {
-    _handleError(e);
-    rethrow;
-  }
-}
-
-class FileSystemExceptionNode implements FileSystemException {
-  @override
-  final String message;
-
-  @override
-  final OSError? osError;
-
-  @override
-  final String? path;
-
-  @override
-  final int? status;
-
-  FileSystemExceptionNode(
-      {required this.message, this.osError, this.path, this.status});
-
-  @override
-  String toString() =>
-      'FileSystemException(status: $status, $message, path: $path)';
 }
 
 class FileStatNode implements FileStat {
