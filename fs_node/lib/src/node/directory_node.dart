@@ -1,7 +1,5 @@
 import 'dart:js_interop' as js;
 
-import 'package:tekartik_js_utils/js_utils_import.dart';
-
 import '../import_common.dart';
 import 'file_node.dart';
 import 'file_system_exception_node.dart';

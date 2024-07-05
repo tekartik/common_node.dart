@@ -3,7 +3,6 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:tekartik_fs_node/src/utils.dart';
-import 'package:tekartik_js_utils/js_utils_import.dart';
 
 import '../import_common.dart';
 import 'file_system_exception_node.dart';
