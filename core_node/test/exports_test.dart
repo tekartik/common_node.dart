@@ -4,7 +4,7 @@ library;
 import 'dart:js_interop';
 import 'dart:js_interop_unsafe';
 
-import 'package:tekartik_core_node/src/exports.dart';
+import 'package:tekartik_core_node/exports.dart';
 import 'package:tekartik_js_utils_interop/js_converter.dart';
 import 'package:test/test.dart';
 
