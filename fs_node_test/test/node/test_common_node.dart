@@ -15,6 +15,8 @@ class PlatformContextNode extends PlatformContextIo {
     isIoMacOS = platformContextNode.node?.isMacOS ?? false;
     this.isIoLinux = platformContextNode.node?.isLinux ?? false;
   }
+
+  bool get isIoNode => true;
 }
 
 class FileSystemTestContextNode extends FileSystemTestContext {

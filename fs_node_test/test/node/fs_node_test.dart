@@ -14,6 +14,11 @@ void main() {
   FileSystem fs = fileSystemContext.fs;
 
   group('fs_node', () {
+    test('context', () {
+      expect(fileSystemContext.platform.isIo, isTrue);
+      expect(
+          (fileSystemContext.platform as PlatformContextNode).isIoNode, isTrue);
+    });
     test('basics', () {
       expect(fs.supportsFileLink, isFalse);
       expect(fs.supportsLink, isFalse);

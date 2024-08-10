@@ -6,7 +6,7 @@ import 'fs_node_js_interop.dart' as node;
 import 'import_js.dart' as js;
 
 const _debugException = false;
-// var _debugException = devWarning(true);
+//var _debugException = devWarning(true);
 
 class FileSystemExceptionNode implements FileSystemException {
   @override
@@ -48,6 +48,10 @@ bool _handleJsError(Object error) {
   var jsFsError = jsError as node.JsFsError;
 
   var errno = jsFsError.errno;
+  if (_debugException) {
+    // ignore: avoid_print
+    print('errno: $errno');
+  }
   if (isWindows) {
     // Perform some consistency in errors
     // windows
@@ -60,6 +64,9 @@ bool _handleJsError(Object error) {
     } else if (errno == -4051) {
       // {errno: -4051, code: ENOTEMPTY, syscall: rmdir
       errno = FileSystemException.statusNotEmpty;
+    } else if (errno == -4075) {
+      // {errno: -4075, code: EEXIST, syscall: mkdir
+      errno = FileSystemException.statusAlreadyExists;
     }
   } else if (isMacOS) {
     // {errno: -66, code: ENOTEMPTY, syscall: rename, ENOTEMPTY: directory not empty, rename
