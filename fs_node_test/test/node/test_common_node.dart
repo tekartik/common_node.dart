@@ -16,6 +16,7 @@ class PlatformContextNode extends PlatformContextIo {
     this.isIoLinux = platformContextNode.node?.isLinux ?? false;
   }
 
+  @override
   bool get isIoNode => true;
 }
 
