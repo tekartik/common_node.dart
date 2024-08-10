@@ -6,7 +6,7 @@ import 'fs_node_js_interop.dart' as node;
 import 'import_js.dart' as js;
 
 const _debugException = false;
-// _debugException = devWarning(true);
+// var _debugException = devWarning(true);
 
 class FileSystemExceptionNode implements FileSystemException {
   @override
@@ -30,52 +30,61 @@ class FileSystemExceptionNode implements FileSystemException {
 }
 
 bool get isWindows => platformContextNode.node?.isWindows ?? false;
-bool _handleError(Object error) {
-  if (error is js.JSObject) {
-    // {errno: -17, code: EEXIST, syscall: mkdir, path: /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub}
-    if (_debugException) {
-      // ignore: avoid_print
-      print(js.jsAnyToDebugString(error));
-    }
-
-    var jsFsError = error as node.JsFsError;
-
-    var errno = jsFsError.errno;
-    if (isWindows) {
-      // Perform some consistency in errors
-      // windows
-      // {errno: -4058, code: ENOENT, syscall: mkdir,
-      if (errno == -4058) {
-        errno = FileSystemException.statusNotFound;
-      } else if (errno == -4048) {
-        // {errno: -4048, code: EPERM, syscall: rename
-        errno = FileSystemException.statusAlreadyExists;
-      } else if (errno == -4051) {
-        // {errno: -4051, code: ENOTEMPTY, syscall: rmdir
-        errno = FileSystemException.statusNotEmpty;
-      }
-    }
-    // print('message: ${jsFsError.message}');
-    // print('message: ${jsFsError.toString()}');
-    // print('errno: ${jsFsError.errno}');
-    // print('path: ${jsFsError.path}');
-
-    // Error: SystemError [ERR_FS_EISDIR]: Path is a directory: rm returned EISDIR (is a directory) /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub
-    // {code: ERR_FS_EISDIR, info: {code: EISDIR, message: is a directory, path: /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub, syscall: rm, errno: 21}, errno: 21, syscall: rm, path: /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub}
-    throw FileSystemExceptionNode(
-        message: jsFsError.message ?? jsFsError.toString(),
-        path: jsFsError.path,
-        status: errno?.abs());
+bool get isMacOS => platformContextNode.node?.isMacOS ?? false;
+bool _handleJsError(Object error) {
+  // devPrint('error: $error ${error.runtimeType}');
+  js.JSAny? jsError;
+  try {
+    jsError = error as js.JSAny;
+  } catch (_) {
+    return false;
+  }
+  // {errno: -17, code: EEXIST, syscall: mkdir, path: /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub}
+  if (_debugException) {
+    // ignore: avoid_print
+    print(js.jsAnyToDebugString(jsError));
   }
 
-  return false;
+  var jsFsError = jsError as node.JsFsError;
+
+  var errno = jsFsError.errno;
+  if (isWindows) {
+    // Perform some consistency in errors
+    // windows
+    // {errno: -4058, code: ENOENT, syscall: mkdir,
+    if (errno == -4058) {
+      errno = FileSystemException.statusNotFound;
+    } else if (errno == -4048) {
+      // {errno: -4048, code: EPERM, syscall: rename
+      errno = FileSystemException.statusAlreadyExists;
+    } else if (errno == -4051) {
+      // {errno: -4051, code: ENOTEMPTY, syscall: rmdir
+      errno = FileSystemException.statusNotEmpty;
+    }
+  } else if (isMacOS) {
+    // {errno: -66, code: ENOTEMPTY, syscall: rename, ENOTEMPTY: directory not empty, rename
+    if (errno == -66) {
+      errno = FileSystemException.statusNotEmpty;
+    }
+  }
+  // print('message: ${jsFsError.message}');
+  // print('message: ${jsFsError.toString()}');
+  // devPrint('errno: ${jsFsError.errno}');
+  // print('path: ${jsFsError.path}');
+
+  // Error: SystemError [ERR_FS_EISDIR]: Path is a directory: rm returned EISDIR (is a directory) /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub
+  // {code: ERR_FS_EISDIR, info: {code: EISDIR, message: is a directory, path: /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub, syscall: rm, errno: 21}, errno: 21, syscall: rm, path: /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub}
+  throw FileSystemExceptionNode(
+      message: jsFsError.message ?? jsFsError.toString(),
+      path: jsFsError.path,
+      status: errno?.abs());
 }
 
 Future<T> catchErrorAsync<T>(Future<T> Function() action) async {
   try {
     return await action();
   } catch (e) {
-    _handleError(e);
+    _handleJsError(e);
     rethrow;
   }
 }
@@ -84,7 +93,7 @@ T catchErrorSync<T>(T Function() action) {
   try {
     return action();
   } catch (e) {
-    _handleError(e);
+    _handleJsError(e);
     rethrow;
   }
 }
