@@ -1,5 +1,7 @@
 import 'package:fs_shim/fs.dart';
 import 'package:tekartik_fs_node/src/universal/universal.dart';
+
+export 'package:fs_shim/fs_shim.dart';
 export 'package:tekartik_fs_node/src/universal/universal.dart'
     show fileSystemUniversal;
 
