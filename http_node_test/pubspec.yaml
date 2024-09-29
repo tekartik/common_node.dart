@@ -62,6 +62,21 @@ dev_dependencies:
       path: packages/build_node
       ref: dart3a
 
+  http: any
+  tekartik_common_utils:
+    git:
+      url: https://github.com/tekartik/common_utils.dart
+      ref: dart3a
+  tekartik_http:
+    git:
+      url: https://github.com/tekartik/http.dart
+      ref: dart3a
+      path: http
+  tekartik_platform_node:
+    git:
+      url: https://github.com/tekartik/common_node.dart
+      ref: dart3a
+      path: platform_node
 dependency_overrides:
   tekartik_platform_node:
     path: ../platform_node

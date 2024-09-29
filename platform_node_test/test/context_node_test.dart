@@ -1,5 +1,5 @@
 @TestOn('node')
-library tekartik_platform_node.context_node_test;
+library;
 
 import 'package:tekartik_platform_node/context_node.dart';
 import 'package:test/test.dart';

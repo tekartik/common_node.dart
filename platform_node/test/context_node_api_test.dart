@@ -1,5 +1,5 @@
 @TestOn('vm || node')
-library tekartik_context_node.test.context_node_api_test;
+library;
 
 import 'package:tekartik_common_utils/env_utils.dart';
 import 'package:tekartik_platform_io/context_io.dart';

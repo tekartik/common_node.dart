@@ -1,5 +1,5 @@
 @TestOn('vm')
-library test_service_universal_client_test;
+library;
 
 // Copyright (c) 2017, Alexandre Roux. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
