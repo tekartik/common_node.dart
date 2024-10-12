@@ -1,7 +1,6 @@
 @TestOn('node')
 library;
 
-import 'package:http/http.dart';
 import 'package:http_client_conformance_tests/http_client_conformance_tests.dart';
 import 'package:tekartik_http_node/http_client_node.dart';
 import 'package:test/test.dart';
