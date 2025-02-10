@@ -6,11 +6,11 @@ publish_to: none
 #author: alex <email@example.com>
 
 environment:
-  sdk: ^3.5.0
+  sdk: ^3.6.0
 
 dependencies:
-  path: '>=1.6.1'
-  fs_shim: '>=0.11.0+3'
+  path: ">=1.9.0"
+  fs_shim: ">=2.3.3+1"
   tekartik_http_node:
     git:
       url: https://github.com/tekartik/common_node.dart
@@ -28,8 +28,8 @@ dependencies:
   # node_io: any
 
 dev_dependencies:
-  test: ">=1.0.0"
-  dev_build: any
+  test: ">=1.24.0"
+  dev_build: ">=1.1.0+2"
   http_client_conformance_tests:
     git:
       url: https://github.com/dart-lang/http
@@ -52,10 +52,10 @@ dev_dependencies:
       path: http_io
       ref: dart3a
     version: '>=0.2.0'
-  process_run: '>=0.10.0+1'
+  process_run: ">=1.2.1+1"
   # needed node dependencies
-  build_runner:
-  build_web_compilers:
+  build_runner: ">=2.4.13"
+  build_web_compilers: ">=4.0.11"
   tekartik_build_node:
     git:
       url: https://github.com/tekartik/build_node.dart
@@ -77,15 +77,8 @@ dev_dependencies:
       url: https://github.com/tekartik/common_node.dart
       ref: dart3a
       path: platform_node
-dependency_overrides:
-  tekartik_platform_node:
-    path: ../platform_node
-  tekartik_http_node:
-    path: ../http_node
-  tekartik_fs_node:
-    path: ../fs_node
-  tekartik_core_node:
-    path: ../core_node
+
+resolution: workspace
   # fs_shim:
   #  path: ../fs
   # tekartik_fs_test:

@@ -6,7 +6,7 @@ publish_to: none
 #author: alex <email@example.com>
 
 environment:
-  sdk: ^3.5.0
+  sdk: ^3.6.0
 
 dependencies:
   tekartik_platform:
@@ -27,12 +27,12 @@ dependencies:
       path: platform_node
       ref: dart3a
     version: '>=0.2.1'
-  path: '>=1.6.1'
+  path: ">=1.9.0"
 
 dev_dependencies:
-  test: ">=1.2.0"
+  test: ">=1.24.0"
   build_test: '>=0.10.8'
-  process_run: '>=0.10.0+1'
+  process_run: ">=1.2.1+1"
   tekartik_platform_test:
     git:
       url: https://github.com/tekartik/platform.dart
@@ -40,7 +40,7 @@ dev_dependencies:
       ref: dart3a
     version: '>=0.2.1'
   # needed node dependencies
-  build_runner:
+  build_runner: ">=2.4.13"
   tekartik_build_node:
     git:
       url: https://github.com/tekartik/build_node.dart
@@ -50,8 +50,7 @@ dev_dependencies:
     git:
       url: https://github.com/tekartik/common_utils.dart
       ref: dart3a
-dependency_overrides:
-  tekartik_platform_node:
-    path: ../platform_node
+
+resolution: workspace
   # tekartik_build_node:
   #  path: ../../../tekartik/build_node.dart/packages/build_node

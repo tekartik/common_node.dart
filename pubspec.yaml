@@ -1,0 +1,13 @@
+name: _
+publish_to: none
+environment:
+  sdk: ^3.6.0
+workspace:
+  - core_node
+  - fs_node
+  - fs_node_test
+  - http_node
+  - http_node_test
+  - platform_node
+  - platform_node_test
+  - repo_support

@@ -3,50 +3,41 @@
 version: 2
 
 enable-beta-ecosystems: true
+
 updates:
+  - package-ecosystem: "pub"
+    directory: "core_node"
+    schedule:
+      interval: "monthly"
   - package-ecosystem: "pub"
     directory: "fs_node"
     schedule:
       interval: "monthly"
-
   - package-ecosystem: "pub"
     directory: "fs_node_test"
     schedule:
       interval: "monthly"
-
   - package-ecosystem: "pub"
     directory: "http_node"
     schedule:
       interval: "monthly"
-
   - package-ecosystem: "pub"
     directory: "http_node_test"
     schedule:
       interval: "monthly"
-
-  - package-ecosystem: "pub"
-    directory: "http_redirect_node"
-    schedule:
-      interval: "monthly"
-
   - package-ecosystem: "pub"
     directory: "platform_node"
     schedule:
       interval: "monthly"
-
   - package-ecosystem: "pub"
     directory: "platform_node_test"
     schedule:
       interval: "monthly"
-
   - package-ecosystem: "pub"
     directory: "repo_support"
     schedule:
       interval: "monthly"
-
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "monthly"
-    labels:
-      - autosubmit

@@ -6,7 +6,7 @@ publish_to: none
 #author: alex <email@example.com>
 
 environment:
-  sdk: ^3.5.0
+  sdk: ^3.6.0
 
 dependencies:
   tekartik_platform:
@@ -27,22 +27,20 @@ dependencies:
       ref: dart3a
   # node_io: '>=2.0.0'
   # node_interop: '>=2.0.0'
-  pub_semver:
+  pub_semver: ">=2.1.4"
   tekartik_core_node:
     git:
       url: https://github.com/tekartik/common_node.dart
       path: core_node
       ref: dart3a
 dev_dependencies:
-  test: ">=1.2.0"
+  test: ">=1.24.0"
   tekartik_platform_test:
     git:
       url: https://github.com/tekartik/platform.dart
       path: platform_test
       ref: dart3a
     version: '>=0.2.1'
-  process_run: '>=0.10.0+1'
+  process_run: ">=1.2.1+1"
 
-dependency_overrides:
-  tekartik_core_node:
-    path: ../core_node
+resolution: workspace

@@ -6,3 +6,5 @@
 # Local
 .local
 /fs_node_test/pubspec_overrides.yaml
+/pubspec.lock
+/.dart_tool/
