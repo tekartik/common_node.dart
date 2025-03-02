@@ -29,7 +29,7 @@ dependencies:
 
 dev_dependencies:
   test: ">=1.24.0"
-  dev_build: ">=1.1.0+2"
+  dev_build: ">=1.1.2"
   http_client_conformance_tests:
     git:
       url: https://github.com/dart-lang/http
