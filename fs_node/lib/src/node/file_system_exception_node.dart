@@ -21,8 +21,12 @@ class FileSystemExceptionNode implements FileSystemException {
   @override
   final int? status;
 
-  FileSystemExceptionNode(
-      {required this.message, this.osError, this.path, this.status});
+  FileSystemExceptionNode({
+    required this.message,
+    this.osError,
+    this.path,
+    this.status,
+  });
 
   @override
   String toString() =>
@@ -82,9 +86,10 @@ bool _handleJsError(Object error) {
   // Error: SystemError [ERR_FS_EISDIR]: Path is a directory: rm returned EISDIR (is a directory) /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub
   // {code: ERR_FS_EISDIR, info: {code: EISDIR, message: is a directory, path: /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub, syscall: rm, errno: 21}, errno: 21, syscall: rm, path: /home/alex/tekartik/devx/git/github.com/tekartik/common_node.dart/fs_node_test/.dart_tool/tekartik_fs_node/test/fs/test1/sub}
   throw FileSystemExceptionNode(
-      message: jsFsError.message ?? jsFsError.toString(),
-      path: jsFsError.path,
-      status: errno?.abs());
+    message: jsFsError.message ?? jsFsError.toString(),
+    path: jsFsError.path,
+    status: errno?.abs(),
+  );
 }
 
 Future<T> catchErrorAsync<T>(Future<T> Function() action) async {

@@ -26,9 +26,10 @@ class FileNode extends FileSystemEntityNode
     }
     if (!await parent.exists()) {
       throw FileSystemExceptionNode(
-          message: 'Missing parent folder',
-          path: path,
-          status: FileSystemException.statusNotFound);
+        message: 'Missing parent folder',
+        path: path,
+        status: FileSystemException.statusNotFound,
+      );
     }
     if (!await exists()) {
       await writeAsBytes(Uint8List(0));
@@ -38,9 +39,10 @@ class FileNode extends FileSystemEntityNode
 
   void _throwIsADirectoryError([String? path]) {
     throw FileSystemExceptionNode(
-        message: 'Is a directory',
-        path: path ?? this.path,
-        status: FileSystemException.statusIsADirectory);
+      message: 'Is a directory',
+      path: path ?? this.path,
+      status: FileSystemException.statusIsADirectory,
+    );
   }
 
   @override
@@ -53,8 +55,11 @@ class FileNode extends FileSystemEntityNode
   }
 
   @override
-  Future<File> writeAsBytes(Uint8List bytes,
-      {FileMode mode = FileMode.write, bool flush = false}) {
+  Future<File> writeAsBytes(
+    Uint8List bytes, {
+    FileMode mode = FileMode.write,
+    bool flush = false,
+  }) {
     return catchErrorAsync(() async {
       if (mode == FileMode.append) {
         await fsNode.nativeInstance
@@ -76,9 +81,10 @@ class FileNode extends FileSystemEntityNode
     if (isWindows) {
       if (await fsNode.type(newPath) != FileSystemEntityType.notFound) {
         throw FileSystemExceptionNode(
-            message: 'Already exists',
-            status: FileSystemException.statusAlreadyExists,
-            path: newPath);
+          message: 'Already exists',
+          status: FileSystemException.statusAlreadyExists,
+          path: newPath,
+        );
       }
     }
     await nodeRename(newPath);
@@ -117,8 +123,10 @@ class FileNode extends FileSystemEntityNode
   String toString() => "File: '$path'";
 
   @override
-  StreamSink<List<int>> openWrite(
-      {FileMode mode = FileMode.write, Encoding encoding = utf8}) {
+  StreamSink<List<int>> openWrite({
+    FileMode mode = FileMode.write,
+    Encoding encoding = utf8,
+  }) {
     if (mode == FileMode.read) {
       throw ArgumentError('Invalid mode $mode in openWrite');
     }
@@ -158,9 +166,10 @@ class WriteFileSinkNode implements StreamSink<List<int>> {
     }
     try {
       catchErrorSync(() {
-        _jsFileHandle = fileNode.fsNode.nativeInstance
-            .open(fileNode.path, fileModeOpenFlags(mode))
-            .toDart;
+        _jsFileHandle =
+            fileNode.fsNode.nativeInstance
+                .open(fileNode.path, fileModeOpenFlags(mode))
+                .toDart;
       });
     } catch (e) {
       addError(e);
@@ -242,45 +251,50 @@ class ReadFileStreamCtrlNode {
 
   static const _bufferSize = 64 * 1024;
   ReadFileStreamCtrlNode(this.fileNode, this.start, this.end) {
-    _ctlr = StreamController(onListen: () async {
-      try {
-        await catchErrorAsync(() async {
-          _jsFileHandle = await fileNode.fsNode.nativeInstance
-              .open(fileNode.path, 'r')
-              .toDart;
-          var position = start ?? 0;
-          while (true) {
-            int bufferSize;
-            if (end != null) {
-              if (position >= end!) {
+    _ctlr = StreamController(
+      onListen: () async {
+        try {
+          await catchErrorAsync(() async {
+            _jsFileHandle =
+                await fileNode.fsNode.nativeInstance
+                    .open(fileNode.path, 'r')
+                    .toDart;
+            var position = start ?? 0;
+            while (true) {
+              int bufferSize;
+              if (end != null) {
+                if (position >= end!) {
+                  break;
+                }
+
+                bufferSize = min(_bufferSize, end! - position);
+              } else {
+                bufferSize = _bufferSize;
+              }
+              var buffer = Uint8List(bufferSize).toJS;
+              var result =
+                  await _jsFileHandle
+                      .read(buffer, 0, bufferSize, position)
+                      .toDart;
+              if (result.bytesRead == 0) {
                 break;
               }
-
-              bufferSize = min(_bufferSize, end! - position);
-            } else {
-              bufferSize = _bufferSize;
+              if (_ctlr.isClosed) {
+                break;
+              }
+              _ctlr.add(buffer.toDart.sublist(0, result.bytesRead));
+              position += result.bytesRead;
             }
-            var buffer = Uint8List(bufferSize).toJS;
-            var result = await _jsFileHandle
-                .read(buffer, 0, bufferSize, position)
-                .toDart;
-            if (result.bytesRead == 0) {
-              break;
-            }
-            if (_ctlr.isClosed) {
-              break;
-            }
-            _ctlr.add(buffer.toDart.sublist(0, result.bytesRead));
-            position += result.bytesRead;
-          }
-          await _ctlr.close();
-        });
-      } catch (e) {
-        _ctlr.addError(e);
-      }
-    }, onCancel: () {
-      _ctlr.close();
-    });
+            await _ctlr.close();
+          });
+        } catch (e) {
+          _ctlr.addError(e);
+        }
+      },
+      onCancel: () {
+        _ctlr.close();
+      },
+    );
   }
 
   Stream<Uint8List> get stream => _ctlr.stream;

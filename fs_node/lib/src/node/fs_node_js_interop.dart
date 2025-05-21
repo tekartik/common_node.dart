@@ -105,8 +105,10 @@ extension JsFsExt on JsFs {
   /// The optional options argument can be a string specifying an encoding, or an object with an encoding property specifying the character encoding to use for the filenames. If the encoding is set to 'buffer', the filenames returned will be passed as `<Buffer>` objects.
   ///
   /// If options.withFileTypes is set to true, the returned array will contain `<fs.Dirent>` objects.
-  external js.JSPromise<js.JSArray<js.JSString>> readdir(String path,
-      [JsFsReaddirOptions options]);
+  external js.JSPromise<js.JSArray<js.JSString>> readdir(
+    String path, [
+    JsFsReaddirOptions options,
+  ]);
   @js.JS('appendFile')
   external js.JSPromise appendFileBytes(String path, js.JSUint8Array bytes);
 
@@ -231,7 +233,11 @@ extension JsFsFileHandleExt on JsFsFileHandle {
   ///
   /// If the file is not modified concurrently, the end-of-file is reached when the number of bytes read is zero.
   external js.JSPromise<JsFsFileReadResult> read(
-      js.JSUint8Array buffer, int offset, int length, int position);
+    js.JSUint8Array buffer,
+    int offset,
+    int length,
+    int position,
+  );
 }
 
 extension type JsFsFileReadResult._(js.JSObject _) implements js.JSObject {}

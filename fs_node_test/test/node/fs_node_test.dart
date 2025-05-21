@@ -1,7 +1,6 @@
 @TestOn('node')
 // Copyright (c) 2015, Alexandre Roux. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
-
 library;
 
 import 'package:fs_shim/fs.dart';
@@ -17,7 +16,9 @@ void main() {
     test('context', () {
       expect(fileSystemContext.platform.isIo, isTrue);
       expect(
-          (fileSystemContext.platform as PlatformContextNode).isIoNode, isTrue);
+        (fileSystemContext.platform as PlatformContextNode).isIoNode,
+        isTrue,
+      );
     });
     test('basics', () {
       expect(fs.supportsFileLink, isFalse);

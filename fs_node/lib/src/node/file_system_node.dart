@@ -31,8 +31,10 @@ class FileSystemNode with FileSystemMixin implements FileSystem {
   p.Context get path => p.context;
 
   @override
-  Future<FileSystemEntityType> type(String? path,
-      {bool followLinks = true}) async {
+  Future<FileSystemEntityType> type(
+    String? path, {
+    bool followLinks = true,
+  }) async {
     try {
       return await catchErrorAsync(() async {
         var fileStat = await nativeInstance.lstat(path!).toDart;
@@ -97,10 +99,11 @@ mixin FileSystemEntityNodeMixin on FileSystemEntityNode {
   Future<FileStat> stat() async {
     FileStatNode notFound() {
       return FileStatNode(
-          mode: 0,
-          modified: null,
-          size: -1,
-          type: FileSystemEntityType.notFound);
+        mode: 0,
+        modified: null,
+        size: -1,
+        type: FileSystemEntityType.notFound,
+      );
     }
 
     try {
@@ -112,19 +115,23 @@ mixin FileSystemEntityNodeMixin on FileSystemEntityNode {
         if (jsFileStat.isDirectory()) {
           //devPrint('isDirectory');
           return FileStatNode(
-              mode: jsFileStat.mode,
-              modified: DateTime.fromMillisecondsSinceEpoch(
-                  jsFileStat.mtimeMs.toInt()),
-              size: jsFileStat.size,
-              type: FileSystemEntityType.directory);
+            mode: jsFileStat.mode,
+            modified: DateTime.fromMillisecondsSinceEpoch(
+              jsFileStat.mtimeMs.toInt(),
+            ),
+            size: jsFileStat.size,
+            type: FileSystemEntityType.directory,
+          );
         } else if (jsFileStat.isFile()) {
           //devPrint('isFile ${jsFileStat.mtimeMs}');
           return FileStatNode(
-              mode: jsFileStat.mode,
-              modified: DateTime.fromMillisecondsSinceEpoch(
-                  jsFileStat.mtimeMs.toInt()),
-              size: jsFileStat.size,
-              type: FileSystemEntityType.file);
+            mode: jsFileStat.mode,
+            modified: DateTime.fromMillisecondsSinceEpoch(
+              jsFileStat.mtimeMs.toInt(),
+            ),
+            size: jsFileStat.size,
+            type: FileSystemEntityType.file,
+          );
         }
         return notFound();
       });
@@ -152,9 +159,10 @@ mixin FileSystemEntityNodeMixin on FileSystemEntityNode {
 
   void nodeThrowIsNotADirectoryError([String? path]) {
     throw FileSystemExceptionNode(
-        message: 'Not a directory',
-        path: path ?? this.path,
-        status: FileSystemException.statusNotADirectory);
+      message: 'Not a directory',
+      path: path ?? this.path,
+      status: FileSystemException.statusNotADirectory,
+    );
   }
 
   @override
@@ -176,10 +184,10 @@ class FileStatNode implements FileStat {
   @override
   final FileSystemEntityType type;
 
-  FileStatNode(
-      {required this.mode,
-      required DateTime? modified,
-      required this.size,
-      required this.type})
-      : _modified = modified;
+  FileStatNode({
+    required this.mode,
+    required DateTime? modified,
+    required this.size,
+    required this.type,
+  }) : _modified = modified;
 }

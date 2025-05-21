@@ -207,8 +207,10 @@ abstract class Platform {
   ///
   /// If the executable environment does not support [script],
   /// the URI is empty.
-  static Uri get script => throw UnsupportedError(
-      'script'); // Uri.file(process.argv[1], windows: Platform.isWindows);
+  static Uri get script =>
+      throw UnsupportedError(
+        'script',
+      ); // Uri.file(process.argv[1], windows: Platform.isWindows);
 
   /// The flags passed to the executable used to run the script in this isolate.
   ///

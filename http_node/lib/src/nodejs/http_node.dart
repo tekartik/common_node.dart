@@ -9,11 +9,13 @@ class HttpNodeJs {
   final _jsHttpNode = jsHttpNode;
   HttpNodeJs._();
   HttpServerJs createServer(
-      void Function(IncomingMessage req, ServerResponse res) requestListener) {
-    var jsServer =
-        _jsHttpNode.createServer((IncomingMessage req, ServerResponse res) {
-      print('req: $req');
-    }.toJS);
+    void Function(IncomingMessage req, ServerResponse res) requestListener,
+  ) {
+    var jsServer = _jsHttpNode.createServer(
+      (IncomingMessage req, ServerResponse res) {
+        print('req: $req');
+      }.toJS,
+    );
     return HttpServerJs._(jsServer);
   }
 }
@@ -30,10 +32,10 @@ class HttpAddressJs {
   String get family => _jsAddress.family;
 
   Map<String, Object?> toMap() => <String, Object?>{
-        'port': port,
-        'address': address,
-        'family': family,
-      };
+    'port': port,
+    'address': address,
+    'family': family,
+  };
   @override
   String toString() => toMap().toString();
 }
@@ -53,13 +55,14 @@ class HttpServerJs {
     var completer = Completer<void>();
     try {
       _jsServer.listen(
-          port,
-          hostname,
-          () {
-            print('server listening');
-            print(getOwnPropertyNames(_jsServer.address()));
-            completer.complete();
-          }.toJS);
+        port,
+        hostname,
+        () {
+          print('server listening');
+          print(getOwnPropertyNames(_jsServer.address()));
+          completer.complete();
+        }.toJS,
+      );
     } catch (e) {
       completer.completeError(e);
     }

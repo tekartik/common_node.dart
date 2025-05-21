@@ -13,17 +13,17 @@ void main() {
       if (platformContextNode.node!.isLinux) {
         expect(platformContextNode.platform!.isLinux, isTrue);
         expect(map, {
-          'node': {'platform': 'linux'}
+          'node': {'platform': 'linux'},
         });
       } else if (platformContextNode.node!.isWindows) {
         expect(platformContextNode.platform!.isWindows, isTrue);
         expect(map, {
-          'node': {'platform': 'windows'}
+          'node': {'platform': 'windows'},
         });
       } else if (platformContextNode.node!.isMacOS) {
         expect(platformContextNode.platform!.isMacOS, isTrue);
         expect(map, {
-          'node': {'platform': 'macos'}
+          'node': {'platform': 'macos'},
         });
       }
     });

@@ -15,7 +15,7 @@ void main() {
     print(getKeys(jsHttpNodeImpl));
   });
   test('HttpNodeJs()', () async {
-    var serverJs = httpNodeJs.createServer((_, __) {
+    var serverJs = httpNodeJs.createServer((_, _) {
       print('server created');
     });
     await serverJs.listen();

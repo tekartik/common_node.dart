@@ -38,42 +38,46 @@ class DirectoryNode extends FileSystemEntityNode
   }
 
   @override
-  Stream<FileSystemEntity> list(
-      {bool recursive = false, bool followLinks = true}) {
+  Stream<FileSystemEntity> list({
+    bool recursive = false,
+    bool followLinks = true,
+  }) {
     var cancelled = false;
     late StreamController<FileSystemEntity> ctlr;
     ctlr = StreamController<FileSystemEntity>(
-        sync: true,
-        onListen: () async {
-          try {
-            await catchErrorAsync(() async {
-              var files = (await fsNode.nativeInstance
-                      .readdir(
-                          path, node.JsFsReaddirOptions(recursive: recursive))
-                      .toDart)
-                  .toDart
-                  .map((e) => e.toDart);
+      sync: true,
+      onListen: () async {
+        try {
+          await catchErrorAsync(() async {
+            var files = (await fsNode.nativeInstance
+                    .readdir(
+                      path,
+                      node.JsFsReaddirOptions(recursive: recursive),
+                    )
+                    .toDart)
+                .toDart
+                .map((e) => e.toDart);
 
-              for (var file in files) {
-                var filePath = fsNode.path.join(path, file);
-                var jsFileStat = fsNode.nativeInstanceSync.lstatSync(filePath);
-                if (jsFileStat.isDirectory()) {
-                  ctlr.add(DirectoryNode(fsNode, filePath));
-                } else if (jsFileStat.isFile()) {
-                  ctlr.add(FileNode(fsNode, filePath));
-                }
+            for (var file in files) {
+              var filePath = fsNode.path.join(path, file);
+              var jsFileStat = fsNode.nativeInstanceSync.lstatSync(filePath);
+              if (jsFileStat.isDirectory()) {
+                ctlr.add(DirectoryNode(fsNode, filePath));
+              } else if (jsFileStat.isFile()) {
+                ctlr.add(FileNode(fsNode, filePath));
               }
-              //for (var i = 0; i < files.length; i++) {}
-              await ctlr.close();
-            });
-          } catch (e) {
-            if (!cancelled) {
-              ctlr.addError(e);
-              ctlr.close().unawait();
             }
+            //for (var i = 0; i < files.length; i++) {}
+            await ctlr.close();
+          });
+        } catch (e) {
+          if (!cancelled) {
+            ctlr.addError(e);
+            ctlr.close().unawait();
           }
+        }
 
-          /*
+        /*
           while (!cancelled) {
             for (var file in files) {
               var filePath = file as String;
@@ -88,10 +92,11 @@ class DirectoryNode extends FileSystemEntityNode
             }
             ctlr.close();
           }*/
-        },
-        onCancel: () {
-          cancelled = true;
-        });
+      },
+      onCancel: () {
+        cancelled = true;
+      },
+    );
     return ctlr.stream;
     // TODO: implement list
     //return super.list(recursive, followLinks);
@@ -113,9 +118,10 @@ class DirectoryNode extends FileSystemEntityNode
         // Already exists, make unit test happy
         if (!nodeIsDirectory() && platformContextNode.node?.isWindows != true) {
           throw FileSystemExceptionNode(
-              message: 'Not a directory',
-              status: FileSystemException.statusNotADirectory,
-              path: path);
+            message: 'Not a directory',
+            status: FileSystemException.statusNotADirectory,
+            path: path,
+          );
         }
       } else {
         rethrow;
@@ -135,15 +141,17 @@ class DirectoryNode extends FileSystemEntityNode
       var type = await fsNode.type(newPath);
       if (type == FileSystemEntityType.file) {
         throw FileSystemExceptionNode(
-            message: 'Not a directory',
-            status: FileSystemException.statusNotADirectory,
-            path: newPath);
+          message: 'Not a directory',
+          status: FileSystemException.statusNotADirectory,
+          path: newPath,
+        );
       }
       if (type != FileSystemEntityType.notFound) {
         throw FileSystemExceptionNode(
-            message: 'Already exists',
-            status: FileSystemException.statusAlreadyExists,
-            path: newPath);
+          message: 'Already exists',
+          status: FileSystemException.statusAlreadyExists,
+          path: newPath,
+        );
       }
     }
     await nodeRename(newPath);

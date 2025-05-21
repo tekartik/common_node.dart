@@ -52,49 +52,67 @@ void testAll(
   bool supportsMultipartRequest = true,
 }) {
   testRequestBody(clientFactory());
-  testRequestBodyStreamed(clientFactory(),
-      canStreamRequestBody: canStreamRequestBody);
-  testResponseBody(clientFactory(),
-      canStreamResponseBody: canStreamResponseBody);
-  testResponseBodyStreamed(clientFactory(),
-      canStreamResponseBody: canStreamResponseBody);
+  testRequestBodyStreamed(
+    clientFactory(),
+    canStreamRequestBody: canStreamRequestBody,
+  );
+  testResponseBody(
+    clientFactory(),
+    canStreamResponseBody: canStreamResponseBody,
+  );
+  testResponseBodyStreamed(
+    clientFactory(),
+    canStreamResponseBody: canStreamResponseBody,
+  );
   testRequestHeaders(clientFactory());
   // Failing on node
   // ignore: dead_code
   if (false) {
-    testRequestMethods(clientFactory(),
-        preservesMethodCase: preservesMethodCase);
+    testRequestMethods(
+      clientFactory(),
+      preservesMethodCase: preservesMethodCase,
+    );
 
-    testResponseHeaders(clientFactory(),
-        supportsFoldedHeaders: supportsFoldedHeaders);
+    testResponseHeaders(
+      clientFactory(),
+      supportsFoldedHeaders: supportsFoldedHeaders,
+    );
   }
   testResponseStatusLine(clientFactory());
   testRedirect(clientFactory(), redirectAlwaysAllowed: redirectAlwaysAllowed);
   testServerErrors(clientFactory());
   testCompressedResponseBody(clientFactory());
   testMultipleClients(clientFactory);
-  testMultipartRequests(clientFactory(),
-      supportsMultipartRequest: supportsMultipartRequest);
+  testMultipartRequests(
+    clientFactory(),
+    supportsMultipartRequest: supportsMultipartRequest,
+  );
   testClose(clientFactory);
   testIsolate(clientFactory, canWorkInIsolates: canWorkInIsolates);
-  testRequestCookies(clientFactory(),
-      canSendCookieHeaders: canSendCookieHeaders);
-  testResponseCookies(clientFactory(),
-      canReceiveSetCookieHeaders: canReceiveSetCookieHeaders);
+  testRequestCookies(
+    clientFactory(),
+    canSendCookieHeaders: canSendCookieHeaders,
+  );
+  testResponseCookies(
+    clientFactory(),
+    canReceiveSetCookieHeaders: canReceiveSetCookieHeaders,
+  );
 }
 
 Client newClient() => httpClientFactoryNode.newClient();
 void main() {
   group('client conformance tests', () {
-    testAll(() => newClient(),
-        canStreamRequestBody: false,
-        canStreamResponseBody: true,
-        redirectAlwaysAllowed: true,
-        canWorkInIsolates: false,
-        canReceiveSetCookieHeaders: false,
-        canSendCookieHeaders: false,
-        preservesMethodCase: true,
-        supportsFoldedHeaders: false,
-        supportsMultipartRequest: false);
+    testAll(
+      () => newClient(),
+      canStreamRequestBody: false,
+      canStreamResponseBody: true,
+      redirectAlwaysAllowed: true,
+      canWorkInIsolates: false,
+      canReceiveSetCookieHeaders: false,
+      canSendCookieHeaders: false,
+      preservesMethodCase: true,
+      supportsFoldedHeaders: false,
+      supportsMultipartRequest: false,
+    );
   });
 }

@@ -23,16 +23,20 @@ Future<void> main() async {
 
   test('io', () async {
     var shell = Shell(
-        environment: ShellEnvironment()..vars[uriVarKey] = uri.toString());
-    await shell
-        .run('dart test -p vm test/test_client_only_universal_runner.dart');
+      environment: ShellEnvironment()..vars[uriVarKey] = uri.toString(),
+    );
+    await shell.run(
+      'dart test -p vm test/test_client_only_universal_runner.dart',
+    );
   });
   test('node', () async {
     if (isNodeSupportedSync) {
       var shell = Shell(
-          environment: ShellEnvironment()..vars[uriVarKey] = uri.toString());
-      await shell
-          .run('dart test -p node test/test_client_only_universal_runner.dart');
+        environment: ShellEnvironment()..vars[uriVarKey] = uri.toString(),
+      );
+      await shell.run(
+        'dart test -p node test/test_client_only_universal_runner.dart',
+      );
     }
   });
 }

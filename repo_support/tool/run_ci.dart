@@ -18,13 +18,12 @@ Future<void> main() async {
     await nodePackageRunCi(path);
   }
 
-  for (var dir in [
-    'http_node',
-    'http_node_test',
-  ]) {
+  for (var dir in ['http_node', 'http_node_test']) {
     var path = join(topDir, dir);
 
     await nodePackageRunCi(
-        path, NodePackageRunCiOptions(noNodeTest: true)); //runningOnGithub));
+      path,
+      NodePackageRunCiOptions(noNodeTest: true),
+    ); //runningOnGithub));
   }
 }
