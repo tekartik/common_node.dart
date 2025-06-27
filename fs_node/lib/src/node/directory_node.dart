@@ -49,14 +49,15 @@ class DirectoryNode extends FileSystemEntityNode
       onListen: () async {
         try {
           await catchErrorAsync(() async {
-            var files = (await fsNode.nativeInstance
-                    .readdir(
-                      path,
-                      node.JsFsReaddirOptions(recursive: recursive),
-                    )
-                    .toDart)
-                .toDart
-                .map((e) => e.toDart);
+            var files =
+                (await fsNode.nativeInstance
+                        .readdir(
+                          path,
+                          node.JsFsReaddirOptions(recursive: recursive),
+                        )
+                        .toDart)
+                    .toDart
+                    .map((e) => e.toDart);
 
             for (var file in files) {
               var filePath = fsNode.path.join(path, file);

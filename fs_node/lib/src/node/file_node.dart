@@ -166,10 +166,9 @@ class WriteFileSinkNode implements StreamSink<List<int>> {
     }
     try {
       catchErrorSync(() {
-        _jsFileHandle =
-            fileNode.fsNode.nativeInstance
-                .open(fileNode.path, fileModeOpenFlags(mode))
-                .toDart;
+        _jsFileHandle = fileNode.fsNode.nativeInstance
+            .open(fileNode.path, fileModeOpenFlags(mode))
+            .toDart;
       });
     } catch (e) {
       addError(e);
@@ -255,10 +254,9 @@ class ReadFileStreamCtrlNode {
       onListen: () async {
         try {
           await catchErrorAsync(() async {
-            _jsFileHandle =
-                await fileNode.fsNode.nativeInstance
-                    .open(fileNode.path, 'r')
-                    .toDart;
+            _jsFileHandle = await fileNode.fsNode.nativeInstance
+                .open(fileNode.path, 'r')
+                .toDart;
             var position = start ?? 0;
             while (true) {
               int bufferSize;
@@ -272,10 +270,9 @@ class ReadFileStreamCtrlNode {
                 bufferSize = _bufferSize;
               }
               var buffer = Uint8List(bufferSize).toJS;
-              var result =
-                  await _jsFileHandle
-                      .read(buffer, 0, bufferSize, position)
-                      .toDart;
+              var result = await _jsFileHandle
+                  .read(buffer, 0, bufferSize, position)
+                  .toDart;
               if (result.bytesRead == 0) {
                 break;
               }

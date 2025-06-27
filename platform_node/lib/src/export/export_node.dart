@@ -7,11 +7,10 @@ import 'package:tekartik_platform_node/src/interop/process_interop.dart'
 PlatformContext get platformContextNode => node.platformContextNode;
 
 Version? _nodeVersion;
-Version get nodeVersion =>
-    _nodeVersion ??= () {
-      var versionText = node.process.version;
-      if (versionText.startsWith('v')) {
-        versionText = versionText.substring(1);
-      }
-      return parseVersion(versionText);
-    }();
+Version get nodeVersion => _nodeVersion ??= () {
+  var versionText = node.process.version;
+  if (versionText.startsWith('v')) {
+    versionText = versionText.substring(1);
+  }
+  return parseVersion(versionText);
+}();
