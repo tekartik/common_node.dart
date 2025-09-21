@@ -13,19 +13,16 @@ dependencies:
     git:
       url: https://github.com/tekartik/platform.dart
       path: platform
-      ref: dart3a
     version: '>=0.2.1'
   tekartik_platform_io:
     git:
       url: https://github.com/tekartik/platform.dart
       path: platform_io
-      ref: dart3a
     version: '>=0.2.1'
   tekartik_platform_node:
     git:
       url: https://github.com/tekartik/common_node.dart
       path: platform_node
-      ref: dart3a
     version: '>=0.2.1'
   path: ">=1.9.0"
 
@@ -37,7 +34,6 @@ dev_dependencies:
     git:
       url: https://github.com/tekartik/platform.dart
       path: platform_test
-      ref: dart3a
     version: '>=0.2.1'
   # needed node dependencies
   build_runner: ">=2.4.13"
@@ -45,11 +41,9 @@ dev_dependencies:
     git:
       url: https://github.com/tekartik/build_node.dart
       path: packages/build_node
-      ref: dart3a
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
-      ref: dart3a
 
 resolution: workspace
   # tekartik_build_node:

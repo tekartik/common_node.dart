@@ -5,7 +5,6 @@
     git:
       url: https://github.com/tekartik/common_node.dart
       path: platform_node
-      ref: dart3a
     version: '>=0.2.1'
 ```
 Use dart2

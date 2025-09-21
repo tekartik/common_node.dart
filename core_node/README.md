@@ -5,5 +5,4 @@
     git:
       url: https://github.com/tekartik/common_node.dart
       path: core_node
-      ref: dart3a
 ```
