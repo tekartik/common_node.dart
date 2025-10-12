@@ -8,6 +8,8 @@ var topDir = '..';
 
 Future<void> main() async {
   for (var dir in [
+    'stdio_node',
+    'stdio_node_test',
     'core_node',
     'platform_node',
     'platform_node_test',

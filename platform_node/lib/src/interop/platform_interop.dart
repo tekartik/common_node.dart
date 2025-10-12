@@ -39,7 +39,10 @@ extension on js.JSArray {
 }
 
 @js.JS('process')
-external JsProcess get jsProcess;
+external JsProcess get jsProcessModule;
+
+/// Compat
+JsProcess get jsProcess => jsProcessModule;
 
 /// Are we running in a NodeJS environment?
 bool get isNodeJS {

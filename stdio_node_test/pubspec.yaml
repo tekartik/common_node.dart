@@ -1,0 +1,73 @@
+name: tekartik_stdio_node_test
+description: fs_shim on node test
+version: 0.4.0
+publish_to: none
+#homepage: https://www.example.com
+#author: alex <email@example.com>
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  path: ">=1.9.0"
+  fs_shim: ">=2.3.3+1"
+  tekartik_stdio_node:
+    git:
+      url: https://github.com/tekartik/common_node.dart
+      path: io_node
+    version: '>=0.2.0'
+  tekartik_platform_node:
+    git:
+      url: https://github.com/tekartik/common_node.dart
+      path: platform_node
+    version: '>=0.2.0'
+  # node_io: '>=1.0.1+2'
+  # node_io: any
+  yaml: ">=3.1.2"
+  tekartik_js_utils_interop:
+    git:
+      url: https://github.com/tekartik/js_utils.dart
+      path: js_utils_interop
+dev_dependencies:
+  test: ">=1.24.0"
+  tekartik_fs_test:
+    git:
+      url: https://github.com/tekartik/fs_shim.dart
+      path: fs_test
+    version: '>=0.1.0'
+  tekartik_platform:
+    git:
+      url: https://github.com/tekartik/platform.dart
+      path: platform
+
+  process_run: ">=1.2.1+1"
+  # needed node dependencies
+  build_runner: ">=2.4.13"
+  build_web_compilers: ">=4.0.11"
+  tekartik_build_node:
+    git:
+      url: https://github.com/tekartik/build_node.dart
+      path: packages/build_node
+    version: '>=0.2.2'
+  tekartik_app_node_build:
+    git:
+      url: https://github.com/tekartik/app_node_utils.dart
+      path: app_build
+
+resolution: workspace
+  # Temp dev
+  # fs_shim:
+  #   path: ../../fs_shim.dart/fs
+  # tekartik_fs_test:
+  #   path: ../../fs_shim.dart/fs_test
+
+# node_io:
+#   git:
+#      url: https://github.com/tekartik/node-interop
+#      path: node_io
+#  node_io:
+#    path: /media/ssd/devx/git/github.com/tekartik/node-interop/node_io
+#  tekartik_platform:
+#    path: /media/ssd/devx/git/github.com/tekartik/platform.dart/platform
+#  tekartik_platform_node:
+#    path: /media/ssd/devx/git/github.com/tekartik/platform.dart/platform_node

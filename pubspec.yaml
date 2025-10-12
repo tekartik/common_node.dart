@@ -10,4 +10,6 @@ workspace:
   - http_node_test
   - platform_node
   - platform_node_test
+  - stdio_node
+  - stdio_node_test
   - repo_support

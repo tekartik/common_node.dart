@@ -1,0 +1,8 @@
+# tekartik recommended lints (extension over google lints and pedantic)
+include: package:tekartik_lints/package.yaml
+
+linter:
+  rules:
+  #  depend_on_referenced_packages: false
+  #  avoid_print: true
+    public_member_api_docs: false
