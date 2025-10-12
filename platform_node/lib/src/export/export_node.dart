@@ -1,6 +1,7 @@
 import 'package:tekartik_common_utils/version_utils.dart';
 import 'package:tekartik_platform/context.dart';
 import 'package:tekartik_platform_node/src/context_node.dart' as node;
+import 'package:tekartik_platform_node/src/interop/platform_interop.dart';
 import 'package:tekartik_platform_node/src/interop/process_interop.dart'
     as node;
 
@@ -14,3 +15,6 @@ Version get nodeVersion => _nodeVersion ??= () {
   }
   return parseVersion(versionText);
 }();
+
+/// true in node js mode, false otherwise web or io
+final isRunningInNode = isNodeJS;

@@ -1,3 +1,6 @@
+@TestOn('vm || node')
+library;
+
 import 'package:tekartik_common_utils/env_utils.dart';
 import 'package:tekartik_platform_node/context_universal.dart';
 import 'package:test/test.dart';
@@ -10,8 +13,9 @@ void main() {
   group('universal', () {
     test('info', () {
       print(platform.environment);
+
       expect(platformContextUniversal.platform!.environment, isNotEmpty);
-      if (isRunningAsJavascript) {
+      if (kDartIsWeb) {
         expect(platformContextUniversal.node, isNotNull);
         expect(platformContextUniversal.io, isNull);
       } else {

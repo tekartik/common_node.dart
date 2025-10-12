@@ -3,7 +3,6 @@
 
 import 'dart:js_interop' as js;
 import 'dart:js_interop_unsafe' as js;
-
 import 'package:tekartik_core_node/require.dart';
 
 var jsOs = require<JsOs>('os');
@@ -41,6 +40,26 @@ extension on js.JSArray {
 
 @js.JS('process')
 external JsProcess get jsProcess;
+
+/// Are we running in a NodeJS environment?
+bool get isNodeJS {
+  try {
+    final process = js.globalContext.getProperty('process'.toJS);
+    if (process.isUndefinedOrNull) {
+      return false;
+    }
+    var processObject = process as js.JSObject;
+
+    final versions = processObject.getProperty('versions'.toJS);
+    if (versions.isUndefinedOrNull) return false;
+
+    var versionsObject = versions as js.JSObject;
+    final node = versionsObject.getProperty('node'.toJS);
+    return !node.isUndefinedOrNull;
+  } catch (_) {
+    return false;
+  }
+}
 
 var jsPath = require('path') as JsPath;
 
