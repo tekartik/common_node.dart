@@ -3,17 +3,25 @@ import 'dart:js_interop' as js;
 import 'package:tekartik_core_node/require.dart';
 import 'import_js.dart' as js;
 
+/// JS FS promises.
 var jsFs = require<JsFs>('node:fs/promises');
+
+/// JS FS sync.
 var jsFsSync = require<JsFsSync>('node:fs');
 
+/// JS FS sync.
 extension type JsFsSync._(js.JSObject _) implements js.JSObject {}
 
+/// JS FS sync extension.
 extension JsFsSyncExt on JsFsSync {
+  /// Lstat sync.
   external JsFsStats lstatSync(String path);
 }
 
+/// JS FS.
 extension type JsFs._(js.JSObject _) implements js.JSObject {}
 
+/// JS FS extension.
 extension JsFsExt on JsFs {
   /// Added in: v10.0.0
   /// path `<string>` | `<Buffer>` | `<URL>`
@@ -109,12 +117,16 @@ extension JsFsExt on JsFs {
     String path, [
     JsFsReaddirOptions options,
   ]);
+
+  /// Append file bytes.
   @js.JS('appendFile')
   external js.JSPromise appendFileBytes(String path, js.JSUint8Array bytes);
 
+  /// Write file bytes.
   @js.JS('writeFile')
   external js.JSPromise writeFileBytes(String path, js.JSUint8Array bytes);
 
+  /// Read file bytes.
   @js.JS('readFile')
   external js.JSPromise<js.JSUint8Array> readFileBytes(String path);
 
@@ -149,29 +161,47 @@ extension JsFsExt on JsFs {
   external js.JSPromise<JsFsFileHandle> open(String path, String flags);
 }
 
+/// JS FS rm options.
 extension type JsFsRmOptions._(js.JSObject _) implements js.JSObject {
+  /// Constructor.
   external JsFsRmOptions({bool? recursive, bool? force});
 }
+
+/// JS FS mkdir options.
 extension type JsFsMkdirOptions._(js.JSObject _) implements js.JSObject {
+  /// Constructor.
   external JsFsMkdirOptions({bool? recursive});
 }
 
+/// JS FS readdir options.
 extension type JsFsReaddirOptions._(js.JSObject _) implements js.JSObject {
+  /// Constructor.
   external JsFsReaddirOptions({bool? recursive});
 }
 
+/// JS FS copy options.
 extension type JsFsCopyOptions._(js.JSObject _) implements js.JSObject {
+  /// Constructor.
   external JsFsCopyOptions({bool? recursive});
 }
 
+/// JS FS stats.
 extension type JsFsStats._(js.JSObject _) implements js.JSObject {
   // {dev: 66311, mode: 16893, nlink: 2, uid: 1000, gid: 1000, rdev: 0, blksize: 4096, ino: 49676304, size: 4096, blocks: 8, atimeMs: 1718626106862.2302, mtimeMs: 1718626106862.2302, ctimeMs: 1718626106862.2302, birthtimeMs: 1718626106862.2302, atime: {}, mtime: {}, ctime: {}, birthtime: {}}
+  /// Mode.
   external int get mode;
+
+  /// Size.
   external int get size;
+
+  /// Mtime ms.
   external num get mtimeMs;
+
+  /// Mtime.
   external js.JSDate get mtime;
 }
 
+/// JS FS stats extension.
 extension JsFsStatsExt on JsFsStats {
   /// stats.isDirectory()#
   /// Added in: v0.1.10
@@ -193,17 +223,28 @@ extension JsFsStatsExt on JsFsStats {
   external bool isSymbolicLink();
 }
 
+/// JS FS error.
 extension type JsFsError._(js.JSObject _) implements js.JSObject {}
 
+/// JS FS error extension.
 extension JsFsErrorExt on JsFsError {
+  /// Errno.
   external int? get errno;
+
+  /// Code.
   external String? get code;
+
+  /// Path.
   external String? get path;
+
+  /// Message.
   external String? get message;
 }
 
+/// JS FS file handle.
 extension type JsFsFileHandle._(js.JSObject _) implements js.JSObject {}
 
+/// JS FS file handle extension.
 extension JsFsFileHandleExt on JsFsFileHandle {
   /// filehandle.write(buffer[, options])#
   /// Added in: v18.3.0, v16.17.0
@@ -240,8 +281,11 @@ extension JsFsFileHandleExt on JsFsFileHandle {
   );
 }
 
+/// JS FS file read result.
 extension type JsFsFileReadResult._(js.JSObject _) implements js.JSObject {}
 
+/// JS FS file read result extension.
 extension JsFsFileReadResultExt on JsFsFileReadResult {
+  /// Bytes read.
   external int get bytesRead;
 }

@@ -35,4 +35,5 @@ class _ConsoleOutSink extends _ConsoleSink {
 
 abstract class _ConsoleSink implements ConsoleSink {}
 
+/// Global console instance.
 final Console console = _Console();

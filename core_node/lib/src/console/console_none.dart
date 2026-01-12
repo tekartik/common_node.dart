@@ -1,5 +1,6 @@
 import 'console.dart';
 
+/// None console implementation.
 class NoneConsole extends Console {
   @override
   final err = NonConsoleSink();
@@ -8,8 +9,10 @@ class NoneConsole extends Console {
   final out = NonConsoleSink();
 }
 
+/// Global none console instance.
 final NoneConsole console = NoneConsole();
 
+/// Non console sink implementation.
 class NonConsoleSink implements ConsoleSink {
   @override
   void writeln([Object? object = '']) {}

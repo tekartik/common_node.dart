@@ -11,4 +11,6 @@ class _ProcessIo implements Process {
 }
 
 final _processIo = _ProcessIo();
+
+/// Global process instance.
 Process get process => _processIo;

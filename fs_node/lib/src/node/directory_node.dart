@@ -8,9 +8,11 @@ import 'fs_node_js_interop.dart' as node;
 // ignore: unused_import
 import 'import_js.dart' as js;
 
+/// Directory node implementation.
 class DirectoryNode extends FileSystemEntityNode
     with DirectoryMixin, FileSystemEntityNodeMixin
     implements Directory {
+  /// Constructor.
   DirectoryNode(super.fsNode, super.path);
 
   @override

@@ -20,4 +20,5 @@ class _ConsoleSink implements ConsoleSink {
   }
 }
 
+/// Global console instance.
 Console console = _Console();

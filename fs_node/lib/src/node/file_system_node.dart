@@ -12,7 +12,10 @@ import 'import_js.dart' as js;
 
 /// Basic implementation, no support for links yet
 class FileSystemNode with FileSystemMixin implements FileSystem {
+  /// Native instance.
   final node.JsFs nativeInstance = node.jsFs;
+
+  /// Native instance sync.
   final node.JsFsSync nativeInstanceSync = node.jsFsSync;
 
   @override
@@ -58,6 +61,7 @@ class FileSystemNode with FileSystemMixin implements FileSystem {
   @override
   DirectoryNode directory(String path) => DirectoryNode(this, path);
 
+  /// Returns true if the node is a directory.
   bool nodeIsDirectory(String path) {
     try {
       var jsFileStat = nativeInstanceSync.lstatSync(path);
@@ -68,14 +72,18 @@ class FileSystemNode with FileSystemMixin implements FileSystem {
   }
 }
 
+/// File system entity node implementation.
 abstract class FileSystemEntityNode implements FileSystemEntity {
+  /// File system node.
   final FileSystemNode fsNode;
   @override
   final String path;
 
+  /// Constructor.
   FileSystemEntityNode(this.fsNode, this.path);
 }
 
+/// File system entity node mixin.
 mixin FileSystemEntityNodeMixin on FileSystemEntityNode {
   @override
   FileSystem get fs => fsNode;
@@ -93,6 +101,7 @@ mixin FileSystemEntityNodeMixin on FileSystemEntityNode {
     }
   }
 
+  /// Absolute path.
   String get absolutePath => p.normalize(p.absolute(path));
 
   @override
@@ -140,14 +149,17 @@ mixin FileSystemEntityNodeMixin on FileSystemEntityNode {
     }
   }
 
+  /// Rename node.
   Future<void> nodeRename(String newPath) async {
     await catchErrorAsync(() async {
       await fsNode.nativeInstance.rename(path, newPath).toDart;
     });
   }
 
+  /// Returns true if the node is a directory.
   bool nodeIsDirectory() => fsNode.nodeIsDirectory(path);
 
+  /// Returns true if the node is a file.
   bool nodeIsFile() {
     try {
       var jsFileStat = fsNode.nativeInstanceSync.lstatSync(path);
@@ -157,6 +169,7 @@ mixin FileSystemEntityNodeMixin on FileSystemEntityNode {
     }
   }
 
+  /// Throw is not a directory error.
   void nodeThrowIsNotADirectoryError([String? path]) {
     throw FileSystemExceptionNode(
       message: 'Not a directory',
@@ -169,6 +182,7 @@ mixin FileSystemEntityNodeMixin on FileSystemEntityNode {
   Directory get parent => DirectoryNode(fsNode, p.dirname(path));
 }
 
+/// File stat node implementation.
 class FileStatNode implements FileStat {
   @override
   final int mode;
@@ -184,6 +198,7 @@ class FileStatNode implements FileStat {
   @override
   final FileSystemEntityType type;
 
+  /// Constructor.
   FileStatNode({
     required this.mode,
     required DateTime? modified,

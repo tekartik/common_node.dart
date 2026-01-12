@@ -9,4 +9,5 @@ class _ProcessNode implements Process {
   }
 }
 
+/// Global process instance.
 final Process processNode = _ProcessNode();

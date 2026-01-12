@@ -5,31 +5,45 @@ import 'dart:js_interop' as js;
 import 'dart:js_interop_unsafe' as js;
 import 'package:tekartik_core_node/require.dart';
 
+/// JS OS.
 var jsOs = require<JsOs>('os');
 
+/// JS OS.
 extension type JsOs._(js.JSObject _) implements js.JSObject {
+  /// Platform.
   external String platform();
 
+  /// Release.
   external String release();
 
+  /// CPUs.
   external js.JSArray<js.JSAny> cpus();
 
+  /// Hostname.
   external String hostname();
 }
 
+/// JS Process.
 extension type JsProcess._(js.JSObject _) implements js.JSObject {
+  /// Environment.
   external JsProcessEnv get env;
 
+  /// Argv0.
   external String get argv0;
 
+  /// Exec path.
   external String get execPath;
 
+  /// Argv.
   external js.JSArray get argv;
 
+  /// Exec argv.
   external js.JSArray get execArgv;
 }
 
+/// JS Path.
 extension type JsPath._(js.JSObject _) implements js.JSObject {
+  /// Separator.
   external String get sep;
 }
 
@@ -38,10 +52,11 @@ extension on js.JSArray {
       List<String>.from(toDart.map((e) => (e as js.JSString).toDart));
 }
 
+/// JS Process module.
 @js.JS('process')
 external JsProcess get jsProcessModule;
 
-/// Compat
+/// JS Process instance.
 JsProcess get jsProcess => jsProcessModule;
 
 /// Are we running in a NodeJS environment?
@@ -64,12 +79,16 @@ bool get isNodeJS {
   }
 }
 
+/// JS Path instance.
 var jsPath = require('path') as JsPath;
 
+/// JS Object keys.
 @js.JS('Object.keys')
 external js.JSArray jsObjectKeys(js.JSObject object);
 
+/// JS Process environment.
 extension type JsProcessEnv._(js.JSObject _) implements js.JSObject {
+  /// To map.
   Map<String, String> toMap() {
     var map = <String, String>{};
     var keys = jsObjectKeys(this).toDartStringList();

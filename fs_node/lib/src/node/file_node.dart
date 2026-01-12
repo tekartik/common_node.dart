@@ -11,9 +11,11 @@ import 'fs_node_js_interop.dart' as node;
 // ignore: unused_import
 import 'import_js.dart' as js;
 
+/// File node implementation.
 class FileNode extends FileSystemEntityNode
     with FileMixin, FileSystemEntityNodeMixin
     implements File {
+  /// Constructor.
   FileNode(super.fsNode, super.path);
 
   @override
@@ -139,6 +141,7 @@ class FileNode extends FileSystemEntityNode
   }
 }
 
+/// Get or create file mode flags.
 String fileModeOpenFlags(FileMode mode) {
   switch (mode) {
     case FileMode.write:
@@ -152,14 +155,24 @@ String fileModeOpenFlags(FileMode mode) {
   }
 }
 
+/// Write file sink node.
 class WriteFileSinkNode implements StreamSink<List<int>> {
+  /// The file node.
   final FileNode fileNode;
+
+  /// File mode.
   final FileMode mode;
+
+  /// Encoding.
   final Encoding encoding;
+
+  /// Done completer.
   final doneCompleter = Completer<void>();
 
   final _lock = Lock();
   Future<node.JsFsFileHandle>? _jsFileHandle;
+
+  /// Constructor.
   WriteFileSinkNode(this.fileNode, this.mode, this.encoding) {
     if (fileNode.nodeIsDirectory()) {
       return;
@@ -240,15 +253,23 @@ class WriteFileSinkNode implements StreamSink<List<int>> {
   }
 }
 
+/// Read file stream controller node.
 class ReadFileStreamCtrlNode {
+  /// The file node.
   final FileNode fileNode;
+
+  /// Start.
   final int? start;
+
+  /// End.
   final int? end;
 
   late StreamController<Uint8List> _ctlr;
   late final node.JsFsFileHandle _jsFileHandle;
 
   static const _bufferSize = 64 * 1024;
+
+  /// Constructor.
   ReadFileStreamCtrlNode(this.fileNode, this.start, this.end) {
     _ctlr = StreamController(
       onListen: () async {
@@ -294,5 +315,6 @@ class ReadFileStreamCtrlNode {
     );
   }
 
+  /// Stream.
   Stream<Uint8List> get stream => _ctlr.stream;
 }

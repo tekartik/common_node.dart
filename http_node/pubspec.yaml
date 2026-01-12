@@ -32,6 +32,8 @@ dependencies:
       url: https://github.com/tekartik/common_node.dart
       path: fs_node
     version: '>=0.1.0'
+  tekartik_common_utils:
+    git: https://github.com/tekartik/common_utils.dart
 
 dev_dependencies:
   test: ">=1.24.0"

@@ -7,8 +7,8 @@ import 'package:tekartik_platform_node/context_node.dart';
 PlatformContext get platformContextUniversal =>
     isRunningAsJavascript ? platformContextNode : platformContextIo;
 
-/// Get the platform information
+/// Global platform.
 Platform get platform => platformContextUniversal.platform!;
 
-/// Get the platform information
+/// Global platform.
 Platform get platformUniversal => platformContextUniversal.platform!;

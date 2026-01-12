@@ -1,5 +1,6 @@
 import 'dart:js_interop';
 
+/// JS Process instance.
 @JS()
 extension type Process._(JSObject _) implements JSObject {
   /// node version
@@ -12,5 +13,6 @@ extension type Process._(JSObject _) implements JSObject {
   external JSAny get output;
 }
 
+/// JS Process instance.
 @JS()
 external Process get process;

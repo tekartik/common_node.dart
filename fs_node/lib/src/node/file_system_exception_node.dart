@@ -8,6 +8,7 @@ import 'import_js.dart' as js;
 const _debugException = false;
 //var _debugException = devWarning(true);
 
+/// File system exception node implementation.
 class FileSystemExceptionNode implements FileSystemException {
   @override
   final String message;
@@ -21,6 +22,7 @@ class FileSystemExceptionNode implements FileSystemException {
   @override
   final int? status;
 
+  /// Constructor.
   FileSystemExceptionNode({
     required this.message,
     this.osError,
@@ -33,7 +35,10 @@ class FileSystemExceptionNode implements FileSystemException {
       'FileSystemException(status: $status, $message, path: $path)';
 }
 
+/// True if windows.
 bool get isWindows => platformContextNode.node?.isWindows ?? false;
+
+/// True if MacOS.
 bool get isMacOS => platformContextNode.node?.isMacOS ?? false;
 bool _handleJsError(Object error) {
   // devPrint('error: $error ${error.runtimeType}');
@@ -92,6 +97,7 @@ bool _handleJsError(Object error) {
   );
 }
 
+/// Catch error async.
 Future<T> catchErrorAsync<T>(Future<T> Function() action) async {
   try {
     return await action();
@@ -101,6 +107,7 @@ Future<T> catchErrorAsync<T>(Future<T> Function() action) async {
   }
 }
 
+/// Catch error sync.
 T catchErrorSync<T>(T Function() action) {
   try {
     return action();

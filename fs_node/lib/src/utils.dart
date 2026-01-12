@@ -10,6 +10,7 @@ Uint8List asUint8List(List<int> bytes) {
   return Uint8List.fromList(bytes);
 }
 
+/// Get status from message.
 int? statusFromMessage(String message) {
   // Error: ENOENT: no such file or directory, scandir '.dart_tool/fs_shim_node/test_out/fs_node/file/create_recursive'
   if (message.contains('ENOENT:')) {

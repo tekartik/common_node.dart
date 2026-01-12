@@ -5,6 +5,7 @@ import 'package:tekartik_platform/src/platform_mixin.dart';
 
 import 'interop/platform_interop.dart' as node;
 
+/// Node implementation.
 class NodeImpl with PlatformMixin implements Node {
   @override
   bool get isLinux => node.Platform.isLinux;
@@ -36,6 +37,7 @@ class NodeImpl with PlatformMixin implements Node {
   @override
   bool get isMacOS => node.Platform.isMacOS;
 
+  /// To map.
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{};
     map['platform'] = _platformText;
@@ -44,6 +46,7 @@ class NodeImpl with PlatformMixin implements Node {
   }
 }
 
+/// Platform context for node.
 class PlatformContextNode implements PlatformContext {
   @override
   Browser? get browser => null;
@@ -71,5 +74,6 @@ class PlatformContextNode implements PlatformContext {
 
 PlatformContextNode? _platformContextNode;
 
+/// Global platform context node instance.
 PlatformContextNode get platformContextNode =>
     _platformContextNode ??= PlatformContextNode();

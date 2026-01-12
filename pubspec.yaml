@@ -13,3 +13,6 @@ workspace:
   - stdio_node
   - stdio_node_test
   - repo_support
+dependencies:
+  tekartik_common_utils:
+    git: https://github.com/tekartik/common_utils.dart

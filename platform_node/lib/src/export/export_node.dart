@@ -5,9 +5,12 @@ import 'package:tekartik_platform_node/src/interop/platform_interop.dart';
 import 'package:tekartik_platform_node/src/interop/process_interop.dart'
     as node;
 
+/// Global platform context node instance.
 PlatformContext get platformContextNode => node.platformContextNode;
 
 Version? _nodeVersion;
+
+/// Node version.
 Version get nodeVersion => _nodeVersion ??= () {
   var versionText = node.process.version;
   if (versionText.startsWith('v')) {
