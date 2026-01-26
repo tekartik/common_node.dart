@@ -34,7 +34,14 @@ class FileNode extends FileSystemEntityNode
       );
     }
     if (!await exists()) {
-      await writeAsBytes(Uint8List(0));
+      await catchErrorAsync(() async {
+        print('creating empty file $path');
+        // Node.js cannot create empty files with writeFileBytes
+        var handle = await fsNode.nativeInstance.open(path, 'w').toDart;
+        print('created empty file $path');
+        await handle.close().toDart;
+        print('create done $path');
+      });
     }
     return this;
   }
@@ -57,21 +64,55 @@ class FileNode extends FileSystemEntityNode
   }
 
   @override
+  Future<File> writeAsString(
+    String contents, {
+    FileMode mode = FileMode.write,
+    Encoding encoding = utf8,
+    bool flush = false,
+  }) {
+    print(
+      'writeAsString called $path, mode: $mode, contents length: ${contents.length}',
+    );
+    return super.writeAsString(
+      contents,
+      mode: mode,
+      encoding: encoding,
+      flush: flush,
+    );
+  }
+
+  @override
   Future<File> writeAsBytes(
     Uint8List bytes, {
     FileMode mode = FileMode.write,
     bool flush = false,
   }) {
+    print(
+      'writeAsBytes called $path, mode: $mode, bytes length: ${bytes.length}',
+    );
+
+    /// If missing directory
+    /// {errno: -2, code: ENOENT, syscall: open, path: ../test2/src/file1}
     return catchErrorAsync(() async {
+      print('writeAsBytes $path, mode: $mode, bytes length: ${bytes.length}');
       if (mode == FileMode.append) {
         await fsNode.nativeInstance
             .appendFileBytes(path, Uint8List.fromList(bytes).toJS)
             .toDart;
       } else {
-        await fsNode.nativeInstance
-            .writeFileBytes(path, Uint8List.fromList(bytes).toJS)
-            .toDart;
+        if (bytes.isEmpty) {
+          print('opening empty file $path');
+          // Node.js cannot create empty files with writeFileBytes
+          var handle = await fsNode.nativeInstance.open(path, 'w').toDart;
+
+          await handle.close().toDart;
+        } else {
+          await fsNode.nativeInstance
+              .writeFileBytes(path, Uint8List.fromList(bytes).toJS)
+              .toDart;
+        }
       }
+      print('writeAsBytes done $path');
       return this;
     });
   }

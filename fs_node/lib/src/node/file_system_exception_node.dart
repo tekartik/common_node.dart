@@ -5,8 +5,8 @@ import 'fs_node_js_interop.dart' as node;
 // ignore: unused_import
 import 'import_js.dart' as js;
 
-const _debugException = false;
-//var _debugException = devWarning(true);
+//const _debugException = false;
+var _debugException = devWarning(true);
 
 /// File system exception node implementation.
 class FileSystemExceptionNode implements FileSystemException {
@@ -40,6 +40,9 @@ bool get isWindows => platformContextNode.node?.isWindows ?? false;
 
 /// True if MacOS.
 bool get isMacOS => platformContextNode.node?.isMacOS ?? false;
+
+/// True if Linux.
+bool get isLinux => platformContextNode.node?.isLinux ?? false;
 bool _handleJsError(Object error) {
   // devPrint('error: $error ${error.runtimeType}');
   js.JSAny? jsError;
@@ -81,6 +84,11 @@ bool _handleJsError(Object error) {
     // {errno: -66, code: ENOTEMPTY, syscall: rename, ENOTEMPTY: directory not empty, rename
     if (errno == -66) {
       errno = FileSystemException.statusNotEmpty;
+    }
+  } else if (isLinux) {
+    /// {errno: -2, code: ENOENT, syscall: open, path: .../test2/src/file1}
+    if (errno == -2) {
+      errno = FileSystemException.statusNotFound;
     }
   }
   // print('message: ${jsFsError.message}');
