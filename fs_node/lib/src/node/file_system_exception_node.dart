@@ -5,8 +5,8 @@ import 'fs_node_js_interop.dart' as node;
 // ignore: unused_import
 import 'import_js.dart' as js;
 
-//const _debugException = false;
-var _debugException = devWarning(true);
+const _debugException = false;
+// var _debugException = devWarning(true);
 
 /// File system exception node implementation.
 class FileSystemExceptionNode implements FileSystemException {
