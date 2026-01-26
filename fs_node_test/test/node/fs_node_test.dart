@@ -3,7 +3,6 @@
 // is governed by a BSD-style license that can be found in the LICENSE file.
 library;
 
-import 'package:fs_shim/fs.dart';
 import 'package:tekartik_fs_test/fs_test.dart';
 
 import 'test_common_node.dart';

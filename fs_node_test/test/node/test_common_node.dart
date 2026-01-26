@@ -20,7 +20,9 @@ class PlatformContextNode extends PlatformContextIo {
   bool get isIoNode => true;
 }
 
-class FileSystemTestContextNode extends FileSystemTestContext {
+class FileSystemTestContextNode
+    with FileSystemTestContextMixin
+    implements FileSystemTestContext {
   @override
   final PlatformContext platform = PlatformContextNode();
   @override
