@@ -6,6 +6,10 @@ enable-beta-ecosystems: true
 
 updates:
   - package-ecosystem: "pub"
+    directory: "."
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "pub"
     directory: "core_node"
     schedule:
       interval: "monthly"
@@ -35,6 +39,14 @@ updates:
       interval: "monthly"
   - package-ecosystem: "pub"
     directory: "repo_support"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "pub"
+    directory: "stdio_node"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "pub"
+    directory: "stdio_node_test"
     schedule:
       interval: "monthly"
   - package-ecosystem: "github-actions"
