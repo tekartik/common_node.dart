@@ -5,6 +5,11 @@ class _ProcessNone extends Process {
   void exit(int code) {
     // Noop
   }
+
+  @override
+  String cwd() {
+    throw UnimplementedError('cwd is not implemented on this platform');
+  }
 }
 
 final _processNone = _ProcessNone();

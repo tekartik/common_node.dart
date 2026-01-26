@@ -8,6 +8,11 @@ class _ProcessIo implements Process {
   void exit(int code) {
     io.exit(code);
   }
+
+  @override
+  String cwd() {
+    return io.Directory.current.path;
+  }
 }
 
 final _processIo = _ProcessIo();

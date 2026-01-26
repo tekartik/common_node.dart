@@ -16,6 +16,9 @@ extension type JsProcessStdio._(JSObject _) implements JSObject {
 
   /// Exit.
   external void exit(int code);
+
+  /// Current directory
+  external String cwd();
 }
 @JS('process')
 /// JS Process module.

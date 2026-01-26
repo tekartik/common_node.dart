@@ -1,6 +1,7 @@
 import 'dart:js_interop' as js;
 
 import 'package:path/path.dart' as p;
+import 'package:tekartik_core_node/process.dart';
 
 import '../import_common.dart';
 import 'directory_node.dart';
@@ -70,6 +71,9 @@ class FileSystemNode with FileSystemMixin implements FileSystem {
       return false;
     }
   }
+
+  @override
+  Directory get currentDirectory => directory(process.cwd());
 }
 
 /// File system entity node implementation.

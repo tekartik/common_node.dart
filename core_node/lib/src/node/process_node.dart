@@ -7,6 +7,11 @@ class _ProcessNode implements Process {
   void exit(int code) {
     jsProcess.exit(code);
   }
+
+  @override
+  String cwd() {
+    return jsProcess.cwd();
+  }
 }
 
 /// Global process instance.
