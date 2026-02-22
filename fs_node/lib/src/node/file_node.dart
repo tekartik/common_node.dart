@@ -138,7 +138,7 @@ class FileNode extends FileSystemEntityNode
   String toString() => "File: '$path'";
 
   @override
-  StreamSink<List<int>> openWrite({
+  FileStreamSink openWrite({
     FileMode mode = FileMode.write,
     Encoding encoding = utf8,
   }) {
@@ -169,7 +169,7 @@ String fileModeOpenFlags(FileMode mode) {
 }
 
 /// Write file sink node.
-class WriteFileSinkNode implements StreamSink<List<int>> {
+class WriteFileSinkNode implements FileStreamSink {
   /// The file node.
   final FileNode fileNode;
 
@@ -212,8 +212,10 @@ class WriteFileSinkNode implements StreamSink<List<int>> {
       }
       try {
         await catchErrorAsync(() async {
-          var jsFileHandle = await _jsFileHandle;
-          await jsFileHandle!.write(asUint8List(data).toJS).toDart;
+          if (_jsFileHandle != null) {
+            var jsFileHandle = await _jsFileHandle;
+            await jsFileHandle!.write(asUint8List(data).toJS).toDart;
+          }
         });
       } catch (e) {
         addError(e);
@@ -231,8 +233,11 @@ class WriteFileSinkNode implements StreamSink<List<int>> {
       try {
         await _lock.synchronized(() async {
           await catchErrorAsync(() async {
-            var jsFileHandle = await _jsFileHandle;
-            await jsFileHandle!.close().toDart;
+            if (_jsFileHandle != null) {
+              var jsFileHandle = await _jsFileHandle;
+              await jsFileHandle!.close().toDart;
+              _jsFileHandle = null;
+            }
           });
           if (!doneCompleter.isCompleted) {
             doneCompleter.complete();
@@ -263,6 +268,22 @@ class WriteFileSinkNode implements StreamSink<List<int>> {
     await stream.listen((List<int> data) {
       add(data);
     }).asFuture<void>();
+  }
+
+  @override
+  Future<void> flush() async {
+    if (_jsFileHandle != null) {
+      try {
+        await _lock.synchronized(() async {
+          if (_jsFileHandle != null) {
+            await catchErrorAsync(() async {
+              var jsFileHandle = await _jsFileHandle;
+              await jsFileHandle!.sync().toDart;
+            });
+          }
+        });
+      } catch (_) {}
+    }
   }
 }
 
