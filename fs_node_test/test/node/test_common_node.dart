@@ -1,7 +1,5 @@
 library;
 
-// basically same as the io runner but with extra output
-import 'package:path/path.dart';
 import 'package:tekartik_fs_node/fs_node_interop.dart';
 import 'package:tekartik_fs_node/src/node/file_system_node.dart';
 import 'package:tekartik_fs_test/test_common.dart';
@@ -32,6 +30,6 @@ class FileSystemTestContextNode
   @override
   bool get supportsFileContentStream => true;
   FileSystemTestContextNode(String path) {
-    basePath = join('.dart_tool', 'tekartik_fs_node', 'test', path);
+    basePath = fs.path.join('.dart_tool', 'tekartik_fs_node', 'test', path);
   }
 }
