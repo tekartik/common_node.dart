@@ -51,50 +51,41 @@ void testAll(
   bool canReceiveSetCookieHeaders = false,
   bool supportsMultipartRequest = true,
 }) {
-  testRequestBody(clientFactory());
+  testRequestBody(clientFactory);
   testRequestBodyStreamed(
-    clientFactory(),
+    clientFactory,
     canStreamRequestBody: canStreamRequestBody,
   );
-  testResponseBody(
-    clientFactory(),
-    canStreamResponseBody: canStreamResponseBody,
-  );
+  testResponseBody(clientFactory, canStreamResponseBody: canStreamResponseBody);
   testResponseBodyStreamed(
-    clientFactory(),
+    clientFactory,
     canStreamResponseBody: canStreamResponseBody,
   );
-  testRequestHeaders(clientFactory());
+  testRequestHeaders(clientFactory);
   // Failing on node
   // ignore: dead_code
   if (false) {
-    testRequestMethods(
-      clientFactory(),
-      preservesMethodCase: preservesMethodCase,
-    );
+    testRequestMethods(clientFactory, preservesMethodCase: preservesMethodCase);
 
     testResponseHeaders(
-      clientFactory(),
+      clientFactory,
       supportsFoldedHeaders: supportsFoldedHeaders,
     );
   }
-  testResponseStatusLine(clientFactory());
-  testRedirect(clientFactory(), redirectAlwaysAllowed: redirectAlwaysAllowed);
-  testServerErrors(clientFactory());
-  testCompressedResponseBody(clientFactory());
+  testResponseStatusLine(clientFactory);
+  testRedirect(clientFactory, redirectAlwaysAllowed: redirectAlwaysAllowed);
+  testServerErrors(clientFactory);
+  testCompressedResponseBody(clientFactory);
   testMultipleClients(clientFactory);
   testMultipartRequests(
-    clientFactory(),
+    clientFactory,
     supportsMultipartRequest: supportsMultipartRequest,
   );
   testClose(clientFactory);
   testIsolate(clientFactory, canWorkInIsolates: canWorkInIsolates);
-  testRequestCookies(
-    clientFactory(),
-    canSendCookieHeaders: canSendCookieHeaders,
-  );
+  testRequestCookies(clientFactory, canSendCookieHeaders: canSendCookieHeaders);
   testResponseCookies(
-    clientFactory(),
+    clientFactory,
     canReceiveSetCookieHeaders: canReceiveSetCookieHeaders,
   );
 }
