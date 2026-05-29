@@ -11,11 +11,13 @@ void main() {
 }
 
 void run(PlatformContext context) {
+  // ignore: avoid_print
   print(const JsonEncoder.withIndent('  ').convert(context.toMap()));
 
   common.print = print;
   common.run(context);
   if (context.node != null) {
+    // ignore: avoid_print
     print('nodeVersion: $nodeVersion');
   }
   dumpPlatformInfo();

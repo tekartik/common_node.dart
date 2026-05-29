@@ -205,8 +205,8 @@ class FileStatNode implements FileStat {
   /// Constructor.
   FileStatNode({
     required this.mode,
-    required DateTime? modified,
+    required this._modified,
     required this.size,
     required this.type,
-  }) : _modified = modified;
+  });
 }

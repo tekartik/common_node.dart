@@ -4,7 +4,7 @@ version: 0.6.0
 publish_to: none
 
 environment:
-  sdk: ^3.10.0
+  sdk: ^3.12.0
 
 dependencies:
   tekartik_http:
@@ -26,7 +26,7 @@ dependencies:
   # node_interop: ">=1.0.3"
   # node_io: '>=1.0.1+2'
   # node_http: '>=1.0.0'
-  meta: ">=1.15.0"
+  meta: ">=1.18.0"
   tekartik_fs_node:
     git:
       url: https://github.com/tekartik/common_node.dart
@@ -36,8 +36,8 @@ dependencies:
     git: https://github.com/tekartik/common_utils.dart
 
 dev_dependencies:
-  test: ">=1.24.0"
-  build_runner: ">=2.4.13"
+  test: ">=1.31.0"
+  build_runner: ">=2.15.0"
   build_test: '>=0.10.8'
   # build_node_compilers: ">=0.2.2"
   tekartik_platform_node:

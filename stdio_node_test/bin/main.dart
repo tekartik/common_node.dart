@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:tekartik_stdio_node/process.dart';
 import 'package:tekartik_stdio_node/readline.dart';
 

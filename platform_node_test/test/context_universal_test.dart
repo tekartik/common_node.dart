@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 library;
 
 import 'package:tekartik_common_utils/env_utils.dart';

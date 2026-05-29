@@ -9,7 +9,7 @@ const _debugException = false;
 // var _debugException = devWarning(true);
 
 /// File system exception node implementation.
-class FileSystemExceptionNode implements FileSystemException {
+class FileSystemExceptionNode implements FileSystemException, Exception {
   @override
   final String message;
 

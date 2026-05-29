@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:js_interop';
 
 import 'package:tekartik_js_utils_interop/js_converter.dart';

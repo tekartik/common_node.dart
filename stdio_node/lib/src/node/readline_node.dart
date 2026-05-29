@@ -21,7 +21,7 @@ class _ReadlineNode implements Readline {
   String toString() => 'ReadlineNode';
 
   @override
-  void close() async {}
+  void close() {}
 
   @override
   Future<String> question(String prompt) async {

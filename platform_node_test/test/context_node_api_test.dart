@@ -29,6 +29,7 @@ Future main() async {
     var platform = isRunningInNodeOrIo
         ? platformContextUniversal
         : platformContextBrowser;
+    // ignore: avoid_print
     print('platform=$platform');
   });
 }
