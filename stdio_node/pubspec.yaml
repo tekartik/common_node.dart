@@ -10,7 +10,7 @@ environment:
 
 dependencies:
   path: ">=1.9.1"
-  fs_shim: ">=2.4.0-1"
+  fs_shim: ">=2.5.2"
   tekartik_platform_node:
     git:
       url: https://github.com/tekartik/common_node.dart
@@ -20,7 +20,7 @@ dependencies:
     git:
       url: https://github.com/tekartik/common_node.dart
       path: core_node
-  process_run: ">=1.2.1+1"
+  process_run: ">=1.3.4"
 dev_dependencies:
   test: ">=1.31.0"
   tekartik_fs_test:
@@ -32,7 +32,7 @@ dev_dependencies:
     git:
       url: https://github.com/tekartik/platform.dart
       path: platform
-  dev_build: ">=1.1.7+3"
+  dev_build: ">=1.1.8+1"
 
   tekartik_js_utils_interop:
     git:
