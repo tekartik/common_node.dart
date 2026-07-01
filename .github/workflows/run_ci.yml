@@ -41,7 +41,7 @@ jobs:
             dart: stable
             node: 20
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: ${{ matrix.dart }}
