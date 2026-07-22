@@ -16,6 +16,7 @@ Version get nodeVersion => _nodeVersion ??= () {
   if (versionText.startsWith('v')) {
     versionText = versionText.substring(1);
   }
+
   return parseVersion(versionText);
 }();
 

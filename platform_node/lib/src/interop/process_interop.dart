@@ -2,6 +2,7 @@ import 'dart:js_interop';
 
 /// JS Process instance.
 @JS()
+/// Extension type representing [Process].
 extension type Process._(JSObject _) implements JSObject {
   /// node version
   external String get version;

@@ -146,6 +146,7 @@ mixin FileSystemEntityNodeMixin on FileSystemEntityNode {
             type: FileSystemEntityType.file,
           );
         }
+
         return notFound();
       });
     } on FileSystemExceptionNode catch (_) {

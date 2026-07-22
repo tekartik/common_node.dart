@@ -20,6 +20,7 @@ class DirectoryNode extends FileSystemEntityNode
     if (nodeIsFile()) {
       nodeThrowIsNotADirectoryError();
     }
+
     await catchErrorAsync(() async {
       if (!recursive) {
         try {
@@ -157,7 +158,9 @@ class DirectoryNode extends FileSystemEntityNode
         );
       }
     }
+
     await nodeRename(newPath);
+
     return DirectoryNode(fsNode, newPath);
   }
 

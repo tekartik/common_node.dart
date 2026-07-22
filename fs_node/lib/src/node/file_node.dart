@@ -102,7 +102,9 @@ class FileNode extends FileSystemEntityNode
         );
       }
     }
+
     await nodeRename(newPath);
+
     return FileNode(fsNode, newPath);
   }
 
@@ -131,6 +133,7 @@ class FileNode extends FileSystemEntityNode
     await catchErrorAsync(() async {
       await fsNode.nativeInstance.cp(path, newPath).toDart;
     });
+
     return FileNode(fsNode, newPath);
   }
 
@@ -145,6 +148,7 @@ class FileNode extends FileSystemEntityNode
     if (mode == FileMode.read) {
       throw ArgumentError('Invalid mode $mode in openWrite');
     }
+
     return WriteFileSinkNode(this, mode, encoding);
   }
 
