@@ -130,9 +130,19 @@ class FileNode extends FileSystemEntityNode
 
   @override
   Future<File> copy(String newPath) async {
-    await catchErrorAsync(() async {
-      await fsNode.nativeInstance.cp(path, newPath).toDart;
-    });
+    try {
+      await catchErrorAsync(() async {
+        await fsNode.nativeInstance.cp(path, newPath).toDart;
+      });
+    } on FileSystemException catch (e) {
+      // As io: copying over a directory is an is a directory error, node cp
+      // reports ENOTDIR (cannot overwrite a directory with a non-directory).
+      if (e.status == FileSystemException.statusNotADirectory &&
+          await fsNode.type(newPath) == FileSystemEntityType.directory) {
+        _throwIsADirectoryError(newPath);
+      }
+      rethrow;
+    }
 
     return FileNode(fsNode, newPath);
   }
@@ -310,6 +320,12 @@ class ReadFileStreamCtrlNode {
   ReadFileStreamCtrlNode(this.fileNode, this.start, this.end) {
     _ctlr = StreamController(
       onListen: () async {
+        // As io: an end before start is a range error.
+        if (start != null && end != null && end! < start!) {
+          _ctlr.addError(RangeError('Bad end position: $end'));
+          await _ctlr.close();
+          return;
+        }
         node.JsFsFileHandle? jsFileHandle;
         try {
           await catchErrorAsync(() async {
