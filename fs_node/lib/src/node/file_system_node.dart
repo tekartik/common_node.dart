@@ -125,29 +125,22 @@ mixin FileSystemEntityNodeMixin on FileSystemEntityNode {
         // jsFileStat: {dev: 66311, mode: 33204, nlink: 1, uid: 1000, gid: 1000, rdev: 0, blksize: 4096, ino: 47590381, size: 4, blocks: 8, atimeMs: 1718633112014.787, mtimeMs: 1718633112014.787, ctimeMs: 1718633112014.787, birthtimeMs: 1718633112014.787, atime: {}, mtime: {}, ctime: {}, birthtime: {}}
         // devPrint('jsFileStat: ${js.jsAnyToDebugString(jsFileStat)}');
         //devPrint('jsFileStat modified: ${jsFileStat.mtime}');
-        if (jsFileStat.isDirectory()) {
-          //devPrint('isDirectory');
-          return FileStatNode(
-            mode: jsFileStat.mode,
-            modified: DateTime.fromMillisecondsSinceEpoch(
-              jsFileStat.mtimeMs.toInt(),
-            ),
-            size: jsFileStat.size,
-            type: FileSystemEntityType.directory,
-          );
-        } else if (jsFileStat.isFile()) {
-          //devPrint('isFile ${jsFileStat.mtimeMs}');
-          return FileStatNode(
-            mode: jsFileStat.mode,
-            modified: DateTime.fromMillisecondsSinceEpoch(
-              jsFileStat.mtimeMs.toInt(),
-            ),
-            size: jsFileStat.size,
-            type: FileSystemEntityType.file,
-          );
+        var type = jsFileStat.isDirectory()
+            ? FileSystemEntityType.directory
+            : jsFileStat.isFile()
+            ? FileSystemEntityType.file
+            : null;
+        if (type == null) {
+          return notFound();
         }
-
-        return notFound();
+        return FileStatNode(
+          mode: jsFileStat.mode,
+          modified: DateTime.fromMillisecondsSinceEpoch(
+            jsFileStat.mtimeMs.toInt(),
+          ),
+          size: jsFileStat.size,
+          type: type,
+        );
       });
     } on FileSystemExceptionNode catch (_) {
       return notFound();

@@ -4,24 +4,25 @@ import 'package:tekartik_stdio_node/readline.dart';
 import 'package:tekartik_stdio_node/src/node/process_interop.dart';
 import 'package:tekartik_stdio_node/src/node/readline_interop.dart';
 
-var _jsReadlineDefaultInterface = jsReadlineModule.createInterface(
-  jsStdin,
-  jsStdout,
-);
-
 /// Readline for Node.js
-final Readline readlineNode = _ReadlineNode(impl: _jsReadlineDefaultInterface);
+final Readline readlineNode = _ReadlineNode();
 
 class _ReadlineNode implements Readline {
-  final JsReadline impl;
+  /// Created on first use (it holds stdin, preventing node from exiting until
+  /// closed) and created again after [close].
+  JsReadline? _impl;
 
-  _ReadlineNode({required this.impl});
+  JsReadline get impl =>
+      _impl ??= jsReadlineModule.createInterface(jsStdin, jsStdout);
 
   @override
   String toString() => 'ReadlineNode';
 
   @override
-  void close() {}
+  void close() {
+    _impl?.close();
+    _impl = null;
+  }
 
   @override
   Future<String> question(String prompt) async {

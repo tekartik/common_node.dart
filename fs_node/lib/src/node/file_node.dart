@@ -303,7 +303,6 @@ class ReadFileStreamCtrlNode {
   final int? end;
 
   late StreamController<Uint8List> _ctlr;
-  late final node.JsFsFileHandle _jsFileHandle;
 
   static const _bufferSize = 64 * 1024;
 
@@ -311,9 +310,10 @@ class ReadFileStreamCtrlNode {
   ReadFileStreamCtrlNode(this.fileNode, this.start, this.end) {
     _ctlr = StreamController(
       onListen: () async {
+        node.JsFsFileHandle? jsFileHandle;
         try {
           await catchErrorAsync(() async {
-            _jsFileHandle = await fileNode.fsNode.nativeInstance
+            jsFileHandle = await fileNode.fsNode.nativeInstance
                 .open(fileNode.path, 'r')
                 .toDart;
             var position = start ?? 0;
@@ -329,7 +329,7 @@ class ReadFileStreamCtrlNode {
                 bufferSize = _bufferSize;
               }
               var buffer = Uint8List(bufferSize).toJS;
-              var result = await _jsFileHandle
+              var result = await jsFileHandle!
                   .read(buffer, 0, bufferSize, position)
                   .toDart;
               if (result.bytesRead == 0) {
@@ -341,11 +341,18 @@ class ReadFileStreamCtrlNode {
               _ctlr.add(buffer.toDart.sublist(0, result.bytesRead));
               position += result.bytesRead;
             }
-            await _ctlr.close();
           });
         } catch (e) {
           _ctlr.addError(e);
+          return;
+        } finally {
+          // Release the file descriptor (end of file, cancel or error) before
+          // the done event so that it is closed once the stream is done.
+          try {
+            await jsFileHandle?.close().toDart;
+          } catch (_) {}
         }
+        await _ctlr.close();
       },
       onCancel: () {
         _ctlr.close();
