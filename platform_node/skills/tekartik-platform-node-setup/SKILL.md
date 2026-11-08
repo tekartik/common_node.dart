@@ -5,7 +5,8 @@ description: >-
   the tekartik_platform PlatformContext abstraction with
   tekartik_platform_node: platformContextNode (node OS flags isLinux /
   isMacOS / isWindows and environment variables), nodeVersion,
-  isRunningInNode, isRunningInNodeOrIo, platformContextUniversal / platform
+  isRunningInNode, isRunningInNodeOrIo, nodeFixRandomSecure (Random.secure()
+  ERR_INVALID_THIS on node), platformContextUniversal / platform
   / platformUniversal (node when running as JavaScript, platformContextIo on
   the VM), runningOnGithub, the context_node.dart / context_universal.dart
   / util/github_util.dart imports, and node vs VM vs browser detection.
@@ -38,7 +39,7 @@ needs the OS name, environment variables or the node version.
 * Imports:
   * `package:tekartik_platform_node/context_node.dart`: `platformContextNode`
     (a `PlatformContext`), `nodeVersion` (a `pub_semver` `Version`),
-    `isRunningInNode` and `isRunningInNodeOrIo`.
+    `isRunningInNode`, `isRunningInNodeOrIo` and `nodeFixRandomSecure`.
   * `package:tekartik_platform_node/context_universal.dart`:
     `platformContextUniversal`, and `platform` / `platformUniversal` (both
     the non-null `platformContextUniversal.platform!`).
@@ -64,6 +65,12 @@ needs the OS name, environment variables or the node version.
   `isRunningInNodeOrIo ? platformContextUniversal : platformContextBrowser`
   (`platformContextBrowser` from `tekartik_platform_browser`,
   `context_browser.dart`).
+* `Random.secure()` throws `ERR_INVALID_THIS` in `dart test -p node`: the
+  node preamble makes `self` (dart2js' global context) an
+  `Object.create(globalThis)` and the node `crypto` getter rejects that
+  `this` (mbullington/node_preamble.dart#14). Call `nodeFixRandomSecure()`
+  first in the test `main` (no-op on the VM, in browsers and when already
+  fixed; true when applied). build_node output already carries the fix.
 * `dart:io` `Platform` does not exist on node; the shim in
   `lib/src/interop/platform_interop.dart` backs `platformContextNode` and is
   not public API.
