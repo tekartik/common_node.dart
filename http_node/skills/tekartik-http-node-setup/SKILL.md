@@ -3,9 +3,9 @@ name: tekartik-http-node-setup
 description: >-
   Use when Dart code compiled for Node.js needs an HTTP client through the
   tekartik_http abstraction with tekartik_http_node: httpClientFactoryNode
-  and httpClientFactoryNodeFetch (a package:http Client over node's global
-  fetch via fetch_client), httpClientFactoryUniversal (fetch on node, the
-  dart:io client on the VM), the http_client_node.dart /
+  and httpClientFactoryNodeFetch (package:http BrowserClient over node's
+  global fetch), httpClientFactoryUniversal (fetch on node, the dart:io
+  client on the VM), the http_client_node.dart /
   http_client_node_fetch.dart / http_client_universal.dart imports, the
   httpClientRead / httpClientSend / httpClientReadBytes helpers, the node
   client limits (no request streaming, cookies or multipart) and running the
@@ -43,7 +43,8 @@ client is a regular `package:http` `Client` built on node's global `fetch`
     `httpClientFactoryNode`, the node factory (an alias of the fetch one).
   * `package:tekartik_http_node/http_client_node_fetch.dart` adds
     `httpClientFactoryNodeFetch` (`HttpClientFactoryNodeFetch`): `newClient()`
-    returns a `fetch_client` `FetchClient`.
+    returns a `package:http` `BrowserClient` (it uses the global fetch,
+    node and web workers supported since http 1.4.0).
   * `package:tekartik_http_node/http_client_universal.dart` adds
     `httpClientFactoryUniversal`: the node fetch factory when running as
     JavaScript, `httpClientFactoryIo` from `tekartik_http_io` on the VM. Use
@@ -63,9 +64,11 @@ client is a regular `package:http` `Client` built on node's global `fetch`
   may be a `String`, a `List<int>` or a `Map<String, String>` (form fields).
 * Limits of the fetch client (from the `http_client_conformance_tests` run
   in the repo's `http_node_test`): request bodies are not streamed
-  (responses are), redirects are always followed, cookie headers are neither
-  sent nor received, folded headers and multipart requests are unsupported,
-  no isolates. Design APIs around JSON bodies and explicit headers.
+  (responses are), redirects are always followed (with `followRedirects =
+  false` a redirect throws a `ClientException`, no 3xx response), cookie
+  headers are neither sent nor received, folded headers and multipart
+  requests are unsupported, no isolates. Design APIs around JSON bodies and
+  explicit headers.
 * Server side: implement servers with `tekartik_http_io`
   (`httpServerFactoryIo`) on the VM or `httpFactoryMemory` in tests; on node
   rely on the hosting framework (firebase functions, express) for requests.

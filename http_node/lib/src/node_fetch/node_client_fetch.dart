@@ -1,4 +1,4 @@
-import 'package:fetch_client/fetch_client.dart' as fetch;
+import 'package:http/browser_client.dart';
 import 'package:http/http.dart' as http;
 import 'package:tekartik_http/http_client.dart';
 
@@ -6,7 +6,9 @@ import 'package:tekartik_http/http_client.dart';
 class HttpClientFactoryNodeFetch implements HttpClientFactory {
   @override
   http.Client newClient() {
-    return fetch.FetchClient();
+    // package:http BrowserClient uses the global fetch, supported on node
+    // since http 1.4.0.
+    return BrowserClient();
   }
 }
 
