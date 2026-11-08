@@ -239,7 +239,7 @@ class WriteFileSinkNode implements FileStreamSink {
 
   // always flush on node
   @override
-  Future close() async {
+  Future<void> close() async {
     if (fileNode.nodeIsDirectory()) {
       fileNode._throwIsADirectoryError(fileNode.path);
     }
@@ -274,11 +274,11 @@ class WriteFileSinkNode implements FileStreamSink {
   }
 
   @override
-  Future get done => doneCompleter.future;
+  Future<void> get done => doneCompleter.future;
 
   @override
   // not supported for node...
-  Future addStream(Stream<List<int>> stream) async {
+  Future<void> addStream(Stream<List<int>> stream) async {
     await stream.listen((List<int> data) {
       add(data);
     }).asFuture<void>();
