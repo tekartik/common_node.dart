@@ -94,7 +94,13 @@ class FileNode extends FileSystemEntityNode
     // Somehow on windows it might succeed to rename a directory over an empty
     // file so catch that before
     if (isWindows) {
-      if (await fsNode.type(newPath) != FileSystemEntityType.notFound) {
+      var type = await fsNode.type(newPath);
+      // Renaming to the same path does nothing, as on io.
+      if (type == FileSystemEntityType.file &&
+          fsNode.path.equals(path, newPath)) {
+        return FileNode(fsNode, newPath);
+      }
+      if (type != FileSystemEntityType.notFound) {
         throw FileSystemExceptionNode(
           message: 'Already exists',
           status: FileSystemException.statusAlreadyExists,

@@ -143,6 +143,11 @@ class DirectoryNode extends FileSystemEntityNode
     // file so catch that before
     if (isWindows) {
       var type = await fsNode.type(newPath);
+      // Renaming to the same path does nothing, as on io.
+      if (type == FileSystemEntityType.directory &&
+          fsNode.path.equals(path, newPath)) {
+        return DirectoryNode(fsNode, newPath);
+      }
       if (type == FileSystemEntityType.file) {
         throw FileSystemExceptionNode(
           message: 'Not a directory',
