@@ -7,7 +7,7 @@ import 'package:tekartik_platform_node/context_node.dart';
 import 'package:tekartik_platform_node/context_universal.dart';
 import 'package:test/test.dart';
 
-Future main() async {
+Future<void> main() async {
   group('context_node_api', () {
     test('multiplatform', () async {
       platformContextUniversal;
