@@ -51,7 +51,10 @@ built on its `require`.
   shared code.
 * `require` and `exports` are node only: importing them is harmless
   everywhere, calling them only works when the JS is executed by Node.js
-  (they bind the `require` and `exports` globals of a CommonJS module). Keep
+  with the node preamble (they bind the `require` and `exports` of a
+  CommonJS module: compile with tekartik_build_node `nodePackageCompileJs`
+  or `nodedev build`, `dart test -p node` adds it too; a plain
+  `dart compile js` output fails with `require is not a function`). Keep
   them in node-only files or `@TestOn('node')` tests, or guard with
   `isRunningInNode` from `tekartik_platform_node/context_node.dart`.
 * `require<T>(module)`: declare an `extension type` on `JSObject` with
@@ -80,17 +83,18 @@ built on its `require`.
 
 ### Command-line script that works on node and on the VM
 
+On node `main` receives no arguments (dart2js does not pass `process.argv`).
+
 ```dart
 import 'package:tekartik_core_node/console.dart';
 import 'package:tekartik_core_node/process.dart';
 
-void main(List<String> args) {
+void main() {
   console.out.writeln('cwd: ${process.cwd()}');
-  if (args.isEmpty) {
-    console.err.writeln('missing argument');
+  if (process.cwd().isEmpty) {
+    console.err.writeln('no current directory');
     process.exit(1);
   }
-  console.out.writeln('hello ${args.first}');
 }
 ```
 
