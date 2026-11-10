@@ -125,8 +125,9 @@ class FileNode extends FileSystemEntityNode
 
   Future<void> _delete({bool recursive = false}) async {
     await catchErrorAsync(() async {
+      // No force: as io, a missing file is a not found error.
       await fsNode.nativeInstance
-          .rm(path, node.JsFsRmOptions(recursive: recursive, force: recursive))
+          .rm(path, node.JsFsRmOptions(recursive: recursive))
           .toDart;
     });
   }
@@ -365,8 +366,10 @@ class ReadFileStreamCtrlNode {
             }
           });
         } catch (e) {
-          _ctlr.addError(e);
-          return;
+          // As io: the error, then the done event below.
+          if (!_ctlr.isClosed) {
+            _ctlr.addError(e);
+          }
         } finally {
           // Release the file descriptor (end of file, cancel or error) before
           // the done event so that it is closed once the stream is done.

@@ -48,10 +48,11 @@ code is compiled to JavaScript for Node.js and with `dart:io` (through
 * `question(prompt)` prints the prompt as is (add the trailing space
   yourself) and resolves with the typed line without its newline. Await each
   question before asking the next one.
-* Ending the program: on node `close()` is a no-op and the readline
-  interface keeps stdin open, so node does not exit by itself: call
-  `process.exit(0)` when done. On the VM `close()` terminates
-  `sharedStdIn`; `process.exit` works there too, so one `main` serves both.
+* Ending the program: call `readline.close()` then `process.exit(0)` (works
+  on both, one `main` serves both). On node `close()` closes the readline
+  interface (a later `question` creates a new one). On the VM `close()`
+  terminates `sharedStdIn` once (a second `close()` does nothing); a
+  `question` after it fails, stdin cannot be read again.
 * Output: `print` or `console.out.writeln` from `tekartik_core_node`; on node
   the prompt itself is written by the readline interface.
 * Tests: prompts cannot run under `dart test`; keep `readline` calls in the

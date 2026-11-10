@@ -32,8 +32,9 @@ class DirectoryNode extends FileSystemEntityNode
           await fsNode.nativeInstance.rmdir(path).toDart;
         }
       } else {
+        // No force: as io, a missing directory is a not found error.
         await fsNode.nativeInstance
-            .rm(path, node.JsFsRmOptions(recursive: recursive, force: true))
+            .rm(path, node.JsFsRmOptions(recursive: recursive))
             .toDart;
       }
     });

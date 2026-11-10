@@ -69,6 +69,10 @@ node (`fileSystemNode`); `fileSystemUniversal` picks node or io at runtime.
   `FileSystemException.statusNotFound`, `statusAlreadyExists`,
   `statusNotADirectory`, `statusIsADirectory`, `statusNotEmpty`. Branch on
   `e.status`, never on `e.message` (the raw node text).
+* As `dart:io`: deleting a missing file or directory throws
+  `statusNotFound`, `recursive: true` included; `openRead()` of a missing
+  file sends the error then the done event (a `listen(onError:, onDone:)`
+  completes).
 * Windows: renaming over an existing entity is rejected before calling node
   (node itself would sometimes succeed), so the behaviour matches the VM.
 * Running on node: compile the entry point with dart2js

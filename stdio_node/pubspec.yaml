@@ -1,5 +1,5 @@
 name: tekartik_stdio_node
-description: fs_shim on node
+description: Readline prompts (question, close) on Node.js and the Dart VM
 version: 0.4.1
 publish_to: none
 #homepage: https://www.example.com
