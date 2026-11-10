@@ -1,8 +1,6 @@
 @TestOn('vm')
 library;
 
-import 'dart:io';
-
 import 'package:process_run/shell.dart';
 import 'package:tekartik_build_node/build_node.dart';
 import 'package:test/test.dart';
@@ -13,7 +11,7 @@ int? _nodeMajorVersion() {
   if (node == null) {
     return null;
   }
-  var result = Process.runSync(node, ['--version']);
+  var result = runExecutableArgumentsSync(node, ['--version']);
   var match = RegExp(r'^v(\d+)').firstMatch('${result.stdout}'.trim());
   return match == null ? null : int.parse(match.group(1)!);
 }
