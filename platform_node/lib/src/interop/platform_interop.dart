@@ -206,12 +206,9 @@ abstract class Platform {
 
   /// The environment for this process as a map from string key to string value.
   ///
-  /// The map is unmodifiable,
-  /// and its content is retrieved from the operating system on its first use.
-  /// Environment variables on Windows are case-insensitive,
-  /// so on Windows the map is case-insensitive and will convert
-  /// all keys to upper case.
-  /// On other platforms, keys can be distinguished by case.
+  /// A new map copied from `process.env` at each read. Its keys keep their
+  /// case, on Windows too (`Path`, not `PATH`): unlike `dart:io`, the map is
+  /// case-sensitive.
   static Map<String, String> get environment {
     var map = jsProcess.env.toMap();
     return map;

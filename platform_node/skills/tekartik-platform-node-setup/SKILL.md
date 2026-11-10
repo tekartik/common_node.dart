@@ -51,7 +51,9 @@ needs the OS name, environment variables or the node version.
   is `{'node': {'platform': 'linux' | 'macos' | 'windows'}}`. `Platform`
   (also `Node`) exposes `isWindows`, `isMacOS`, `isLinux` and
   `environment`; `environment` builds a fresh `Map<String, String>` from
-  `process.env` on every read, so cache it in a local.
+  `process.env` on every read, so cache it in a local. Its keys keep the
+  case of `process.env`, on Windows too (`Path`, not `PATH`), unlike
+  `dart:io` `Platform.environment`.
 * `nodeVersion` parses `process.version` (`v22.1.0` gives `22.1.0`) once;
   compare with `Version(major, minor, patch)` from `pub_semver`.
 * Detection: `isRunningInNode` looks for `process.versions.node` in the JS
@@ -165,4 +167,6 @@ void main() {
 * Using `platformContextUniversal` in a browser build: guard with
   `isRunningInNodeOrIo` first.
 * Reading `platform.environment` in a loop: it rebuilds the map each time.
+* Printing the whole environment in a test or a log: it holds the secrets
+  of the machine (tokens, passwords); print the names or a count.
 * Accessing `platformContextNode` or `nodeVersion` from VM code.
