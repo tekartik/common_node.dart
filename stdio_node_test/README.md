@@ -1,27 +1,23 @@
-## Setup
+# tekartik_stdio_node_test
 
-```yaml
-  tekartik_stdio_node:
-    git:
-      url: https://github.com/tekartik/common_node.dart
-      path: io_node
-    version: '>=0.4.0'
+Tests and demos of `tekartik_stdio_node` (readline prompts and the process
+on Node.js). A test package, not a dependency.
 
+## Running
+
+From this folder, with node on the `PATH`:
+
+```bash
+dart test -p node,vm
 ```
 
-## Test setup
+The interactive demo (`bin/main.dart`, asks a question then exits) is
+compiled with dart2js and run by node, stdin connected:
 
-    User dart2
-        
-## Test
+```bash
+dart run tool/build_and_run_node.dart
+```
 
-    pbr test -- -p node
-    
-    pub run test -p vm,node
-    
-    pbr test -- -p node
- 
-
-## Testing node_io
-
-    pbr test -- -p node test/directory_test.dart test/file_stat_test.dart test/file_test.dart 
+`tool/build_and_run_raw_node.dart` does the same for `node/raw_node.dart`,
+the raw `node:readline/promises` interop. Both write `build/` and
+`deploy/main.js` (generated, do not commit).

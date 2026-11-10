@@ -1,5 +1,5 @@
 name: tekartik_http_node
-description: Http node
+description: HTTP client on Node.js (fetch) for the tekartik_http abstraction
 version: 0.6.0
 publish_to: none
 
